@@ -34,7 +34,7 @@ Simple GUI comes with a few shortcuts to know:
 - find into diagram with ctrl+f
 - print to png with ctrl+p
 
-Note: The sharing feature is a bit special. It relies on a common network repository and uses a sqlite file. Shoose a network volume to put the sharing file on it and give the full network path to your coworkers.
+Note: The sharing feature is a bit wierd. It relies on a common network repository and uses a sqlite file. Choose a network volume to put the sharing file on it and give the full network path to your coworkers.
 
 # How to add a diagram type
 
