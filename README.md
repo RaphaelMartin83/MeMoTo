@@ -3,7 +3,6 @@
 MeMoTo for MErgeable MOdeling TOol is yet another modeling tool focused on DevOps issues.
 
 ![Class diagram sample](doc/ClassDiagramSample.png)
-\
 
 Please note that this program is in it's early development stages and has flows and issues. My opinion is that it's already usable in production by a dev team but the team has to be trained.
 
