@@ -33,6 +33,8 @@ Note: The sharing feature is a bit special. It relies on a common network reposi
 # How to add a diagram type
 
 - See doc/diagram_hierarchy.memoto
+- You can use the QtCreator project file or use cmake by hand
+- This project uses Qt6 framework
 - You need to implement I_DiagramContainer
 - You need to be composed of a toolbox, itself implementing I_ToolBox
 - Check SMDiagramScene and SMToolBoxScene for an example
