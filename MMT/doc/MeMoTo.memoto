@@ -1,0 +1,937 @@
+{
+    "ClassDiagram": {
+        "Aggregations": [
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 2,
+                "ConnectFromID": 13,
+                "ConnectFromNumber": 10,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": 1,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ForcedPath": [
+                    [
+                        50140,
+                        48060
+                    ],
+                    [
+                        50140,
+                        49700
+                    ]
+                ],
+                "ID": 2
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 4,
+                "ConnectFromID": 28,
+                "ConnectFromNumber": 10,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": 27,
+                "ConnectToNumber": 2,
+                "ConnectToType": "Class",
+                "ID": 3
+            }
+        ],
+        "Classes": [
+            {
+                "Attributes": [
+                    "SMToolBoxScene* m_ToolBex"
+                ],
+                "Color": "blanchedalmond",
+                "Height": 300,
+                "ID": 0,
+                "Methods": [
+                    "I_ToolBox* getToolBox()",
+                    "QString getDiagramString()",
+                    "QPoint getStartPosition() const",
+                    "unsigned int getDiagramMaxWidth() const",
+                    "unsigned int getDiagramMaxHeight() const",
+                    "QString getSerializableName() const"
+                ],
+                "Name": "SMDiagramScene",
+                "PositionX": 51160,
+                "PositionY": 51050,
+                "Width": 320
+            },
+            {
+                "Attributes": [
+                    "QList<I_Connector*> m_Connectors",
+                    "QList<I_ContainerGraphicsItem*> m_Containers",
+                    "DiagramGraphicsView* m_View",
+                    "bool m_isFocused",
+                    "QPointF m_CurrentPosition",
+                    "bool m_isFirstDisplay",
+                    "QJsonObject m_undoStack[UNDO_STACK_SIZE]",
+                    "unsigned short m_StackPtr",
+                    "unsigned short m_LatestChange",
+                    "unsigned short m_OldestChange"
+                ],
+                "Color": "yellow",
+                "Height": 1040,
+                "ID": 1,
+                "Methods": [
+                    "virtual I_ToolBox* getToolBox() = 0",
+                    "virtual QString getDIagramString() const = 0",
+                    "virtual unsigned int getDiagramWidth() const = 0",
+                    "virtual unsigned int getDiagramHeight() const = 0",
+                    "virtual QPoint getStartPosition() const = 0",
+                    "QList<I_Connector*> getAllConnectors() const",
+                    "QList<I_Connectable*> getAllConnectables() const",
+                    "virtual QList<I_Selectable*> getAllSelectables() const",
+                    "virtual I_Selectable* getSelectable(QPoint p_Pos) const",
+                    "virtual I_Selectable* getSelectableAt(unsigned int p_index) const",
+                    "virtual I_Connectable* getConnectable(QPoint p_Pos) const",
+                    "virtual I_Connectable* getConnectableAt(unsigned int p_index) const",
+                    "void deletePressed()",
+                    "void escapePressed()",
+                    "void printPressed()",
+                    "void selectToolbyID(unsigned short p_ID)",
+                    "void mousePressEvent(QGraphicsSceneMouseEvent* p_Event)",
+                    "void mouseButton1(QGraphicsSceneMouseEvent* p_Event)",
+                    "void mouseButton2(QGraphicsSceneMouseEvent* p_Event)",
+                    "void registerDiagramView(DiagramGraphicsView* p_View)",
+                    "DiagramGraphicsView* getView()",
+                    "void showDiagram()",
+                    "void setUnfocused()",
+                    "void setCurrentPosition(QPointF p_Pos)",
+                    "void toolChanged()",
+                    "void addSelectable(I_Selectable* p_Selectable)",
+                    "void addConnectable(I_Connectable* p_Connectable)",
+                    "void addConnector(I_GraphicConnector* p_Connector)",
+                    "void addContainer(I_ContainerGraphicsItem* p_Container)",
+                    "void deleteConnectorAt(unsigned int p_index)",
+                    "void deleteConnectableConnections(I_Connectable* p_Connectable)",
+                    "bool isConnectableContainerAtPos(QPoint p_Pos) const",
+                    "QJsonObject toJson() const",
+                    "void fromJson(QJSonObject p_Json)",
+                    "QStringList getDiagramTypes()",
+                    "void find()",
+                    "QStringList getFieldsOfType(QString p_Type)",
+                    "QStringList getAllDataOfTypeAndField(QString p_Type, QString p_Field)",
+                    "voidfocusOnItem(QString p_Type, QString p_Field, QString p_Data, unsigned short p_findOffset, bool p_select = false)",
+                    "void findConfigurationValidated(QString p_Type, QString p_Field, QString p_Data), unsigned short p_findOffset",
+                    "void findConfigurationCanceled()",
+                    "void saveUndoState()",
+                    "void undo()",
+                    "void redo()",
+                    "- void rerouteConnections()",
+                    "- getToolListenerAtPos(QPoint p_Pos)"
+                ],
+                "Name": "I_DiagramContainer",
+                "PositionX": 51390,
+                "PositionY": 50100,
+                "Width": 740
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "greenyellow",
+                "Height": 160,
+                "ID": 2,
+                "Methods": [
+                ],
+                "Name": "QGraphicsScene",
+                "PositionX": 51580,
+                "PositionY": 49280,
+                "Width": 160
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "yellow",
+                "Height": 240,
+                "ID": 3,
+                "Methods": [
+                ],
+                "Name": "I_ToolSwitcherListener",
+                "PositionX": 50960,
+                "PositionY": 49260,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "yellow",
+                "Height": 240,
+                "ID": 4,
+                "Methods": [
+                ],
+                "Name": "I_Serializable",
+                "PositionX": 50400,
+                "PositionY": 47960,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "yellow",
+                "Height": 240,
+                "ID": 5,
+                "Methods": [
+                ],
+                "Name": "I_ToolListener",
+                "PositionX": 50960,
+                "PositionY": 48940,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "yellow",
+                "Height": 240,
+                "ID": 6,
+                "Methods": [
+                ],
+                "Name": "I_ConnectableContainer",
+                "PositionX": 50960,
+                "PositionY": 47960,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Height": 300,
+                "ID": 7,
+                "Methods": [
+                ],
+                "Name": "StateGraphicsItem",
+                "PositionX": 50140,
+                "PositionY": 50470,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "yellow",
+                "Height": 220,
+                "ID": 8,
+                "Methods": [
+                ],
+                "Name": "I_Configurable",
+                "PositionX": 50400,
+                "PositionY": 50050,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "yellow",
+                "Height": 300,
+                "ID": 9,
+                "Methods": [
+                ],
+                "Name": "I_SquarishGraphicsItem",
+                "PositionX": 49800,
+                "PositionY": 50010,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                    "m_Selectables",
+                    "m_Connectables",
+                    "m_Containers"
+                ],
+                "Color": "yellow",
+                "Height": 260,
+                "ID": 10,
+                "Methods": [
+                ],
+                "Name": "I_ContainerGraphicsItem",
+                "PositionX": 49800,
+                "PositionY": 49270,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "yellow",
+                "Height": 240,
+                "ID": 11,
+                "Methods": [
+                ],
+                "Name": "I_Connectable",
+                "PositionX": 49800,
+                "PositionY": 48880,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "yellow",
+                "Height": 300,
+                "ID": 12,
+                "Methods": [
+                ],
+                "Name": "I_Selectable",
+                "PositionX": 49800,
+                "PositionY": 48450,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "yellow",
+                "Height": 240,
+                "ID": 13,
+                "Methods": [
+                ],
+                "Name": "I_GraphicsItem",
+                "PositionX": 49800,
+                "PositionY": 47960,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "yellow",
+                "Height": 300,
+                "ID": 14,
+                "Methods": [
+                ],
+                "Name": "I_ContainersContainer",
+                "PositionX": 50960,
+                "PositionY": 48430,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "greenyellow",
+                "Height": 180,
+                "ID": 15,
+                "Methods": [
+                ],
+                "Name": "QGraphicsItemGroup",
+                "PositionX": 49800,
+                "PositionY": 47610,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Height": 300,
+                "ID": 16,
+                "Methods": [
+                ],
+                "Name": "ClassDiagramScene",
+                "PositionX": 51620,
+                "PositionY": 51050,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "yellow",
+                "Height": 100,
+                "ID": 17,
+                "Methods": [
+                ],
+                "Name": "I_Undoable",
+                "PositionX": 50960,
+                "PositionY": 48710,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Height": 520,
+                "ID": 18,
+                "Methods": [
+                ],
+                "Name": "SMToolBoxScene",
+                "PositionX": 50520,
+                "PositionY": 51160,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "yellow",
+                "Height": 160,
+                "ID": 19,
+                "Methods": [
+                ],
+                "Name": "I_ToolBox",
+                "PositionX": 50520,
+                "PositionY": 50540,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Height": 80,
+                "ID": 20,
+                "Methods": [
+                ],
+                "Name": "MouseTool",
+                "PositionX": 49960,
+                "PositionY": 50980,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Height": 80,
+                "ID": 21,
+                "Methods": [
+                ],
+                "Name": "ConnectableTool<class Connectable>",
+                "PositionX": 49960,
+                "PositionY": 51100,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Height": 80,
+                "ID": 22,
+                "Methods": [
+                ],
+                "Name": "ContainerTool<class Container>",
+                "PositionX": 49960,
+                "PositionY": 51220,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Height": 80,
+                "ID": 23,
+                "Methods": [
+                ],
+                "Name": "ConnectorTool<class Connector>",
+                "PositionX": 49960,
+                "PositionY": 51340,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "yellow",
+                "Height": 440,
+                "ID": 24,
+                "Methods": [
+                ],
+                "Name": "I_Tool",
+                "PositionX": 49420,
+                "PositionY": 51160,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Height": 300,
+                "ID": 26,
+                "Methods": [
+                ],
+                "Name": "MainWindow",
+                "PositionX": 51400,
+                "PositionY": 51790,
+                "Width": 520
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Height": 300,
+                "ID": 27,
+                "Methods": [
+                ],
+                "Name": "SharingManager",
+                "PositionX": 52260,
+                "PositionY": 51790,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "yellow",
+                "Height": 220,
+                "ID": 28,
+                "Methods": [
+                ],
+                "Name": "I_DataManager",
+                "PositionX": 51910,
+                "PositionY": 51430,
+                "Width": 260
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "greenyellow",
+                "Height": 160,
+                "ID": 29,
+                "Methods": [
+                ],
+                "Name": "QSqlite",
+                "PositionX": 52920,
+                "PositionY": 51740,
+                "Width": 240
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Height": 160,
+                "ID": 30,
+                "Methods": [
+                ],
+                "Name": "DataBaseRequester",
+                "PositionX": 52590,
+                "PositionY": 51740,
+                "Width": 140
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "greenyellow",
+                "Height": 80,
+                "ID": 31,
+                "Methods": [
+                ],
+                "Name": "QThread",
+                "PositionX": 52270,
+                "PositionY": 51520,
+                "Width": 180
+            }
+        ],
+        "Compositions": [
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 2,
+                "ConnectFromID": 18,
+                "ConnectFromNumber": 7,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": 0,
+                "ConnectToNumber": 7,
+                "ConnectToType": "Class",
+                "ID": 0
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 2,
+                "ConnectFromID": 19,
+                "ConnectFromNumber": 3,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": 1,
+                "ConnectToNumber": 47,
+                "ConnectToType": "Class",
+                "ID": 4
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 2,
+                "ConnectFromID": 21,
+                "ConnectFromNumber": 1,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": 18,
+                "ConnectToNumber": 9,
+                "ConnectToType": "Class",
+                "ID": 2
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 2,
+                "ConnectFromID": 23,
+                "ConnectFromNumber": 1,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": 18,
+                "ConnectToNumber": 21,
+                "ConnectToType": "Class",
+                "ID": 3
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 2,
+                "ConnectFromID": 22,
+                "ConnectFromNumber": 1,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": 18,
+                "ConnectToNumber": 15,
+                "ConnectToType": "Class",
+                "ID": 5
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 2,
+                "ConnectFromID": 20,
+                "ConnectFromNumber": 1,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": 18,
+                "ConnectToNumber": 3,
+                "ConnectToType": "Class",
+                "ID": 1
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 4,
+                "ConnectFromID": 0,
+                "ConnectFromNumber": 7,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 3,
+                "ConnectToID": 26,
+                "ConnectToNumber": 3,
+                "ConnectToType": "Class",
+                "ID": 6
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 4,
+                "ConnectFromID": 16,
+                "ConnectFromNumber": 6,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 3,
+                "ConnectToID": 26,
+                "ConnectToNumber": 22,
+                "ConnectToType": "Class",
+                "ID": 7
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 1,
+                "ConnectFromID": 27,
+                "ConnectFromNumber": 7,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": 26,
+                "ConnectToNumber": 7,
+                "ConnectToType": "Class",
+                "ID": 9
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 1,
+                "ConnectFromID": 29,
+                "ConnectFromNumber": 3,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": 30,
+                "ConnectToNumber": 3,
+                "ConnectToType": "Class",
+                "ID": 10
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 1,
+                "ConnectFromID": 30,
+                "ConnectFromNumber": 3,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": 27,
+                "ConnectToNumber": 4,
+                "ConnectToType": "Class",
+                "ID": 11
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 4,
+                "ConnectFromID": 31,
+                "ConnectFromNumber": 4,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 3,
+                "ConnectToID": 27,
+                "ConnectToNumber": 6,
+                "ConnectToType": "Class",
+                "ID": 12
+            }
+        ],
+        "Generalizations": [
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 0,
+                "ConnectFromNumber": 7,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 1,
+                "ConnectToNumber": 6,
+                "ConnectToType": "Class",
+                "ID": 0
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 1,
+                "ConnectFromNumber": 27,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 2,
+                "ConnectToNumber": 3,
+                "ConnectToType": "Class",
+                "ID": 1
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 1,
+                "ConnectFromNumber": 19,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 3,
+                "ConnectToNumber": 6,
+                "ConnectToType": "Class",
+                "ID": 2
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": 6,
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": 4,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": 3
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 3,
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 5,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": 4
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 7,
+                "ConnectFromNumber": 10,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 8,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": 6
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 7,
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 9,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": 7
+            },
+            {
+                "ConnectFromDirection": 2,
+                "ConnectFromID": 13,
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": 4,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": 8
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 10,
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 11,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": 11
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 11,
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 12,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": 12
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 12,
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 13,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": 10
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 9,
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 10,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": 9
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 14,
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 6,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": 13
+            },
+            {
+                "ConnectFromDirection": 2,
+                "ConnectFromID": 10,
+                "ConnectFromNumber": 3,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": 14,
+                "ConnectToNumber": 6,
+                "ConnectToType": "Class",
+                "ID": 14
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 13,
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 15,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": 15
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 16,
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 1,
+                "ConnectToNumber": 29,
+                "ConnectToType": "Class",
+                "ID": 16
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 5,
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 17,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": 17
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 17,
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 14,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": 5
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 18,
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 19,
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": 18
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": 20,
+                "ConnectFromNumber": 1,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": 24,
+                "ConnectToNumber": 1,
+                "ConnectToType": "Class",
+                "ID": 19
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": 21,
+                "ConnectFromNumber": 1,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": 24,
+                "ConnectToNumber": 7,
+                "ConnectToType": "Class",
+                "ID": 20
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": 22,
+                "ConnectFromNumber": 1,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": 24,
+                "ConnectToNumber": 13,
+                "ConnectToType": "Class",
+                "ID": 21
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": 23,
+                "ConnectFromNumber": 2,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": 24,
+                "ConnectToNumber": 20,
+                "ConnectToType": "Class",
+                "ID": 22
+            },
+            {
+                "ConnectFromDirection": 2,
+                "ConnectFromID": 26,
+                "ConnectFromNumber": 2,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": 28,
+                "ConnectToNumber": 1,
+                "ConnectToType": "Class",
+                "ID": 23
+            }
+        ]
+    }
+}

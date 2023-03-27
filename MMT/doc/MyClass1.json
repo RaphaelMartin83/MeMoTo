@@ -1,0 +1,148 @@
+{
+    "ClassDiagram": {
+        "Classes": {
+            "0": {
+                "Attributes": [
+                    "- int m_attribute"
+                ],
+                "Height": 170,
+                "ID": 0,
+                "Methods": [
+                    "+ sync void foo()",
+                    "- async void bar()"
+                ],
+                "Name": "MyClass0",
+                "PositionX": 49731,
+                "PositionY": 49947,
+                "Width": 151
+            },
+            "1": {
+                "Attributes": [
+                    "- char* m_myString"
+                ],
+                "Height": 180,
+                "ID": 1,
+                "Methods": [
+                    "+ sync void myAccessor()"
+                ],
+                "Name": "MyClass1",
+                "PositionX": 50032,
+                "PositionY": 50064,
+                "Width": 178
+            }
+        }
+    },
+    "StateMachine": {
+        "Choices": {
+            "0": {
+                "Height": 60,
+                "ID": 0,
+                "Name": "C0",
+                "PositionX": 49888,
+                "PositionY": 50141,
+                "Width": 50
+            }
+        },
+        "EntryStates": {
+        },
+        "InitialStates": {
+        },
+        "States": {
+            "0": {
+                "EntryAction": "",
+                "ExitAction": "",
+                "Height": 150,
+                "ID": 0,
+                "Name": "State0",
+                "PositionX": 49650,
+                "PositionY": 49879,
+                "Stereotype": "",
+                "Width": 150
+            },
+            "1": {
+                "EntryAction": "doSafety",
+                "ExitAction": "",
+                "Height": 150,
+                "ID": 1,
+                "Name": "Safety",
+                "PositionX": 50132,
+                "PositionY": 49902,
+                "Stereotype": "",
+                "Width": 150
+            },
+            "2": {
+                "EntryAction": "",
+                "ExitAction": "",
+                "Height": 150,
+                "ID": 2,
+                "Name": "State2",
+                "PositionX": 50345,
+                "PositionY": 50144,
+                "Stereotype": "",
+                "Width": 150
+            }
+        },
+        "Transitions": {
+            "0": {
+                "Action": "",
+                "ConnectFromDirection": 2,
+                "ConnectFromID": 0,
+                "ConnectFromNumber": 1,
+                "ConnectFromType": "STATE",
+                "ConnectToDirection": 1,
+                "ConnectToID": 1,
+                "ConnectToNumber": 2,
+                "ConnectToType": "STATE",
+                "Event": "",
+                "Guard": "",
+                "ID": 0,
+                "Stereotype": ""
+            },
+            "1": {
+                "Action": "",
+                "ConnectFromDirection": 2,
+                "ConnectFromID": 1,
+                "ConnectFromNumber": 3,
+                "ConnectFromType": "STATE",
+                "ConnectToDirection": 2,
+                "ConnectToID": 2,
+                "ConnectToNumber": 1,
+                "ConnectToType": "STATE",
+                "Event": "",
+                "Guard": "",
+                "ID": 1,
+                "Stereotype": ""
+            },
+            "2": {
+                "Action": "",
+                "ConnectFromDirection": 1,
+                "ConnectFromID": 2,
+                "ConnectFromNumber": 2,
+                "ConnectFromType": "STATE",
+                "ConnectToDirection": 2,
+                "ConnectToID": 0,
+                "ConnectToNumber": 0,
+                "ConnectToType": "CHOICE",
+                "Event": "",
+                "Guard": "",
+                "ID": 2,
+                "Stereotype": ""
+            },
+            "3": {
+                "Action": "",
+                "ConnectFromDirection": 3,
+                "ConnectFromID": 0,
+                "ConnectFromNumber": 0,
+                "ConnectFromType": "CHOICE",
+                "ConnectToDirection": 4,
+                "ConnectToID": 1,
+                "ConnectToNumber": 1,
+                "ConnectToType": "STATE",
+                "Event": "",
+                "Guard": "",
+                "ID": 3,
+                "Stereotype": ""
+            }
+        }
+    }
+}
