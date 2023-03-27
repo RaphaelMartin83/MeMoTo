@@ -165,6 +165,41 @@ bool I_ConnectableContainer::isItYourChild(const I_Connectable* p_Connectable) c
     return l_Ret;
 }
 
+QPoint I_ConnectableContainer::getSelectionCoord()
+{
+    unsigned long long l_XSum = 0U;
+    unsigned long long l_YSum = 0U;
+
+    for( unsigned int i_items = 0U; i_items < m_CurrentSelectedType.count(); i_items++ )
+    {
+        I_Selectable* l_Selectable = this->getSelectableFromTypeAndID(m_CurrentSelectedType[i_items],
+                                                                      m_CurrentSelectedID[i_items]);
+        l_XSum += l_Selectable->getPos().x();
+        l_YSum += l_Selectable->getPos().y();
+    }
+
+    QPoint l_Ret;
+    if( 0U != m_CurrentSelectedType.count() )
+    {
+        l_Ret.setX(l_XSum / m_CurrentSelectedType.count());
+        l_Ret.setY(l_YSum / m_CurrentSelectedType.count());
+    }
+
+    return l_Ret;
+}
+
+void I_ConnectableContainer::unselectAll()
+{
+    for( unsigned int i_items = 0U; i_items < m_CurrentSelectedType.count(); i_items++ )
+    {
+        this->getSelectableFromTypeAndID(m_CurrentSelectedType[i_items],
+                                         m_CurrentSelectedID[i_items])->unselect();
+    }
+
+    m_CurrentSelectedType.clear();
+    m_CurrentSelectedID.clear();
+}
+
 QJsonObject I_ConnectableContainer::toJson()
 {
     QJsonObject l_MyJson;

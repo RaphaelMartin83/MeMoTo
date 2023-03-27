@@ -112,11 +112,8 @@ void I_DiagramContainer::deletePressed()
 }
 void I_DiagramContainer::escapePressed()
 {
-    if( nullptr != this->getCurrentSelected() )
-    {
-        this->getCurrentSelected()->unselect();
-        this->setCurrentSelected(nullptr);
-    }
+    this->unselectAll();
+
     if( nullptr != this->getFromConnectable() )
     {
         this->getFromConnectable()->unselectForConnection();
@@ -209,11 +206,7 @@ void I_DiagramContainer::setCurrentPosition(QPointF p_Position)
 
 void I_DiagramContainer::toolChanged()
 {
-    if( nullptr != this->getCurrentSelected() )
-    {
-        this->getCurrentSelected()->unselect();
-        this->setCurrentSelected(nullptr);
-    }
+    this->unselectAll();
     if( nullptr != this->getFromConnectable() )
     {
         this->getFromConnectable()->unselectForConnection();
@@ -458,10 +451,7 @@ void I_DiagramContainer::focusOnItem(QString p_Type, QString p_Field,
                 {
                     if( true == p_Select )
                     {
-                        if( nullptr != this->getCurrentSelected() )
-                        {
-                            this->getCurrentSelected()->unselect();
-                        }
+                        this->unselectAll();
                         this->setCurrentSelected(l_Selectables[i_selectables]);
                         l_Selectables[i_selectables]->select();
                     }

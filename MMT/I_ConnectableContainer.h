@@ -92,20 +92,29 @@ public:
         }
     }
 
-    I_Selectable* getCurrentSelected() const
+    QList<I_Selectable*> getCurrentSelected() const
     {
-        return this->getSelectableFromTypeAndID(m_CurrentSelectedType, m_CurrentSelectedID);
+        QList<I_Selectable*> l_Ret;
+
+        for( unsigned int i_itemsSelected = 0U; i_itemsSelected < m_CurrentSelectedType.count(); i_itemsSelected++ )
+        {
+                l_Ret.append(this->getSelectableFromTypeAndID(
+                                 m_CurrentSelectedType[i_itemsSelected],
+                                 m_CurrentSelectedID[i_itemsSelected]));
+        }
+
+        return l_Ret;
     }
     void setCurrentSelected(const I_Selectable* p_NewSelection)
     {
         if( nullptr != p_NewSelection )
         {
-            m_CurrentSelectedType = p_NewSelection->getSelectableType();
-            m_CurrentSelectedID = p_NewSelection->getID();
+            m_CurrentSelectedType.append(p_NewSelection->getSelectableType());
+            m_CurrentSelectedID.append(p_NewSelection->getID());
         }
         else
         {
-            m_CurrentSelectedType = "";
+            // Nullptr, do nothing
         }
     }
     const I_Connectable* getFromConnectable()
@@ -124,10 +133,13 @@ public:
             m_FromConnectableType = "";
         }
     }
+
+    QPoint getSelectionCoord();
+    void unselectAll();
     virtual QJsonObject toJson();
 private:
-    QString m_CurrentSelectedType;
-    unsigned long long m_CurrentSelectedID;
+    QList<QString> m_CurrentSelectedType;
+    QList<unsigned long long> m_CurrentSelectedID;
 
     QString m_FromConnectableType;
     unsigned long long m_FromConnectableID;
