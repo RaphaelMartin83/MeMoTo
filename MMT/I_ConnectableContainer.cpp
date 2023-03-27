@@ -206,7 +206,12 @@ QJsonObject I_ConnectableContainer::toJson()
 
     for( unsigned int i_sel = 0U; i_sel < m_Selectables.count(); i_sel++ )
     {
-        QJsonArray l_Array = l_MyJson.find(m_Selectables[i_sel]->getSerializableName())->toArray();
+        QJsonObject::iterator l_TempContainedArray = l_MyJson.find(m_Selectables[i_sel]->getSerializableName());
+        QJsonArray l_Array;
+        if( l_MyJson.end() != l_TempContainedArray )
+        {
+            l_Array = l_TempContainedArray->toArray();
+        }
         QJsonObject l_CurrentObject = m_Selectables[i_sel]->toJson();
         l_Array.append(m_Selectables[i_sel]->toJson());
         l_MyJson.insert(m_Selectables[i_sel]->getSerializableName(), l_Array);
@@ -214,7 +219,12 @@ QJsonObject I_ConnectableContainer::toJson()
 
     for( unsigned int i_con = 0U; i_con < m_Connectables.count(); i_con++ )
     {
-        QJsonArray l_Array = l_MyJson.find(m_Connectables[i_con]->getSerializableName())->toArray();
+        QJsonObject::iterator l_TempContainedArray = l_MyJson.find(m_Connectables[i_con]->getSerializableName());
+        QJsonArray l_Array;
+        if( l_MyJson.end() != l_TempContainedArray )
+        {
+            l_Array = l_TempContainedArray->toArray();
+        }
         QJsonObject l_CurrentObject = m_Connectables[i_con]->toJson();
         l_Array.append(m_Connectables[i_con]->toJson());
         l_MyJson.insert(m_Connectables[i_con]->getSerializableName(), l_Array);
