@@ -1,6 +1,9 @@
 # MeMoTo
 
 MeMoTo for MErgeable MOdeling TOol is yet another modeling tool focused on DevOps issues.
+\
+
+Please note that this program is in it's early development stages and has flows and issues. My opinion is that it's already usable in production by a dev team but the team has to be trained.
 
 ## Principles
 
@@ -18,6 +21,7 @@ Let's assume you are developing a critical/complex system and need code to be ge
 
 Simple GUI comes with a few shortcuts to know:
 
+- left click to select, right click to perform action
 - Switch between diagrams with alt+1, alt+2 etc...
 - Switch between tools with 1, 2 etc...
 - Save with ctrl+s
@@ -26,7 +30,8 @@ Simple GUI comes with a few shortcuts to know:
 - undo with ctrl+z
 - redo with ctrl+y
 - share with ctrl+space
-- left click to select, right click to perform action
+- find into diagram with ctrl+f
+- print to png with ctrl+p
 
 Note: The sharing feature is a bit special. It relies on a common network repository and uses a sqlite file. Shoose a network volume to put the sharing file on it and give the full network path to your coworkers.
 
@@ -40,3 +45,9 @@ Note: The sharing feature is a bit special. It relies on a common network reposi
 - Check SMDiagramScene and SMToolBoxScene for an example
 - You can create your tools and items implementing I_Tool and the item type you want
 - Plug your diagram into MainWindow::initDiagrams() method, you're good to go!
+
+# What is planed
+
+- Improve usability: Multiple selection, Copy/paste, hide class content
+- Beauty: curved connections, rounded items
+- CD integration: Headless png generation
