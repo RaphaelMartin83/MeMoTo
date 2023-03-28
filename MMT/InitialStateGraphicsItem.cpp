@@ -1,32 +1,22 @@
 #include "InitialStateGraphicsItem.h"
-#include "ConnectionDefinitions.h"
 #include "EntryStateGraphicsItem.h"
 #include "GridReferential.h"
 
 #include <QBrush>
 
 static const unsigned int DEFAULT_INIT_STATE_DIAMETER = static_cast<unsigned int>(GridReferential::getGridDistance(80));
-static const unsigned short DEFAULT_HANDLES_DIAMETER = 8U;
-
 static const char* INITIAL_STATE_CONNECTABLE_NAME = "InitialState";
 const char* InitialStateGraphicsItem::SERIALIZABLE_NAME = "InitialStates";
 
-static unsigned long long s_InitialStateUID = 0U;
-
-InitialStateGraphicsItem::InitialStateGraphicsItem(QPointF p_Pos):
-  m_isFullySelected(false)
+InitialStateGraphicsItem::InitialStateGraphicsItem(const QPoint& p_Pos):
+    I_Connectable(p_Pos)
+  , m_isFullySelected(false)
   , m_SelectedHandlesDirection(eConnectionDirection_None)
   , m_Handles()
   , m_SelectedHandleForConnectionFrom(nullptr)
   , m_SelectedHandleForConnectionTo(nullptr)
-  , m_Name()
 {
-    this->setID(s_InitialStateUID);
-    s_InitialStateUID++;
-
     this->setDiameter(DEFAULT_INIT_STATE_DIAMETER);
-    this->setPos(p_Pos);
-
     m_Circle = new QGraphicsEllipseItem();
     m_Circle->setBrush(Qt::blue);
     this->addToGroup(m_Circle);
@@ -35,15 +25,8 @@ InitialStateGraphicsItem::InitialStateGraphicsItem(QPointF p_Pos):
 }
 
 InitialStateGraphicsItem::InitialStateGraphicsItem(const QJsonObject& p_JsonObject):
-    InitialStateGraphicsItem(QPointF(p_JsonObject.find("PositionX")->toDouble(),
-                                   p_JsonObject.find("PositionY")->toDouble()))
+    I_Connectable(p_JsonObject)
 {
-    this->setID(p_JsonObject.find("ID")->toInt());
-    s_InitialStateUID--;
-    if(this->getID() >= s_InitialStateUID)
-    {
-        s_InitialStateUID = this->getID() + 1U;
-    }
     this->setDiameter(p_JsonObject.find("Diameter")->toInt());
 
     InitialStateGraphicsItem::refreshDisplay();
@@ -57,22 +40,6 @@ InitialStateGraphicsItem::~InitialStateGraphicsItem()
     deleteHandles();
 }
 
-QPoint InitialStateGraphicsItem::getPos() const
-{
-    return m_Pos;
-}
-void InitialStateGraphicsItem::setPos(const QPoint& p_Pos)
-{
-    m_Pos = GridReferential::getPointOnGrid(p_Pos);
-    this->refreshDisplay();
-}
-void InitialStateGraphicsItem::setPos(const QPointF& p_Pos)
-{
-    QPoint l_TempPoint;
-    l_TempPoint.setX(p_Pos.x());
-    l_TempPoint.setY(p_Pos.y());
-    m_Pos = GridReferential::getPointOnGrid(l_TempPoint);
-}
 void InitialStateGraphicsItem::setDiameter(unsigned short p_Diameter)
 {
     m_Diameter = GridReferential::getGridDistance(p_Diameter);
@@ -90,8 +57,8 @@ void InitialStateGraphicsItem::selectAllHandles()
 
 void InitialStateGraphicsItem::refreshDisplay()
 {
-    QRect l_CircleRect = QRect(m_Pos.x() - m_Diameter/2,
-                      m_Pos.y() - m_Diameter/2,
+    QRect l_CircleRect = QRect(this->getPos().x() - m_Diameter/2,
+                      this->getPos().y() - m_Diameter/2,
                       m_Diameter, m_Diameter);
     m_Circle->setRect(l_CircleRect);
 
@@ -125,26 +92,26 @@ void InitialStateGraphicsItem::setupHandles()
     QPoint l_HandleCoordinates;
 
     // Top handle
-    l_HandleCoordinates.setX(m_Pos.x());
-    l_HandleCoordinates.setY(m_Pos.y() - m_Diameter/2);
+    l_HandleCoordinates.setX(this->getPos().x());
+    l_HandleCoordinates.setY(this->getPos().y() - m_Diameter/2);
     m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_Top));
     this->addToGroup(m_Handles.last());
 
     // Left handle
-    l_HandleCoordinates.setX(m_Pos.x() - m_Diameter/2);
-    l_HandleCoordinates.setY(m_Pos.y());
+    l_HandleCoordinates.setX(this->getPos().x() - m_Diameter/2);
+    l_HandleCoordinates.setY(this->getPos().y());
     m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_Left));
     this->addToGroup(m_Handles.last());
 
     // Bottom handle
-    l_HandleCoordinates.setX(m_Pos.x());
-    l_HandleCoordinates.setY(m_Pos.y() + m_Diameter/2);
+    l_HandleCoordinates.setX(this->getPos().x());
+    l_HandleCoordinates.setY(this->getPos().y() + m_Diameter/2);
     m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_Bottom));
     this->addToGroup(m_Handles.last());
 
     // Right handle
-    l_HandleCoordinates.setX(m_Pos.x() + m_Diameter/2);
-    l_HandleCoordinates.setY(m_Pos.y());
+    l_HandleCoordinates.setX(this->getPos().x() + m_Diameter/2);
+    l_HandleCoordinates.setY(this->getPos().y());
     m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_Right));
     this->addToGroup(m_Handles.last());
 }
@@ -238,7 +205,7 @@ void InitialStateGraphicsItem::resizeTo(QPoint p_Pos)
     case eConnectionDirection_Left:
     {
         // Modifies size and position
-        this->setDiameter(2*(m_Pos.x() - p_Pos.x()));
+        this->setDiameter(2*(this->getPos().x() - p_Pos.x()));
         if( m_Diameter < DEFAULT_INIT_STATE_DIAMETER )
         {
             this->setDiameter(DEFAULT_INIT_STATE_DIAMETER);
@@ -247,7 +214,7 @@ void InitialStateGraphicsItem::resizeTo(QPoint p_Pos)
     }
     case eConnectionDirection_Right:
     {
-        this->setDiameter(2*(p_Pos.x() - m_Pos.x()));
+        this->setDiameter(2*(p_Pos.x() - this->getPos().x()));
         if( m_Diameter < DEFAULT_INIT_STATE_DIAMETER )
         {
             this->setDiameter(DEFAULT_INIT_STATE_DIAMETER);
@@ -256,7 +223,7 @@ void InitialStateGraphicsItem::resizeTo(QPoint p_Pos)
     }
     case eConnectionDirection_Top:
     {
-        this->setDiameter(2*(m_Pos.y() - p_Pos.y()));
+        this->setDiameter(2*(this->getPos().y() - p_Pos.y()));
         if( m_Diameter < DEFAULT_INIT_STATE_DIAMETER )
         {
             this->setDiameter(DEFAULT_INIT_STATE_DIAMETER);
@@ -265,7 +232,7 @@ void InitialStateGraphicsItem::resizeTo(QPoint p_Pos)
     }
     case eConnectionDirection_Bottom:
     {
-        this->setDiameter(2*(p_Pos.y() - m_Pos.y()));
+        this->setDiameter(2*(p_Pos.y() - this->getPos().y()));
         if( m_Diameter < DEFAULT_INIT_STATE_DIAMETER )
         {
             this->setDiameter(DEFAULT_INIT_STATE_DIAMETER);
@@ -306,25 +273,18 @@ const QList<HandleGraphicsItem*>& InitialStateGraphicsItem::getConnectableHandle
 }
 QRect InitialStateGraphicsItem::getCollisionRectangle() const
 {
-    return QRect(m_Pos.x() - m_Diameter/2, m_Pos.y() - m_Diameter/2, m_Diameter, m_Diameter);
+    return QRect(this->getPos().x() - m_Diameter/2, this->getPos().y() - m_Diameter/2, m_Diameter, m_Diameter);
 }
 QString InitialStateGraphicsItem::getConnectableName() const
 {
-    return QString("InitialState" + QString::number(this->getID()));
+    return QString("InitialState" + this->getID().toString());
 }
 
 QJsonObject InitialStateGraphicsItem::toJson()
 {
-    QJsonObject l_MyJson;
-
-    l_MyJson.insert("PositionX", m_Pos.x());
-    l_MyJson.insert("PositionY", m_Pos.y());
+    QJsonObject l_MyJson = I_Connectable::toJson();
 
     l_MyJson.insert("Diameter", m_Diameter);
-
-    l_MyJson.insert("ID", static_cast<qint64>(this->getID()));
-
-    l_MyJson.insert("Name", m_Name);
 
     return l_MyJson;
 }
@@ -382,7 +342,7 @@ QString InitialStateGraphicsItem::getDataFromField(const QString& p_FieldName) c
 
     if( "ID" == p_FieldName )
     {
-        return QString::number(this->getID());
+        return this->getID().toString();
     }
 
     return l_Ret;

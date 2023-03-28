@@ -7,6 +7,16 @@
 class I_Connector: public I_Selectable
 {
 public:
+    I_Connector():
+        I_Selectable(QPoint())
+    {
+
+    }
+    I_Connector(const QJsonObject& p_Json):
+        I_Selectable(p_Json)
+    {
+
+    }
     virtual bool needReroute() const = 0;
     virtual void reroute() = 0;
     virtual const I_Connectable* const getConnectFrom() const = 0;

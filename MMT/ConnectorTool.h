@@ -91,6 +91,14 @@ public:
         }
     }
 
+    void paste(const QJsonObject& p_JsonObject,
+               QPoint p_middlePos,
+               I_ToolListener* p_Target)
+    {
+        /*ConnectorTemplate* l_NewConnector = new ConnectorTemplate(p_JsonObject, p_Target);
+        l_NewConnector->registerDiagramContainer(dynamic_cast<I_DiagramContainer*>(p_Target));*/
+    }
+
     QString getItemName() const
     {
         return ConnectorTemplate::SERIALIZABLE_NAME;

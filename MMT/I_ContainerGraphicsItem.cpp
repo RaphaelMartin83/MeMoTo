@@ -2,6 +2,18 @@
 
 #include "I_ContainerGraphicsItem.h"
 
+I_ContainerGraphicsItem::I_ContainerGraphicsItem(const QPoint& p_Pos):
+    I_Connectable(p_Pos)
+{
+
+}
+
+I_ContainerGraphicsItem::I_ContainerGraphicsItem(const QJsonObject& p_Json):
+    I_Connectable(p_Json)
+{
+
+}
+
 void I_ContainerGraphicsItem::moveChildren(
         const QPoint& p_PosBefore, const QPoint& p_PosAfter)
 {
@@ -65,7 +77,7 @@ bool I_ContainerGraphicsItem::moveChild(const QPoint& p_Pos)
     return l_Ret;
 }
 
-I_Selectable* I_ContainerGraphicsItem::getSelectable(const QString& p_SelectableType, const unsigned int& p_selectableID) const
+I_Selectable* I_ContainerGraphicsItem::getSelectable(const QString& p_SelectableType, const QUuid& p_selectableID) const
 {
     I_Selectable* l_Ret = I_Selectable::getSelectable(p_SelectableType, p_selectableID);
 
@@ -80,7 +92,7 @@ I_Selectable* I_ContainerGraphicsItem::getSelectable(const QString& p_Selectable
     return l_Ret;
 }
 
-const I_Connectable* I_ContainerGraphicsItem::getConnectable(const QString& p_ConnectableType, const unsigned int& p_connectableID) const
+const I_Connectable* I_ContainerGraphicsItem::getConnectable(const QString& p_ConnectableType, const QUuid& p_connectableID) const
 {
     const I_Connectable* l_Ret = I_Connectable::getConnectable(p_ConnectableType, p_connectableID);
 

@@ -16,14 +16,33 @@ static const unsigned short CONNECTION_MAGNETIC_SELECTION_MIN_DIST = 50U;
 class I_Connectable: public I_Selectable
 {
 public:
+    I_Connectable(const QPoint& p_Pos):
+        I_Selectable(p_Pos)
+    {
+
+    }
+    I_Connectable(const QJsonObject& p_Json):
+        I_Selectable(p_Json)
+    {
+
+    }
+
+    QJsonObject toJson() const
+    {
+        return I_Selectable::toJson();
+    }
+    void fromJson(const QJsonObject& p_Json)
+    {
+        I_Selectable::fromJson(p_Json);
+    }
 
     virtual QString getConnectableType() const = 0;
     virtual const QList<HandleGraphicsItem*>& getConnectableHandles() const = 0;
     // Assuming every connectable is contained into a rectangle
     // A connector shall be able to wrap around the connectable
     virtual QString getConnectableName() const = 0;
-    virtual bool isConnectable() const {return true;};
-    virtual const I_Connectable* getConnectable(const QString& p_ConnectableType, const unsigned int& p_connectableID) const
+    virtual bool isConnectable() const {return true;}
+    virtual const I_Connectable* getConnectable(const QString& p_ConnectableType, const QUuid& p_connectableID) const
     {
         if( (this->getConnectableType() == p_ConnectableType) &&
                 (this->getID() == p_connectableID) )

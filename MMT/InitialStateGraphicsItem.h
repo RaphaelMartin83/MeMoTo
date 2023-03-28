@@ -11,13 +11,10 @@ class InitialStateGraphicsItem:
         public I_Connectable
 {
 public:
-    InitialStateGraphicsItem(QPointF p_Pos);
+    InitialStateGraphicsItem(const QPoint& p_Pos);
     InitialStateGraphicsItem(const QJsonObject& p_JsonObject);
     ~InitialStateGraphicsItem();
 
-    QPoint getPos() const;
-    void setPos(const QPoint& p_Pos);
-    void setPos(const QPointF& p_Pos);
     void setDiameter(unsigned short p_Diameter);
 
     void refreshDisplay();
@@ -56,7 +53,6 @@ private:
     void selectHandlesOnSide(eConnectDirection p_Side);
     void resizeTo(QPoint p_Pos);
 
-    QPoint m_Pos;
     unsigned short m_Diameter;
 
     bool m_isFullySelected;
@@ -67,8 +63,6 @@ private:
 
     HandleGraphicsItem* m_SelectedHandleForConnectionFrom;
     HandleGraphicsItem* m_SelectedHandleForConnectionTo;
-
-    QString m_Name;
 };
 
 #endif // INITIALSTATEGRAPHICSITEM_H

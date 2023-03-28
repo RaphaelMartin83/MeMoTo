@@ -13,9 +13,8 @@ GraphicConnector::GraphicConnector(
             const I_Connectable* p_ConnectTo,
             const QPoint& p_fromPoint,
             const QPoint& p_toPoint,
-            unsigned long long p_ID,
             I_ConnectableContainer* p_Container):
-    Connector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_ID, p_Container)
+    Connector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container)
   , m_Lines()
   , m_Handles()
   , m_SelectedHandleID(-1)
@@ -31,10 +30,9 @@ GraphicConnector::GraphicConnector(
             const I_Connectable* p_ConnectTo,
             const QPoint& p_fromPoint,
             const QPoint& p_toPoint,
-            unsigned long long p_ID,
             I_ConnectableContainer* p_Container,
             const QList<QPoint>& p_ForcedPath):
-    Connector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_ID, p_Container, p_ForcedPath)
+    Connector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container, p_ForcedPath)
   , m_Lines()
   , m_Handles()
   , m_SelectedHandleID(-1)

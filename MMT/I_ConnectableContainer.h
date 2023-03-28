@@ -15,11 +15,11 @@ public:
     virtual QList<I_Selectable*> getAllSelectables(bool p_recursive=false) const;
     virtual const QList<I_Selectable*>& getPureSelectables() const;
     virtual I_Selectable* getSelectableFromTypeAndID(const QString& p_ConnectableType,
-                                                             const unsigned long long& p_ConnectableID) const;
+                                                     const QUuid& p_SelectableID) const;
     virtual QList<I_Connectable*> getAllConnectables(bool p_recursive=false) const;
     virtual const QList<I_Connectable*>& getPureConnectables() const;
     virtual const I_Connectable* getConnectableFromTypeAndID(const QString& p_ConnectableType,
-                                                             const unsigned long long& p_ConnectableID) const;
+                                                             const QUuid& p_ConnectableID) const;
 
     virtual I_Selectable* getSelectable(QPoint p_Pos) const;
     virtual I_Selectable* getSelectableAt(unsigned int p_index) const;
@@ -139,10 +139,10 @@ public:
     virtual QJsonObject toJson();
 private:
     QList<QString> m_CurrentSelectedType;
-    QList<unsigned long long> m_CurrentSelectedID;
+    QList<QUuid> m_CurrentSelectedID;
 
     QString m_FromConnectableType;
-    unsigned long long m_FromConnectableID;
+    QUuid m_FromConnectableID;
 
     QList<I_Selectable*> m_Selectables;
     QList<I_Connectable*> m_Connectables;

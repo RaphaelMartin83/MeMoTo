@@ -24,8 +24,6 @@ public:
     void select(QPoint p_Pos);
     void unselect();
     void move(QPoint p_Pos);
-    QPoint getPos() const;
-    void setPos(const QPoint& p_Pos);
     bool isItYou(QPoint p_Pos) const;
     virtual bool isFullySelected() const;
     QPoint getFocusPosition() const;
@@ -33,16 +31,15 @@ public:
     QString getSelectableType() const;
     QStringList getSearchFields() const;
     QString getDataFromField(const QString& p_FieldName) const;
-    virtual QRect getCollisionRectangle() const { return QRect(); };
+    virtual QRect getCollisionRectangle() const { return QRect(); }
 
     // I_Serializable because selectable but useless here
-    virtual QJsonObject toJson() {return QJsonObject();};
-    virtual void fromJson(QJsonObject p_Json) {};
-    virtual QString getSerializableName() const {return "";};
+    virtual QJsonObject toJson() {return QJsonObject();}
+    virtual void fromJson(QJsonObject p_Json) {}
+    virtual QString getSerializableName() const {return "";}
 
 private:
     eConnectDirection m_HandlePosition;
-    QPoint m_Position;
     unsigned short m_diameter;
 
     QGraphicsEllipseItem* m_Circle;

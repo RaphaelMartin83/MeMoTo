@@ -14,14 +14,12 @@ public:
             const I_Connectable* p_ConnectTo,
             const QPoint& p_fromPoint,
             const QPoint& p_toPoint,
-            unsigned long long p_ID,
             I_ConnectableContainer* p_Container);
     GraphicConnector(
             const I_Connectable* p_ConnectFrom,
             const I_Connectable* p_ConnectTo,
             const QPoint& p_fromPoint,
             const QPoint& p_toPoint,
-            unsigned long long p_ID,
             I_ConnectableContainer* p_Container,
             const QList<QPoint>& p_ForcedPath);
     GraphicConnector(const QJsonObject& p_JsonObject,

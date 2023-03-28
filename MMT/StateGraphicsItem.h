@@ -20,7 +20,7 @@ class StateGraphicsItem:
         public I_Configurable
 {
 public:
-    StateGraphicsItem(QPointF p_Pos,
+    StateGraphicsItem(const QPoint& p_Pos,
                       unsigned short p_Width = DEFAULT_STATE_WIDTH,
                       unsigned short p_Height = DEFAULT_STATE_HEIGHT);
     StateGraphicsItem(const QJsonObject& p_JSon);

@@ -9,6 +9,24 @@ class I_Selectable:
         public I_GraphicsItem
 {
 public:
+    I_Selectable(const QPoint& p_Pos):
+        I_GraphicsItem(p_Pos)
+    {
+
+    }
+    I_Selectable(const QJsonObject& p_Json):
+        I_GraphicsItem(p_Json)
+    {
+
+    }
+    QJsonObject toJson() const
+    {
+        return I_GraphicsItem::toJson();
+    }
+    void fromJson(const QJsonObject& p_Json)
+    {
+        I_GraphicsItem::fromJson(p_Json);
+    }
     virtual void select() = 0;
     virtual void select(QPoint p_Pos) = 0;
     virtual void unselect() = 0;
@@ -19,9 +37,9 @@ public:
     virtual QString getSelectableType() const = 0;
     virtual QStringList getSearchFields() const = 0;
     virtual QString getDataFromField(const QString& p_FieldName) const = 0;
-    virtual bool isConnectable() const {return false;};
+    virtual bool isConnectable() const {return false;}
     virtual QRect getCollisionRectangle() const = 0;
-    virtual I_Selectable* getSelectable(const QString& p_SelectableType, const unsigned int& p_SelectableID) const
+    virtual I_Selectable* getSelectable(const QString& p_SelectableType, const QUuid& p_SelectableID) const
     {
         if( (this->getSelectableType() == p_SelectableType) &&
                 (this->getID() == p_SelectableID) )

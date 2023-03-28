@@ -25,8 +25,7 @@ class I_SquarishGraphicsItem:
         public I_ContainerGraphicsItem
 {
 public:
-    I_SquarishGraphicsItem(QPointF p_Pos, const QString& p_Name,
-                            unsigned int p_ID,
+    I_SquarishGraphicsItem(const QPoint& p_Pos, const QString& p_Name,
                             unsigned short p_Width = DEFAULT_SQUARE_WIDTH,
                             unsigned short p_Height = DEFAULT_SQUARE_HEIGHT);
     I_SquarishGraphicsItem(const QJsonObject& p_JSon);
@@ -40,8 +39,6 @@ public:
     void setHeight(unsigned short p_Height);
     unsigned short getWidth();
     unsigned short getHeight();
-    QPoint getPos() const;
-    void setPos(const QPoint& p_Pos);
     void setName(const QString& p_Name);
     const QString& getName() const;
     void setColor(QColor p_Color);

@@ -4,11 +4,10 @@
 
 static const unsigned short CLASS_TEXT_LABELS_HEIGHT = 15U;
 
-I_ClassGraphicsItem::I_ClassGraphicsItem(QPointF p_Pos, const QString& p_Name,
-                            unsigned int p_ID,
+I_ClassGraphicsItem::I_ClassGraphicsItem(const QPoint& p_Pos, const QString& p_Name,
                             unsigned short p_Width,
                             unsigned short p_Height):
-    I_SquarishGraphicsItem(p_Pos, p_Name, p_ID, p_Width, p_Height)
+    I_SquarishGraphicsItem(p_Pos, p_Name, p_Width, p_Height)
   , m_Methods()
   , m_Attributes()
 {

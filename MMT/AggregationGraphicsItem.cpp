@@ -11,23 +11,19 @@ const char* AggregationGraphicsItem::SERIALIZABLE_NAME = "Aggregations";
 
 static AggregationConfiguration* s_ConfigurationContext;
 
-static unsigned long long s_AggregationUID = 0U;
-
 AggregationGraphicsItem::AggregationGraphicsItem(
             const I_Connectable* p_ConnectFrom,
             const I_Connectable* p_ConnectTo,
             const QPoint& p_fromPoint,
             const QPoint& p_toPoint,
             I_ConnectableContainer* p_Container):
-    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, s_AggregationUID, p_Container)
+    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container)
   , m_AttributeNames()
   , m_Text(nullptr)
   , m_LabelPosition()
   , m_LabelWidth()
   , m_Tip(nullptr)
 {
-    s_AggregationUID++;
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -45,15 +41,13 @@ AggregationGraphicsItem::AggregationGraphicsItem(
             const QPoint& p_toPoint,
             I_ConnectableContainer* p_Container,
             const QList<QPoint>& p_ForcedPath):
-    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, s_AggregationUID, p_Container, p_ForcedPath)
+    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container, p_ForcedPath)
   , m_AttributeNames()
   , m_Text(nullptr)
   , m_LabelPosition()
   , m_LabelWidth()
   , m_Tip(nullptr)
 {
-    s_AggregationUID++;
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -73,11 +67,6 @@ AggregationGraphicsItem::AggregationGraphicsItem(const QJsonObject& p_JsonObject
   , m_LabelWidth()
   , m_Tip(nullptr)
 {
-    if(this->getID() >= s_AggregationUID)
-    {
-        s_AggregationUID = this->getID() + 1U;
-    }
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )

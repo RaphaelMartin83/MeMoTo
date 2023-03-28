@@ -29,6 +29,11 @@ public:
         p_Target->addContainer(l_NewContainer);
     }
 
+    void paste(const QJsonObject& p_JsonObject, QPoint p_middlePoint, I_ToolListener* p_Target)
+    {
+
+    }
+
     void use(QPoint p_Pos,
             I_ToolListener* p_Target,
             Qt::MouseButtons p_How)

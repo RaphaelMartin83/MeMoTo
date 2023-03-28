@@ -4,8 +4,10 @@
 #include <QPoint>
 #include <QGraphicsItem>
 #include <QVector2D>
+#include <QUuid>
 
 #include "StackingDefinitions.h"
+#include "GridReferential.h"
 
 #include "I_Serializable.h"
 
@@ -16,8 +18,53 @@ class I_GraphicsItem:
         public I_Serializable
 {
 public:
-    virtual QPoint getPos() const = 0;
-    virtual void setPos(const QPoint&) = 0;
+    I_GraphicsItem(const QPoint& p_Pos):
+        m_Plan(MAX_PLAN)
+      , m_ID(QUuid::createUuid())
+      , m_Pos(GridReferential::getPointOnGrid(p_Pos))
+    {
+    }
+    I_GraphicsItem(const QJsonObject& p_JSon)
+    {
+
+    }
+
+    // I_Serializable
+    QJsonObject toJson() const
+    {
+        QJsonObject l_Ret;
+
+        l_Ret.insert("Plan", static_cast<qint64>(this->getPlan()));
+        l_Ret.insert("ID", this->getID().toString());
+        l_Ret.insert("PositionX", this->getPos().x());
+        l_Ret.insert("PositionY", this->getPos().y());
+
+        return l_Ret;
+    }
+    void fromJson(const QJsonObject& p_Json)
+    {
+        this->setPlan(p_Json.find("Plan")->toInt());
+        this->setID(p_Json.find("ID")->toString());
+        this->setPos(QPoint(p_Json.find("PositionX")->toInt(),
+                                 p_Json.find("PositionY")->toInt()));
+    }
+
+    QPoint getPos() const
+    {
+        return m_Pos;
+    }
+    void setPos(const QPoint& p_Pos)
+    {
+        QPoint l_Before = this->getPos();
+        m_Pos = GridReferential::getPointOnGrid(m_Pos);
+        QPoint l_After = this->getPos();
+
+        this->moveChildren(l_Before, l_After);
+
+        this->refreshDisplay();
+    }
+    virtual void moveChildren(const QPoint& p_Before,
+                              const QPoint& p_After) {}
 
     virtual unsigned int getPlan() const
     {
@@ -50,17 +97,19 @@ public:
         return m_Container;
     }
 
-    unsigned long long getID() const
+    QUuid getID() const
     {
         return m_ID;
     }
-    void setID(unsigned long long p_ID)
+    void setID(const QString& p_StringID)
     {
-        m_ID = p_ID;
+        m_ID.fromString(p_StringID);
     }
+
 private:
-    unsigned int m_Plan = MAX_PLAN;
-    unsigned long long m_ID = 0U;
+    unsigned int m_Plan;
+    QUuid m_ID;
+    QPoint m_Pos;
 
     I_DiagramContainer* m_Container;
 };

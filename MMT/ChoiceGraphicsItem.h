@@ -12,16 +12,12 @@ class ChoiceGraphicsItem:
         public I_Configurable
 {
 public:
-    ChoiceGraphicsItem(QPointF p_Pos);
+    ChoiceGraphicsItem(const QPoint& p_Pos);
     ChoiceGraphicsItem(const QJsonObject& p_JsonObject);
     ~ChoiceGraphicsItem();
 
     void setName(const QString& p_Name);
     const QString& getName() const;
-
-    QPoint getPos() const;
-    void setPos(const QPoint& p_Pos);
-    void setPos(const QPointF& p_Pos);
 
     void refreshDisplay();
     void translateTo(QPoint p_Pos);
@@ -63,7 +59,6 @@ private:
     void selectAllHandles();
     void selectHandlesOnSide(eConnectDirection p_Side);
 
-    QPoint m_Pos;
     unsigned short m_Width;
     unsigned short m_Height;
 

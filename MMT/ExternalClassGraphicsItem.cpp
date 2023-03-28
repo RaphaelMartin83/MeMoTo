@@ -15,18 +15,14 @@ static const QColor DEFAULT_EXTERNAL_CLASS_COLOR = Qt::yellow;
 
 static ExternalClassConfiguration* s_ConfigurationContext;
 
-static unsigned long long s_ExtClassUniqueIDs= 0U;
-
 ExternalClassGraphicsItem::ExternalClassGraphicsItem(
-                            QPointF p_Pos,
+                            const QPoint& p_Pos,
                             unsigned short p_Width,
                             unsigned short p_Height):
-    I_ClassGraphicsItem(p_Pos, QString("ExtClass" + QString::number(s_ExtClassUniqueIDs)), s_ExtClassUniqueIDs, p_Width, p_Height)
+    I_ClassGraphicsItem(p_Pos, QString("ExtClass"), p_Width, p_Height)
   , m_Root()
   , m_Path()
 {
-    s_ExtClassUniqueIDs++;
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -43,11 +39,6 @@ ExternalClassGraphicsItem::ExternalClassGraphicsItem(
   , m_Root(p_Json.find("Root")->toString())
   , m_Path(p_Json.find("Path")->toString())
 {
-    if( this->getID() >= s_ExtClassUniqueIDs )
-    {
-        s_ExtClassUniqueIDs = this->getID() + 1U;
-    }
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -86,18 +77,24 @@ void ExternalClassGraphicsItem::refreshDisplay()
     // Finds myself into the json file
     // Breaks encapsulation, todo: improve
     l_JsonObject = l_JsonObject.find("ClassDiagram")->toObject();
-    QJsonArray l_JsonArray = l_JsonObject.find(ClassGraphicsItem::SERIALIZABLE_NAME)->toArray();
-
-    for(QJsonArray::Iterator l_ClassesIterator = l_JsonArray.begin();
-        l_ClassesIterator < l_JsonArray.end(); l_ClassesIterator++)
+    QJsonObject::iterator l_tmpObjectFound = l_JsonObject.find("ClassDiagram");
+    if( l_JsonObject.end() != l_tmpObjectFound )
     {
-        if( this->getName() == l_ClassesIterator->toObject().find("Name")->toString() )
-        {
-            this->fromExternalJson(l_ClassesIterator->toObject());
-        }
-    }
+        l_JsonObject = l_tmpObjectFound->toObject();
 
-    I_ClassGraphicsItem::refreshDisplay();
+        QJsonArray l_JsonArray = l_JsonObject.find(ClassGraphicsItem::SERIALIZABLE_NAME)->toArray();
+
+        for(QJsonArray::Iterator l_ClassesIterator = l_JsonArray.begin();
+            l_ClassesIterator < l_JsonArray.end(); l_ClassesIterator++)
+        {
+            if( this->getName() == l_ClassesIterator->toObject().find("Name")->toString() )
+            {
+                this->fromExternalJson(l_ClassesIterator->toObject());
+            }
+        }
+
+        I_ClassGraphicsItem::refreshDisplay();
+    }
 }
 
 QString ExternalClassGraphicsItem::getResolvedFullPath() const

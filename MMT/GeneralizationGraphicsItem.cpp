@@ -9,19 +9,15 @@ const char* GeneralizationGraphicsItem::SERIALIZABLE_NAME="Generalizations";
 
 static GeneralizationConfiguration* s_ConfigurationContext = nullptr;
 
-static unsigned long long s_GeneralizationsUID = 0U;
-
 GeneralizationGraphicsItem::GeneralizationGraphicsItem(
         const I_Connectable *p_ConnectFrom,
         const I_Connectable *p_ConnectTo,
         const QPoint &p_fromPoint,
         const QPoint &p_toPoint,
         I_ConnectableContainer* p_Container):
-    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, s_GeneralizationsUID, p_Container)
+    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container)
   , m_Arrow()
 {
-    s_GeneralizationsUID++;
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -39,11 +35,9 @@ GeneralizationGraphicsItem::GeneralizationGraphicsItem(
         const QPoint &p_toPoint,
         I_ConnectableContainer* p_Container,
         const QList<QPoint>& p_ForcedPath):
-    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, s_GeneralizationsUID, p_Container, p_ForcedPath)
+    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container, p_ForcedPath)
   , m_Arrow()
 {
-    s_GeneralizationsUID++;
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -59,10 +53,6 @@ GeneralizationGraphicsItem::GeneralizationGraphicsItem(const QJsonObject& p_Json
     GraphicConnector(p_JsonObject, p_Container)
   , m_Arrow()
 {
-    if(this->getID() >= s_GeneralizationsUID)
-    {
-        s_GeneralizationsUID = this->getID() + 1U;
-    }
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -129,7 +119,7 @@ QString GeneralizationGraphicsItem::getDataFromField(const QString& p_FieldName)
 
     if( "ID" == p_FieldName )
     {
-        l_Ret = QString::number(this->getID());
+        l_Ret = this->getID().toString();
     }
 
     return l_Ret;

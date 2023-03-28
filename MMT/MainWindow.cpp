@@ -120,6 +120,7 @@ void MainWindow::initGUI()
     m_DiagramView = new DiagramGraphicsView();
     m_DiagramView->setMinimumWidth(700);
     m_DiagramView->setMinimumHeight(700);
+    m_DiagramView->setMouseTracking(true);
     QScroller::grabGesture(m_DiagramView, QScroller::TouchGesture);
     QScroller::grabGesture(m_DiagramView, QScroller::MiddleMouseButtonGesture);
 
@@ -344,6 +345,14 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
     else if( (p_Event->key() == Qt::Key_P) && (p_Event->modifiers() == Qt::ControlModifier) )
     {
         m_Diagrams[m_CurrentDiagramID]->printPressed();
+    }
+    else if( (p_Event->key() == Qt::Key_C) && (p_Event->modifiers() == Qt::ControlModifier) )
+    {
+        m_Diagrams[m_CurrentDiagramID]->copyPressed();
+    }
+    else if( (p_Event->key() == Qt::Key_V) && (p_Event->modifiers() == Qt::ControlModifier) )
+    {
+        m_Diagrams[m_CurrentDiagramID]->pastePressed();
     }
     else if( (p_Event->key() == Qt::Key_Z) && (p_Event->modifiers() == Qt::ControlModifier) )
     {

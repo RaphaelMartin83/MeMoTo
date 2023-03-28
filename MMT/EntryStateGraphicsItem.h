@@ -10,13 +10,10 @@ class EntryStateGraphicsItem:
         public I_Connectable
 {
 public:
-    EntryStateGraphicsItem(QPointF p_Pos);
+    EntryStateGraphicsItem(const QPoint& p_Pos);
     EntryStateGraphicsItem(const QJsonObject& p_JsonObject);
     ~EntryStateGraphicsItem();
 
-    QPoint getPos() const;
-    void setPos(const QPoint& p_Pos);
-    void setPos(const QPointF& p_Pos);
     void setDiameter(unsigned short p_Diameter);
 
     void refreshDisplay();
@@ -55,7 +52,6 @@ private:
     void selectHandlesOnSide(eConnectDirection p_Side);
     void resizeTo(QPoint p_Pos);
 
-    QPoint m_Pos;
     unsigned short m_Diameter;
 
     bool m_isFullySelected;

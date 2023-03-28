@@ -21,7 +21,7 @@ const QList<I_Selectable*>& I_ConnectableContainer::getPureSelectables() const
     return m_Selectables;
 }
 I_Selectable* I_ConnectableContainer::getSelectableFromTypeAndID(const QString& p_SelectableType,
-                                                 const unsigned long long& p_SelectableID) const
+                                                 const QUuid& p_SelectableID) const
 {
     I_Selectable* l_Ret = nullptr;
 
@@ -45,7 +45,7 @@ const QList<I_Connectable*>& I_ConnectableContainer::getPureConnectables() const
     return m_Connectables;
 }
 const I_Connectable* I_ConnectableContainer::getConnectableFromTypeAndID(const QString& p_ConnectableType,
-                                                 const unsigned long long& p_ConnectableID) const
+                                                                         const QUuid& p_ConnectableID) const
 {
     const I_Connectable* l_Ret = nullptr;
 
@@ -192,8 +192,12 @@ void I_ConnectableContainer::unselectAll()
 {
     for( unsigned int i_items = 0U; i_items < m_CurrentSelectedType.count(); i_items++ )
     {
-        this->getSelectableFromTypeAndID(m_CurrentSelectedType[i_items],
-                                         m_CurrentSelectedID[i_items])->unselect();
+        I_Selectable* l_FoundSelectable = this->getSelectableFromTypeAndID(
+                    m_CurrentSelectedType[i_items], m_CurrentSelectedID[i_items]);
+        if( nullptr != l_FoundSelectable )
+        {
+            l_FoundSelectable->unselect();
+        }
     }
 
     m_CurrentSelectedType.clear();

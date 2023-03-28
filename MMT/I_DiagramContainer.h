@@ -28,6 +28,7 @@ public:
     virtual unsigned int getDiagramMaxWidth() const = 0;
     virtual unsigned int getDiagramMaxHeight() const = 0;
     virtual QPoint getStartPosition() const = 0;
+    QPoint getCurrentCursorPosition() const;
 
     // Notification that something happened
     void changed(I_GraphicsItem* p_WhoChanged);
@@ -40,8 +41,11 @@ public:
     void deletePressed();
     void escapePressed();
     void printPressed();
+    void copyPressed();
+    void pastePressed();
     void selectToolByID(unsigned short p_ID);
     void mousePressEvent(QGraphicsSceneMouseEvent* p_Event);
+    void mouseMoveEvent(QGraphicsSceneMouseEvent* p_Event);
 
     // View management
     void registerDiagramView(DiagramGraphicsView* p_View);
@@ -60,7 +64,7 @@ public:
     void addConnector(GraphicConnector* p_Connector);
     void deleteConnectorAt(unsigned int p_ConnectableNumber);
     void deleteConnectableConnections(I_Connectable* p_Connectable);
-    bool isConnectableContainerAtPos(QPoint p_Pos) const {return true;};
+    bool isConnectableContainerAtPos(QPoint p_Pos) const {return true;}
 
     // I_Serializable
     QJsonObject toJson();
@@ -101,6 +105,7 @@ private:
     bool m_isFocused;
     QPointF m_CurrentPosition;
     bool m_isFirstDisplay;
+    QPointF m_CurrentCursorPosition;
 };
 
 #endif // I_DIAGRAMCONTAINER_H
