@@ -191,7 +191,7 @@ void CompositionGraphicsItem::applyConfiguration()
 }
 
 // I_Serializable
-QJsonObject CompositionGraphicsItem::toJson()
+QJsonObject CompositionGraphicsItem::toJson() const
 {
     QJsonObject l_MyJson = GraphicConnector::toJson();
 

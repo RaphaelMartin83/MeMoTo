@@ -191,7 +191,7 @@ void AggregationGraphicsItem::applyConfiguration()
 }
 
 // I_Serializable
-QJsonObject AggregationGraphicsItem::toJson()
+QJsonObject AggregationGraphicsItem::toJson() const
 {
     QJsonObject l_MyJson = GraphicConnector::toJson();
 

@@ -506,7 +506,7 @@ void ChoiceGraphicsItem::applyConfiguration()
     ConfigWidget::close();
 }
 
-QJsonObject ChoiceGraphicsItem::toJson()
+QJsonObject ChoiceGraphicsItem::toJson() const
 {
     QJsonObject l_MyJson = I_Connectable::toJson();
 

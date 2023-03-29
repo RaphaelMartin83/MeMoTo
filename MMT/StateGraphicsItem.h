@@ -56,7 +56,7 @@ public:
     void applyConfiguration();
 
     // I_Serializable overrides
-    QJsonObject toJson();
+    virtual QJsonObject toJson() const;
     void fromJson(QJsonObject p_Json);
     QString getSerializableName() const;
 

@@ -368,7 +368,7 @@ void TransitionGraphicsItem::applyConfiguration()
     ConfigWidget::close();
 }
 
-QJsonObject TransitionGraphicsItem::toJson()
+QJsonObject TransitionGraphicsItem::toJson() const
 {
     QJsonObject l_MyJson = GraphicConnector::toJson();
 

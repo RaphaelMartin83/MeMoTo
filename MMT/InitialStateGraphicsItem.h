@@ -39,7 +39,7 @@ public:
     virtual QString getConnectableName() const;
 
     // I_Serializable
-    virtual QJsonObject toJson();
+    virtual QJsonObject toJson() const;
     void fromJson(QJsonObject p_Json);
     QString getSerializableName() const;
 

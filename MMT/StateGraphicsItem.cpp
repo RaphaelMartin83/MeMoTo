@@ -237,7 +237,7 @@ void StateGraphicsItem::applyConfiguration()
     ConfigWidget::close();
 }
 
-QJsonObject StateGraphicsItem::toJson()
+QJsonObject StateGraphicsItem::toJson() const
 {
     QJsonObject l_MyJson = I_SquarishGraphicsItem::toJson();
 

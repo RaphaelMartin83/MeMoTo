@@ -32,6 +32,9 @@ EntryStateGraphicsItem::EntryStateGraphicsItem(const QJsonObject& p_JsonObject):
   , m_SelectedHandleForConnectionTo(nullptr)
 {
     this->setDiameter(p_JsonObject.find("Diameter")->toInt());
+    m_Circle = new QGraphicsEllipseItem();
+    m_Circle->setBrush(Qt::green);
+    this->addToGroup(m_Circle);
 
     EntryStateGraphicsItem::refreshDisplay();
 }
@@ -301,7 +304,7 @@ QString EntryStateGraphicsItem::getConnectableName() const
     return QString("EntryState" + this->getID().toString());
 }
 
-QJsonObject EntryStateGraphicsItem::toJson()
+QJsonObject EntryStateGraphicsItem::toJson() const
 {
     QJsonObject l_MyJson = I_Connectable::toJson();
 

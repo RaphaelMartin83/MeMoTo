@@ -47,9 +47,6 @@ ExternalClassGraphicsItem::ExternalClassGraphicsItem(
         s_ConfigurationContext = new ExternalClassConfiguration();
     }
 
-    this->setColor(DEFAULT_EXTERNAL_CLASS_COLOR);
-    this->setPlan(static_cast<unsigned short>(p_Json.find("Plan")->toInt()));
-
     ExternalClassGraphicsItem::refreshDisplay();
 }
 
