@@ -29,7 +29,7 @@ Simple GUI comes with a few shortcuts to know:
 - Save as with ctrl+shift+s
 - load with ctrl+o
 - undo with ctrl+z
-- redo with ctrl+y
+- redo with ctrl+shift+z
 - Copy/paste with ctrl+c and ctrl+v
 - share with ctrl+space
 - find into diagram with ctrl+f

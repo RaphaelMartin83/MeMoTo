@@ -326,11 +326,11 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
         break;
     }
 
-    if( (p_Event->key() == Qt::Key_S) && (p_Event->modifiers() == Qt::ControlModifier))
+    if( p_Event->matches(QKeySequence::Save) )
     {
         this->savePressed();
     }
-    else if( (p_Event->key() == Qt::Key_S) && (p_Event->modifiers() && Qt::ControlModifier) && (p_Event->modifiers() && Qt::ShiftModifier))
+    else if( p_Event->matches(QKeySequence::SaveAs) )
     {
         this->savePressed(true);
     }
@@ -338,33 +338,33 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
     {
         this->loadPressed();
     }
-    else if( (p_Event->key() == Qt::Key_O) && (p_Event->modifiers() && Qt::ControlModifier) && (p_Event->modifiers() && Qt::ShiftModifier))
+    else if( (p_Event->key() == Qt::Key_O) && (p_Event->modifiers() && Qt::ControlModifier) && (p_Event->modifiers() && Qt::ShiftModifier) )
     {
         this->loadPressed(true);
     }
-    else if( (p_Event->key() == Qt::Key_P) && (p_Event->modifiers() == Qt::ControlModifier) )
+    else if( p_Event->matches(QKeySequence::Print) )
     {
         m_Diagrams[m_CurrentDiagramID]->printPressed();
     }
-    else if( (p_Event->key() == Qt::Key_C) && (p_Event->modifiers() == Qt::ControlModifier) )
+    else if( p_Event->matches(QKeySequence::Copy) )
     {
         m_Diagrams[m_CurrentDiagramID]->copyPressed();
     }
-    else if( (p_Event->key() == Qt::Key_V) && (p_Event->modifiers() == Qt::ControlModifier) )
+    else if( p_Event->matches(QKeySequence::Paste) )
     {
         m_Diagrams[m_CurrentDiagramID]->pastePressed();
     }
-    else if( (p_Event->key() == Qt::Key_Z) && (p_Event->modifiers() == Qt::ControlModifier) )
+    else if( p_Event->matches(QKeySequence::Undo) )
     {
         m_Diagrams[m_CurrentDiagramID]->clearAll();
         m_Diagrams[m_CurrentDiagramID]->undo();
     }
-    else if( (p_Event->key() == Qt::Key_Y) && (p_Event->modifiers() == Qt::ControlModifier) )
+    else if( p_Event->matches(QKeySequence::Redo) )
     {
         m_Diagrams[m_CurrentDiagramID]->clearAll();
         m_Diagrams[m_CurrentDiagramID]->redo();
     }
-    else if( (p_Event->key() == Qt::Key_F) && (p_Event->modifiers() == Qt::ControlModifier) )
+    else if( p_Event->matches(QKeySequence::Find) )
     {
         m_Diagrams[m_CurrentDiagramID]->find();
     }
