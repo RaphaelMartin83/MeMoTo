@@ -11,9 +11,9 @@
 #include "StateConfiguration.h"
 
 static const unsigned short DEFAULT_STATE_WIDTH =
-        static_cast<unsigned short>(GridReferential::getGridDistance(140U));
+        static_cast<unsigned short>(GridReferential::getGridDistance(160U));
 static const unsigned short DEFAULT_STATE_HEIGHT =
-        static_cast<unsigned short>(GridReferential::getGridDistance(140U));
+        static_cast<unsigned short>(GridReferential::getGridDistance(160U));
 
 class StateGraphicsItem:
         public I_SquarishGraphicsItem,

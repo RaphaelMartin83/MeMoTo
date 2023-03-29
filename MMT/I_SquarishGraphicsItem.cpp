@@ -7,7 +7,7 @@
 #include "HumanReadableColor.h"
 
 static const unsigned short DEFAULT_HANDLES_DIAMETER = 8U;
-static const unsigned short MIN_DIST_BETWEEN_HANDLES = static_cast<unsigned short>(GridReferential::getGridDistance(30));
+static const unsigned short MIN_DIST_BETWEEN_HANDLES = static_cast<unsigned short>(GridReferential::getGridDistance(20));
 static const unsigned short SQUARE_CORNERS_SELECTION_THICKNESS = 30U;
 static const unsigned short SQUARE_TEXT_LABELS_HEIGHT = 15U;
 static const unsigned short SQUARE_CLEARANCE = static_cast<unsigned short>(GridReferential::getGridDistance(100U));
@@ -23,8 +23,8 @@ I_SquarishGraphicsItem::I_SquarishGraphicsItem(const QPoint& p_Pos, const QStrin
   , m_SelectedHandleForConnectionTo(nullptr)
   , m_Name(p_Name)
 {
-    m_Width = GridReferential::getGridDistance(p_Width);
-    m_Height = GridReferential::getGridDistance(p_Height);
+    this->setWidth(p_Width);
+    this->setHeight(p_Height);
 
     m_Rect = new QGraphicsRectItem(QRect(
                                        this->getPos().x() - (m_Width/2),
@@ -79,8 +79,8 @@ I_SquarishGraphicsItem::I_SquarishGraphicsItem(const QPoint& p_Pos, const QStrin
 I_SquarishGraphicsItem::I_SquarishGraphicsItem(const QJsonObject& p_Json):
       I_ContainerGraphicsItem(p_Json)
 {
-    m_Width = GridReferential::getGridDistance(p_Json.find("Width")->toInt());
-    m_Height = GridReferential::getGridDistance(p_Json.find("Height")->toInt());
+    this->setWidth(p_Json.find("Width")->toInt());
+    this->setHeight(p_Json.find("Height")->toInt());
     m_Name = p_Json.find("Name")->toString();
 
     m_Rect = new QGraphicsRectItem(QRect(
@@ -194,21 +194,11 @@ void I_SquarishGraphicsItem::refreshDisplay()
 
 void I_SquarishGraphicsItem::setWidth(unsigned short p_Width)
 {
-    m_Width = GridReferential::getGridDistance(p_Width);
-    m_Rect->setRect(QRect(
-                       this->getPos().x() - (m_Width/2),
-                       this->getPos().y() - (m_Height/2),
-                       m_Width,
-                       m_Height));
+    m_Width = p_Width;
 }
 void I_SquarishGraphicsItem::setHeight(unsigned short p_Height)
 {
-    m_Height = GridReferential::getGridDistance(p_Height);
-    m_Rect->setRect(QRect(
-                       this->getPos().x() - (m_Width/2),
-                       this->getPos().y() - (m_Height/2),
-                       m_Width,
-                       m_Height));
+    m_Height = p_Height;
 }
 unsigned short I_SquarishGraphicsItem::getWidth() const
 {
@@ -553,14 +543,16 @@ void I_SquarishGraphicsItem::unselect()
 
 void I_SquarishGraphicsItem::move(QPoint p_Pos)
 {
+    QPoint l_Pos = GridReferential::getPointOnGrid(p_Pos);
+
     if( true == m_isFullySelected )
     {
-        this->translateTo(p_Pos);
+        this->translateTo(l_Pos);
     }
     else
     {
-        this->moveChild(p_Pos);
-        this->resizeTo(p_Pos);
+        this->moveChild(l_Pos);
+        this->resizeTo(l_Pos);
     }
 }
 
@@ -588,9 +580,12 @@ void I_SquarishGraphicsItem::translateTo(const QPoint& p_Pos)
 
 void I_SquarishGraphicsItem::resizeTo(const QPoint& p_Pos)
 {
-    QPoint l_Pos = this->getPos();
-    l_Pos.setX(l_Pos.x() - (m_Width/2));
-    l_Pos.setY(l_Pos.y() - (m_Height/2));
+    QPoint l_TopLeftPos;
+    l_TopLeftPos.setX(this->getPos().x() - (m_Width/2));
+    l_TopLeftPos.setY(this->getPos().y() - (m_Height/2));
+    QPoint l_BotRightPos;
+    l_BotRightPos.setX(this->getPos().x() + (m_Width/2));
+    l_BotRightPos.setY(this->getPos().y() + (m_Height/2));
 
     // Depending on the direction of the selected handle, resize in different directions
     switch(m_SelectedHandlesDirection)
@@ -598,66 +593,46 @@ void I_SquarishGraphicsItem::resizeTo(const QPoint& p_Pos)
     case eConnectionDirection_Left:
     {
         // Modifies size and position
-        this->setWidth(m_Width + (l_Pos.x() - p_Pos.x()));
-        l_Pos.setX( GridReferential::getGridDistance(p_Pos.x()) );
-        this->refreshDisplay();
+        l_TopLeftPos.setX(p_Pos.x());
         break;
     }
     case eConnectionDirection_Right:
     {
-        this->setWidth(m_Width + (p_Pos.x() - l_Pos.x() - m_Width));
-        l_Pos.setX( GridReferential::getGridDistance(p_Pos.x() - m_Width) );
-        this->refreshDisplay();
+        l_BotRightPos.setX(p_Pos.x());
         break;
     }
     case eConnectionDirection_Top:
     {
-        this->setHeight(m_Height + (l_Pos.y() - p_Pos.y()));
-        l_Pos.setY( GridReferential::getGridDistance(p_Pos.y()) );
-        this->refreshDisplay();
+        l_TopLeftPos.setY(p_Pos.y());
         break;
     }
     case eConnectionDirection_Bottom:
     {
-        this->setHeight(m_Height + (p_Pos.y() - l_Pos.y() - m_Height));
-        l_Pos.setY( GridReferential::getGridDistance(p_Pos.y() - m_Height) );
-        this->refreshDisplay();
+        l_BotRightPos.setY(p_Pos.y());
         break;
     }
     case eConnectionDirection_TopLeft:
     {
-        this->setWidth(m_Width + (l_Pos.x() - p_Pos.x()));
-        l_Pos.setX( GridReferential::getGridDistance(p_Pos.x()) );
-        this->setHeight(m_Height + (l_Pos.y() - p_Pos.y()));
-        l_Pos.setY( GridReferential::getGridDistance(p_Pos.y()) );
-        this->refreshDisplay();
+        l_TopLeftPos.setX(p_Pos.x());
+        l_TopLeftPos.setY(p_Pos.y());
         break;
     }
     case eConnectionDirection_TopRight:
     {
-        this->setHeight(m_Height + (l_Pos.y() - p_Pos.y()));
-        l_Pos.setY( GridReferential::getGridDistance(p_Pos.y()) );
-        this->setWidth(m_Width + (p_Pos.x() - l_Pos.x() - m_Width));
-        l_Pos.setX( GridReferential::getGridDistance(p_Pos.x() - m_Width) );
-        this->refreshDisplay();
+        l_TopLeftPos.setY(p_Pos.y());
+        l_BotRightPos.setX(p_Pos.x());
         break;
     }
     case eConnectionDirection_BotLeft:
     {
-        this->setHeight(m_Height + (p_Pos.y() - l_Pos.y() - m_Height));
-        l_Pos.setY( GridReferential::getGridDistance(p_Pos.y() - m_Height) );
-        this->setWidth(m_Width + (l_Pos.x() - p_Pos.x()));
-        l_Pos.setX( GridReferential::getGridDistance(p_Pos.x()) );
-        this->refreshDisplay();
+        l_BotRightPos.setY(p_Pos.y());
+        l_TopLeftPos.setX(p_Pos.x());
         break;
     }
     case eConnectionDirection_BotRight:
     {
-        this->setHeight(m_Height + (p_Pos.y() - l_Pos.y() - m_Height));
-        l_Pos.setY( GridReferential::getGridDistance(p_Pos.y() - m_Height) );
-        this->setWidth(m_Width + (p_Pos.x() - l_Pos.x() - m_Width));
-        l_Pos.setX( GridReferential::getGridDistance(p_Pos.x() - m_Width) );
-        this->refreshDisplay();
+        l_BotRightPos.setX(p_Pos.x());
+        l_BotRightPos.setY(p_Pos.y());
         break;
     }
     default:
@@ -665,6 +640,13 @@ void I_SquarishGraphicsItem::resizeTo(const QPoint& p_Pos)
         break;
     }
     }
+    this->setWidth(l_BotRightPos.x() - l_TopLeftPos.x());
+    this->setHeight(l_BotRightPos.y() - l_TopLeftPos.y());
+
+    QPoint l_Pos((l_BotRightPos.x() + l_TopLeftPos.x()) / 2,
+                 (l_BotRightPos.y() + l_TopLeftPos.y()) / 2);
+    this->setPos(l_Pos, true);
+    this->refreshDisplay();
 }
 
 void I_SquarishGraphicsItem::resizeToContain(QRect p_Rect)

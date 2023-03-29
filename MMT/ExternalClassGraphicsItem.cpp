@@ -76,7 +76,6 @@ void ExternalClassGraphicsItem::refreshDisplay()
 
     // Finds myself into the json file
     // Breaks encapsulation, todo: improve
-    l_JsonObject = l_JsonObject.find("ClassDiagram")->toObject();
     QJsonObject::iterator l_tmpObjectFound = l_JsonObject.find("ClassDiagram");
     if( l_JsonObject.end() != l_tmpObjectFound )
     {
@@ -93,8 +92,8 @@ void ExternalClassGraphicsItem::refreshDisplay()
             }
         }
 
-        I_ClassGraphicsItem::refreshDisplay();
     }
+    I_ClassGraphicsItem::refreshDisplay();
 }
 
 QString ExternalClassGraphicsItem::getResolvedFullPath() const
