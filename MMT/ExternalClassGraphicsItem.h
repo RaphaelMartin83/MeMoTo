@@ -31,7 +31,7 @@ public:
 
     // I_Serializable overloads
     QJsonObject toJson();
-    void fromJson(QJsonObject p_Json);
+    void fromJson(const QJsonObject& p_Json);
     QString getSerializableName() const;
 
     const QString& getRoot() const;

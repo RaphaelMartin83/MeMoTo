@@ -292,9 +292,13 @@ QJsonObject InitialStateGraphicsItem::toJson() const
     return l_MyJson;
 }
 
-void InitialStateGraphicsItem::fromJson(QJsonObject p_Json)
+void InitialStateGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
+    I_Connectable::fromJson(p_Json);
 
+    this->setDiameter(p_Json.find("Diameter")->toInt());
+
+    this->refreshDisplay();
 }
 
 QString InitialStateGraphicsItem::getSerializableName() const

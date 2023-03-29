@@ -191,7 +191,7 @@ QJsonObject ExternalClassGraphicsItem::toJson()
 
     return l_MyJson;
 }
-void ExternalClassGraphicsItem::fromJson(QJsonObject p_Json)
+void ExternalClassGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
 
 }

@@ -68,7 +68,7 @@ public:
 
     // I_Serializable
     QJsonObject toJson() const;
-    void fromJson(QJsonObject p_Json);
+    void fromJson(const QJsonObject& p_Json);
 
     /**
      * Find into diagram feature

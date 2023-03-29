@@ -248,8 +248,15 @@ QJsonObject StateGraphicsItem::toJson() const
     return l_MyJson;
 }
 
-void StateGraphicsItem::fromJson(QJsonObject p_Json)
+void StateGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
+    I_SquarishGraphicsItem::fromJson(p_Json);
+
+    this->setEntryAction(p_Json.find("EntryAction")->toString());
+    this->setExitAction(p_Json.find("ExitAction")->toString());
+    this->setStereotype(p_Json.find("Stereotype")->toString());
+
+    this->refreshDisplay();
 }
 
 QString StateGraphicsItem::getSerializableName() const

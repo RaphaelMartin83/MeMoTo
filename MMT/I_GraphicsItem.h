@@ -41,7 +41,7 @@ public:
 
         return l_Ret;
     }
-    virtual void fromJson(QJsonObject p_Json)
+    virtual void fromJson(const QJsonObject& p_Json)
     {
         this->setID(p_Json.find("ID")->toString());
         m_Pos = QPoint(p_Json.find("PositionX")->toInt(),

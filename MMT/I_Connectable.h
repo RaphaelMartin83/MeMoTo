@@ -31,7 +31,7 @@ public:
     {
         return I_Selectable::toJson();
     }
-    void fromJson(QJsonObject p_Json)
+    void fromJson(const QJsonObject& p_Json)
     {
         I_Selectable::fromJson(p_Json);
     }

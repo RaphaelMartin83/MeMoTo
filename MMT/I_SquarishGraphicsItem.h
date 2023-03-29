@@ -75,7 +75,7 @@ public:
 
     // I_Serializable
     QJsonObject toJson() const;
-    void fromJson(QJsonObject p_Json);
+    void fromJson(const QJsonObject& p_Json);
 
     // I_GraphicsItem overrides
     virtual void setPlan(unsigned short p_Plan);

@@ -721,8 +721,14 @@ QJsonObject I_SquarishGraphicsItem::toJson() const
     return l_MyJson;
 }
 
-void I_SquarishGraphicsItem::fromJson(QJsonObject p_Json)
+void I_SquarishGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
+    I_ContainerGraphicsItem::fromJson(p_Json);
+
+    this->setName(p_Json.find("Name")->toString());
+    this->setWidth(p_Json.find("Width")->toInt());
+    this->setHeight(p_Json.find("Height")->toInt());
+    this->setColor(QColor(p_Json.find("Color")->toString()));
 }
 
 void I_SquarishGraphicsItem::setPlan(unsigned short p_Plan)

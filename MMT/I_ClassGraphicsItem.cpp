@@ -136,7 +136,7 @@ QJsonObject I_ClassGraphicsItem::toJson() const
     return l_MyJson;
 }
 
-void I_ClassGraphicsItem::fromJson(QJsonObject p_Json)
+void I_ClassGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
 
 }

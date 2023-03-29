@@ -314,9 +314,14 @@ QJsonObject EntryStateGraphicsItem::toJson() const
     return l_MyJson;
 }
 
-void EntryStateGraphicsItem::fromJson(QJsonObject p_Json)
+void EntryStateGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
+    I_Connectable::fromJson(p_Json);
 
+    this->setDiameter(p_Json.find("Diameter")->toInt());
+    m_Name = p_Json.find("Name")->toString();
+
+    this->refreshDisplay();
 }
 
 QString EntryStateGraphicsItem::getSerializableName() const

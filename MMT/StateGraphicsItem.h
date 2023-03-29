@@ -57,7 +57,7 @@ public:
 
     // I_Serializable overrides
     virtual QJsonObject toJson() const;
-    void fromJson(QJsonObject p_Json);
+    void fromJson(const QJsonObject& p_Json);
     QString getSerializableName() const;
 
     static const char* SERIALIZABLE_NAME;

@@ -517,9 +517,15 @@ QJsonObject ChoiceGraphicsItem::toJson() const
     return l_MyJson;
 }
 
-void ChoiceGraphicsItem::fromJson(QJsonObject p_Json)
+void ChoiceGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
+    I_Connectable::fromJson(p_Json);
 
+    m_Width = p_Json.find("Width")->toInt();
+    m_Height = p_Json.find("Height")->toInt();
+    m_Name = p_Json.find("Name")->toString();
+
+    this->refreshDisplay();
 }
 
 QString ChoiceGraphicsItem::getSerializableName() const
