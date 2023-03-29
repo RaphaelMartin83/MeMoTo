@@ -134,6 +134,18 @@ public:
         }
     }
 
+    void addIDOverride(const QUuid& p_IDToOverride, const QUuid& p_IDToApplyInstead)
+    {
+        QList<QUuid> l_IDOverride;
+        l_IDOverride.append(p_IDToOverride);
+        l_IDOverride.append(p_IDToApplyInstead);
+        m_IDOverrides.append(l_IDOverride);
+    }
+    void clearIDOverrides()
+    {
+        m_IDOverrides.clear();
+    }
+
     QPoint getSelectionCoord();
     void unselectAll();
     virtual QJsonObject toJson() const;
@@ -146,6 +158,8 @@ private:
 
     QList<I_Selectable*> m_Selectables;
     QList<I_Connectable*> m_Connectables;
+
+    QList<QList<QUuid>> m_IDOverrides;
 };
 
 #endif // I_CONNECTABLECONTAINER_H

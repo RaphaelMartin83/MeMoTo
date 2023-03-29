@@ -111,6 +111,10 @@ public:
     {
         m_ID = QUuid::fromString(p_StringID);
     }
+    void rerollID()
+    {
+        m_ID = QUuid::createUuid();
+    }
 
 private:
     unsigned int m_Plan;

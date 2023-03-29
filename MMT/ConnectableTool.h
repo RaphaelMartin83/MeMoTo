@@ -43,7 +43,8 @@ public:
     }
 
     void paste(const QJsonObject& p_JsonObject,
-               QPoint p_middlePos, I_ToolListener* p_Target)
+               QPoint p_middlePos, I_ToolListener* p_Target,
+               QUuid* p_rIDPasted = nullptr, QUuid* p_rIDRerolled = nullptr)
     {
         // ToolListener here has to be a I_DiagramContainer
         I_DiagramContainer* l_TargetAsContainer = dynamic_cast<I_DiagramContainer*>(p_Target);
@@ -56,6 +57,15 @@ public:
         Connectable* l_NewConnectable = new Connectable(QPoint());
         l_NewConnectable->registerDiagramContainer(l_TargetAsContainer);
         l_NewConnectable->fromJson(p_JsonObject);
+        if( nullptr != p_rIDPasted )
+        {
+            *p_rIDPasted = l_NewConnectable->getID();
+        }
+        l_NewConnectable->rerollID();
+        if( nullptr != p_rIDRerolled )
+        {
+            *p_rIDRerolled = l_NewConnectable->getID();
+        }
 
         // Set position according to current cursor position
         QPoint l_JsonPos = l_NewConnectable->getPos();

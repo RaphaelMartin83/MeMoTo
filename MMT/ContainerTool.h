@@ -29,7 +29,8 @@ public:
         p_Target->addContainer(l_NewContainer);
     }
 
-    void paste(const QJsonObject& p_JsonObject, QPoint p_middlePos, I_ToolListener* p_Target)
+    void paste(const QJsonObject& p_JsonObject, QPoint p_middlePos, I_ToolListener* p_Target,
+               QUuid* p_rIDPasted = nullptr, QUuid* p_rIDRerolled = nullptr)
     {
         // ToolListener here has to be a I_DiagramContainer
         I_DiagramContainer* l_TargetAsContainer = dynamic_cast<I_DiagramContainer*>(p_Target);
@@ -42,6 +43,15 @@ public:
         Container* l_NewContainer= new Container(QPoint());
         l_NewContainer->registerDiagramContainer(l_TargetAsContainer);
         l_NewContainer->fromJson(p_JsonObject);
+        if( nullptr != p_rIDPasted )
+        {
+            *p_rIDPasted = l_NewContainer->getID();
+        }
+        l_NewContainer->rerollID();
+        if( nullptr != p_rIDRerolled )
+        {
+            *p_rIDRerolled = l_NewContainer->getID();
+        }
 
         // Set position according to current cursor position
         QPoint l_JsonPos = l_NewContainer->getPos();

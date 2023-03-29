@@ -93,7 +93,7 @@ QJsonObject Connector::toJson() const
     return l_MyJson;
 }
 
-void Connector::fromJson(QJsonObject p_JsonObject)
+void Connector::fromJson(const QJsonObject& p_JsonObject)
 {
     I_Connector::fromJson(p_JsonObject);
 
@@ -111,7 +111,7 @@ void Connector::fromJson(QJsonObject p_JsonObject)
                                     p_JsonObject.find("ConnectToNumber")->toInt(),
                                     static_cast<eConnectDirection>(p_JsonObject.find("ConnectToDirection")->toInt()));
     QJsonArray l_PathJson;
-    QJsonObject::iterator l_PathFound = p_JsonObject.find("ForcedPath");
+    QJsonObject::const_iterator l_PathFound = p_JsonObject.find("ForcedPath");
     if( p_JsonObject.end() != l_PathFound )
     {
         l_PathJson = l_PathFound->toArray();

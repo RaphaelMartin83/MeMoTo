@@ -47,6 +47,18 @@ const QList<I_Connectable*>& I_ConnectableContainer::getPureConnectables() const
 const I_Connectable* I_ConnectableContainer::getConnectableFromTypeAndID(const QString& p_ConnectableType,
                                                                          const QUuid& p_ConnectableID) const
 {
+    /*
+     * IDs can be overridden
+     */
+    QUuid l_ConnectableID = p_ConnectableID;
+    for(unsigned int i_ids = 0U; i_ids < m_IDOverrides.count(); i_ids++ )
+    {
+        if( m_IDOverrides[i_ids][0] == l_ConnectableID )
+        {
+            l_ConnectableID = m_IDOverrides[i_ids][1];
+        }
+    }
+
     const I_Connectable* l_Ret = nullptr;
 
     QList<I_Connectable*> l_Connectables = this->getAllConnectables();
@@ -55,7 +67,7 @@ const I_Connectable* I_ConnectableContainer::getConnectableFromTypeAndID(const Q
          (i_connectables < l_Connectables.count()) && (nullptr == l_Ret);
          i_connectables++ )
     {
-        l_Ret = l_Connectables[i_connectables]->getConnectable(p_ConnectableType, p_ConnectableID);
+        l_Ret = l_Connectables[i_connectables]->getConnectable(p_ConnectableType, l_ConnectableID);
     }
 
     return l_Ret;
