@@ -20,7 +20,6 @@ void I_ContainerGraphicsItem::moveChildren(
     // Retrieve all selectables
     QList<I_Selectable*> l_Selectables = this->getAllSelectables();
 
-    QVector2D l_Vector;
     int l_dx = p_PosAfter.x() - p_PosBefore.x();
     int l_dy = p_PosAfter.y() - p_PosBefore.y();
 

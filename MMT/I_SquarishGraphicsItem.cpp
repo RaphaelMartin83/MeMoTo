@@ -555,10 +555,7 @@ void I_SquarishGraphicsItem::move(QPoint p_Pos)
 {
     if( true == m_isFullySelected )
     {
-        QPoint l_Before = this->getPos();
         this->translateTo(p_Pos);
-        QPoint l_After = this->getPos();
-        this->moveChildren(l_Before, l_After);
     }
     else
     {
