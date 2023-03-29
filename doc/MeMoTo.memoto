@@ -5,932 +5,941 @@
                 "AttributesNames": [
                 ],
                 "ConnectFromDirection": 2,
-                "ConnectFromID": 13,
-                "ConnectFromNumber": 10,
+                "ConnectFromID": "{56602ef6-d49b-4c91-8487-f90ecc1076c2}",
+                "ConnectFromNumber": 13,
                 "ConnectFromType": "Class",
                 "ConnectToDirection": 1,
-                "ConnectToID": 1,
-                "ConnectToNumber": 5,
+                "ConnectToID": "{26532e5a-530f-4668-b193-34612a736fba}",
+                "ConnectToNumber": 4,
                 "ConnectToType": "Class",
-                "ForcedPath": [
-                    [
-                        50140,
-                        48060
-                    ],
-                    [
-                        50140,
-                        49700
-                    ]
-                ],
-                "ID": 2
-            },
-            {
-                "AttributesNames": [
-                ],
-                "ConnectFromDirection": 4,
-                "ConnectFromID": 28,
-                "ConnectFromNumber": 10,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 1,
-                "ConnectToID": 27,
-                "ConnectToNumber": 2,
-                "ConnectToType": "Class",
-                "ID": 3
+                "ID": "{63b556a5-207a-49ae-b9ab-49c56ce577a0}",
+                "PositionX": 0,
+                "PositionY": 0
             }
         ],
         "Classes": [
             {
                 "Attributes": [
-                    "SMToolBoxScene* m_ToolBex"
-                ],
-                "Color": "blanchedalmond",
-                "Height": 300,
-                "ID": 0,
-                "Methods": [
-                    "I_ToolBox* getToolBox()",
-                    "QString getDiagramString()",
-                    "QPoint getStartPosition() const",
-                    "unsigned int getDiagramMaxWidth() const",
-                    "unsigned int getDiagramMaxHeight() const",
-                    "QString getSerializableName() const"
-                ],
-                "Name": "SMDiagramScene",
-                "PositionX": 51160,
-                "PositionY": 51050,
-                "Width": 320
-            },
-            {
-                "Attributes": [
-                    "QList<I_Connector*> m_Connectors",
-                    "QList<I_ContainerGraphicsItem*> m_Containers",
-                    "DiagramGraphicsView* m_View",
-                    "bool m_isFocused",
-                    "QPointF m_CurrentPosition",
-                    "bool m_isFirstDisplay",
-                    "QJsonObject m_undoStack[UNDO_STACK_SIZE]",
-                    "unsigned short m_StackPtr",
-                    "unsigned short m_LatestChange",
-                    "unsigned short m_OldestChange"
-                ],
-                "Color": "yellow",
-                "Height": 1040,
-                "ID": 1,
-                "Methods": [
-                    "virtual I_ToolBox* getToolBox() = 0",
-                    "virtual QString getDIagramString() const = 0",
-                    "virtual unsigned int getDiagramWidth() const = 0",
-                    "virtual unsigned int getDiagramHeight() const = 0",
-                    "virtual QPoint getStartPosition() const = 0",
-                    "QList<I_Connector*> getAllConnectors() const",
-                    "QList<I_Connectable*> getAllConnectables() const",
-                    "virtual QList<I_Selectable*> getAllSelectables() const",
-                    "virtual I_Selectable* getSelectable(QPoint p_Pos) const",
-                    "virtual I_Selectable* getSelectableAt(unsigned int p_index) const",
-                    "virtual I_Connectable* getConnectable(QPoint p_Pos) const",
-                    "virtual I_Connectable* getConnectableAt(unsigned int p_index) const",
-                    "void deletePressed()",
-                    "void escapePressed()",
-                    "void printPressed()",
-                    "void selectToolbyID(unsigned short p_ID)",
-                    "void mousePressEvent(QGraphicsSceneMouseEvent* p_Event)",
-                    "void mouseButton1(QGraphicsSceneMouseEvent* p_Event)",
-                    "void mouseButton2(QGraphicsSceneMouseEvent* p_Event)",
-                    "void registerDiagramView(DiagramGraphicsView* p_View)",
-                    "DiagramGraphicsView* getView()",
-                    "void showDiagram()",
-                    "void setUnfocused()",
-                    "void setCurrentPosition(QPointF p_Pos)",
-                    "void toolChanged()",
-                    "void addSelectable(I_Selectable* p_Selectable)",
-                    "void addConnectable(I_Connectable* p_Connectable)",
-                    "void addConnector(I_GraphicConnector* p_Connector)",
-                    "void addContainer(I_ContainerGraphicsItem* p_Container)",
-                    "void deleteConnectorAt(unsigned int p_index)",
-                    "void deleteConnectableConnections(I_Connectable* p_Connectable)",
-                    "bool isConnectableContainerAtPos(QPoint p_Pos) const",
-                    "QJsonObject toJson() const",
-                    "void fromJson(QJSonObject p_Json)",
-                    "QStringList getDiagramTypes()",
-                    "void find()",
-                    "QStringList getFieldsOfType(QString p_Type)",
-                    "QStringList getAllDataOfTypeAndField(QString p_Type, QString p_Field)",
-                    "voidfocusOnItem(QString p_Type, QString p_Field, QString p_Data, unsigned short p_findOffset, bool p_select = false)",
-                    "void findConfigurationValidated(QString p_Type, QString p_Field, QString p_Data), unsigned short p_findOffset",
-                    "void findConfigurationCanceled()",
-                    "void saveUndoState()",
-                    "void undo()",
-                    "void redo()",
-                    "- void rerouteConnections()",
-                    "- getToolListenerAtPos(QPoint p_Pos)"
-                ],
-                "Name": "I_DiagramContainer",
-                "PositionX": 51390,
-                "PositionY": 50100,
-                "Width": 740
-            },
-            {
-                "Attributes": [
                 ],
                 "Color": "greenyellow",
-                "Height": 160,
-                "ID": 2,
-                "Methods": [
-                ],
-                "Name": "QGraphicsScene",
-                "PositionX": 51580,
-                "PositionY": 49280,
-                "Width": 160
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "yellow",
-                "Height": 240,
-                "ID": 3,
-                "Methods": [
-                ],
-                "Name": "I_ToolSwitcherListener",
-                "PositionX": 50960,
-                "PositionY": 49260,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "yellow",
-                "Height": 240,
-                "ID": 4,
-                "Methods": [
-                ],
-                "Name": "I_Serializable",
-                "PositionX": 50400,
-                "PositionY": 47960,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "yellow",
-                "Height": 240,
-                "ID": 5,
-                "Methods": [
-                ],
-                "Name": "I_ToolListener",
-                "PositionX": 50960,
-                "PositionY": 48940,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "yellow",
-                "Height": 240,
-                "ID": 6,
-                "Methods": [
-                ],
-                "Name": "I_ConnectableContainer",
-                "PositionX": 50960,
-                "PositionY": 47960,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "blanchedalmond",
-                "Height": 300,
-                "ID": 7,
-                "Methods": [
-                ],
-                "Name": "StateGraphicsItem",
-                "PositionX": 50140,
-                "PositionY": 50470,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "yellow",
-                "Height": 220,
-                "ID": 8,
-                "Methods": [
-                ],
-                "Name": "I_Configurable",
-                "PositionX": 50400,
-                "PositionY": 50050,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "yellow",
-                "Height": 300,
-                "ID": 9,
-                "Methods": [
-                ],
-                "Name": "I_SquarishGraphicsItem",
-                "PositionX": 49800,
-                "PositionY": 50010,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                    "m_Selectables",
-                    "m_Connectables",
-                    "m_Containers"
-                ],
-                "Color": "yellow",
-                "Height": 260,
-                "ID": 10,
-                "Methods": [
-                ],
-                "Name": "I_ContainerGraphicsItem",
-                "PositionX": 49800,
-                "PositionY": 49270,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "yellow",
-                "Height": 240,
-                "ID": 11,
-                "Methods": [
-                ],
-                "Name": "I_Connectable",
-                "PositionX": 49800,
-                "PositionY": 48880,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "yellow",
-                "Height": 300,
-                "ID": 12,
-                "Methods": [
-                ],
-                "Name": "I_Selectable",
-                "PositionX": 49800,
-                "PositionY": 48450,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "yellow",
-                "Height": 240,
-                "ID": 13,
-                "Methods": [
-                ],
-                "Name": "I_GraphicsItem",
-                "PositionX": 49800,
-                "PositionY": 47960,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "yellow",
-                "Height": 300,
-                "ID": 14,
-                "Methods": [
-                ],
-                "Name": "I_ContainersContainer",
-                "PositionX": 50960,
-                "PositionY": 48430,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "greenyellow",
-                "Height": 180,
-                "ID": 15,
+                "Contained": {
+                },
+                "Height": 190,
+                "ID": "{1145b2c7-6525-47b2-9138-6221a4cd92c0}",
                 "Methods": [
                 ],
                 "Name": "QGraphicsItemGroup",
-                "PositionX": 49800,
-                "PositionY": 47610,
-                "Width": 240
+                "PositionX": 49640,
+                "PositionY": 50040,
+                "Width": 180
             },
             {
                 "Attributes": [
                 ],
                 "Color": "blanchedalmond",
-                "Height": 300,
-                "ID": 16,
+                "Contained": {
+                },
+                "Height": 190,
+                "ID": "{09bd2867-a356-439e-b3e2-372ccdde6f8c}",
                 "Methods": [
                 ],
-                "Name": "ClassDiagramScene",
-                "PositionX": 51620,
-                "PositionY": 51050,
-                "Width": 240
+                "Name": "I_GraphicsItem",
+                "PositionX": 49640,
+                "PositionY": 50340,
+                "Width": 180
             },
             {
                 "Attributes": [
                 ],
-                "Color": "yellow",
-                "Height": 100,
-                "ID": 17,
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 244,
+                "ID": "{57595286-c869-4875-8593-088811813afb}",
+                "Methods": [
+                ],
+                "Name": "I_Selectable",
+                "PositionX": 49640,
+                "PositionY": 50618,
+                "Width": 180
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 250,
+                "ID": "{b2f26d7f-926a-42c1-9c3f-d45bf9db23ea}",
+                "Methods": [
+                ],
+                "Name": "I_Connectable",
+                "PositionX": 49640,
+                "PositionY": 50960,
+                "Width": 180
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 250,
+                "ID": "{b8cd9eff-5477-4d71-8d96-946b50dfb08a}",
+                "Methods": [
+                ],
+                "Name": "I_SquarishGraphicsItem",
+                "PositionX": 49631,
+                "PositionY": 51380,
+                "Width": 182
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 230,
+                "ID": "{adf6bfce-bec9-43e2-b677-f79aeac66b3c}",
+                "Methods": [
+                ],
+                "Name": "StateGraphicsItem",
+                "PositionX": 49920,
+                "PositionY": 51740,
+                "Width": 205
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 210,
+                "ID": "{d6134599-9632-40ed-bdb7-5599646af4b8}",
+                "Methods": [
+                ],
+                "Name": "I_Configurable",
+                "PositionX": 49220,
+                "PositionY": 51720,
+                "Width": 165
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 150,
+                "ID": "{5e93bbae-e787-40e1-8fc7-90bd4009a12a}",
+                "Methods": [
+                ],
+                "Name": "I_Serializable",
+                "PositionX": 50060,
+                "PositionY": 50125,
+                "Width": 250
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 180,
+                "ID": "{0b093adf-3403-47cd-b122-7a0dfc4e204d}",
+                "Methods": [
+                ],
+                "Name": "I_ConnectableContainer",
+                "PositionX": 50400,
+                "PositionY": 50340,
+                "Width": 250
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 190,
+                "ID": "{30c3948d-8037-4184-a8d5-825e71df0abb}",
+                "Methods": [
+                ],
+                "Name": "I_ContainerContainer",
+                "PositionX": 50400,
+                "PositionY": 50680,
+                "Width": 250
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 230,
+                "ID": "{9069cab2-ec4e-4b30-9e1d-cd8e076f4a14}",
                 "Methods": [
                 ],
                 "Name": "I_Undoable",
-                "PositionX": 50960,
-                "PositionY": 48710,
+                "PositionX": 50560,
+                "PositionY": 51020,
                 "Width": 240
             },
             {
                 "Attributes": [
                 ],
                 "Color": "blanchedalmond",
-                "Height": 520,
-                "ID": 18,
+                "Contained": {
+                },
+                "Height": 190,
+                "ID": "{f793ae8a-d9b1-41ea-97aa-95d631fca2f9}",
                 "Methods": [
                 ],
-                "Name": "SMToolBoxScene",
-                "PositionX": 50520,
-                "PositionY": 51160,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "yellow",
-                "Height": 160,
-                "ID": 19,
-                "Methods": [
-                ],
-                "Name": "I_ToolBox",
-                "PositionX": 50520,
-                "PositionY": 50540,
-                "Width": 240
+                "Name": "I_ToolListener",
+                "PositionX": 50560,
+                "PositionY": 51320,
+                "Width": 250
             },
             {
                 "Attributes": [
                 ],
                 "Color": "blanchedalmond",
-                "Height": 80,
-                "ID": 20,
+                "Contained": {
+                },
+                "Height": 190,
+                "ID": "{f6de95ac-3dd6-4184-98e1-cd1be4be2a85}",
                 "Methods": [
                 ],
-                "Name": "MouseTool",
-                "PositionX": 49960,
-                "PositionY": 50980,
-                "Width": 240
+                "Name": "I_ToolSwitcherListener",
+                "PositionX": 50560,
+                "PositionY": 51640,
+                "Width": 250
             },
             {
                 "Attributes": [
                 ],
                 "Color": "blanchedalmond",
-                "Height": 80,
-                "ID": 21,
+                "Contained": {
+                },
+                "Height": 170,
+                "ID": "{4a41b019-e962-4451-a04d-87776e4e9a57}",
                 "Methods": [
                 ],
-                "Name": "ConnectableTool<class Connectable>",
-                "PositionX": 49960,
-                "PositionY": 51100,
-                "Width": 240
+                "Name": "I_DiagramContainer",
+                "PositionX": 50540,
+                "PositionY": 51920,
+                "Width": 250
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "greenyellow",
+                "Contained": {
+                },
+                "Height": 190,
+                "ID": "{051b6fab-0d56-4c18-980a-091675718117}",
+                "Methods": [
+                ],
+                "Name": "QGraphicsScene",
+                "PositionX": 50940,
+                "PositionY": 51760,
+                "Width": 165
             },
             {
                 "Attributes": [
                 ],
                 "Color": "blanchedalmond",
-                "Height": 80,
-                "ID": 22,
-                "Methods": [
-                ],
-                "Name": "ContainerTool<class Container>",
-                "PositionX": 49960,
-                "PositionY": 51220,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "blanchedalmond",
-                "Height": 80,
-                "ID": 23,
-                "Methods": [
-                ],
-                "Name": "ConnectorTool<class Connector>",
-                "PositionX": 49960,
-                "PositionY": 51340,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "yellow",
-                "Height": 440,
-                "ID": 24,
-                "Methods": [
-                ],
-                "Name": "I_Tool",
-                "PositionX": 49420,
-                "PositionY": 51160,
-                "Width": 240
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "blanchedalmond",
+                "Contained": {
+                },
                 "Height": 300,
-                "ID": 26,
+                "ID": "{e6f25201-e7d2-4bde-b26d-897b91b2af2b}",
+                "Methods": [
+                ],
+                "Name": "ClassDiagramScene",
+                "PositionX": 50320,
+                "PositionY": 52300,
+                "Width": 250
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 300,
+                "ID": "{5fe45620-83bc-4ee0-9785-0ad0a9a5d161}",
+                "Methods": [
+                ],
+                "Name": "SMDiagramScene",
+                "PositionX": 50760,
+                "PositionY": 52300,
+                "Width": 250
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 300,
+                "ID": "{522ddec9-22f1-4c09-a32a-237730f1d3dd}",
                 "Methods": [
                 ],
                 "Name": "MainWindow",
-                "PositionX": 51400,
-                "PositionY": 51790,
-                "Width": 520
+                "PositionX": 50540,
+                "PositionY": 52860,
+                "Width": 250
             },
             {
                 "Attributes": [
                 ],
                 "Color": "blanchedalmond",
-                "Height": 300,
-                "ID": 27,
+                "Contained": {
+                },
+                "Height": 210,
+                "ID": "{56602ef6-d49b-4c91-8487-f90ecc1076c2}",
                 "Methods": [
                 ],
-                "Name": "SharingManager",
-                "PositionX": 52260,
-                "PositionY": 51790,
-                "Width": 240
+                "Name": "I_DataManager",
+                "PositionX": 50972,
+                "PositionY": 52745,
+                "Width": 185
             },
             {
                 "Attributes": [
                 ],
-                "Color": "yellow",
-                "Height": 220,
-                "ID": 28,
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 300,
+                "ID": "{26532e5a-530f-4668-b193-34612a736fba}",
                 "Methods": [
                 ],
-                "Name": "I_DataManager",
-                "PositionX": 51910,
-                "PositionY": 51430,
+                "Name": "SharingManager",
+                "PositionX": 51340,
+                "PositionY": 52880,
+                "Width": 250
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "greenyellow",
+                "Contained": {
+                },
+                "Height": 190,
+                "ID": "{f0a33b18-5505-4a70-9357-ee72c38e8471}",
+                "Methods": [
+                ],
+                "Name": "QThread",
+                "PositionX": 51320,
+                "PositionY": 52540,
+                "Width": 204
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 300,
+                "ID": "{ae330a0b-561b-49d6-a05f-a5dac3a333c9}",
+                "Methods": [
+                ],
+                "Name": "DataBaseRequester",
+                "PositionX": 51800,
+                "PositionY": 52880,
+                "Width": 250
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "greenyellow",
+                "Contained": {
+                },
+                "Height": 300,
+                "ID": "{bd236713-7208-44c6-a383-a3f2190c6b91}",
+                "Methods": [
+                ],
+                "Name": "QSqlite",
+                "PositionX": 52280,
+                "PositionY": 52880,
+                "Width": 250
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 190,
+                "ID": "{5e26dc17-1254-42a7-b803-d066f2ea4fbb}",
+                "Methods": [
+                ],
+                "Name": "I_ToolBox",
+                "PositionX": 49920,
+                "PositionY": 52040,
+                "Width": 204
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 510,
+                "ID": "{a79779d6-5b31-4087-9433-1b7e70df4b76}",
+                "Methods": [
+                ],
+                "Name": "SMToolBoxScene",
+                "PositionX": 49820,
+                "PositionY": 52545,
+                "Width": 250
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 84,
+                "ID": "{3913a471-8517-4c41-9e1f-379a4daf3874}",
+                "Methods": [
+                ],
+                "Name": "MouseTool",
+                "PositionX": 49410,
+                "PositionY": 52320,
                 "Width": 260
             },
             {
                 "Attributes": [
                 ],
-                "Color": "greenyellow",
-                "Height": 160,
-                "ID": 29,
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 90,
+                "ID": "{8d26d4d4-dbe2-40b6-b7ab-6baa47588e01}",
                 "Methods": [
                 ],
-                "Name": "QSqlite",
-                "PositionX": 52920,
-                "PositionY": 51740,
-                "Width": 240
+                "Name": "ConnectableTool<class Connectable>",
+                "PositionX": 49406,
+                "PositionY": 52460,
+                "Width": 252
             },
             {
                 "Attributes": [
                 ],
                 "Color": "blanchedalmond",
-                "Height": 160,
-                "ID": 30,
+                "Contained": {
+                },
+                "Height": 90,
+                "ID": "{c35e0484-0636-4041-9674-b435c6d65c77}",
                 "Methods": [
                 ],
-                "Name": "DataBaseRequester",
-                "PositionX": 52590,
-                "PositionY": 51740,
-                "Width": 140
+                "Name": "ContainerTool<class Container>",
+                "PositionX": 49400,
+                "PositionY": 52600,
+                "Width": 250
             },
             {
                 "Attributes": [
                 ],
-                "Color": "greenyellow",
-                "Height": 80,
-                "ID": 31,
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 110,
+                "ID": "{0c96390e-a64c-4936-a8d5-7e6428dacfd9}",
                 "Methods": [
                 ],
-                "Name": "QThread",
-                "PositionX": 52270,
-                "PositionY": 51520,
-                "Width": 180
+                "Name": "ConnectorTool<class Connector>",
+                "PositionX": 49400,
+                "PositionY": 52745,
+                "Width": 250
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 300,
+                "ID": "{3584803a-f8df-4a7d-b2a7-2c65e6d48fd6}",
+                "Methods": [
+                ],
+                "Name": "I_Tool",
+                "PositionX": 48900,
+                "PositionY": 52520,
+                "Width": 250
             }
         ],
         "Compositions": [
             {
                 "AttributesNames": [
                 ],
-                "ConnectFromDirection": 2,
-                "ConnectFromID": 18,
-                "ConnectFromNumber": 7,
+                "ConnectFromDirection": 4,
+                "ConnectFromID": "{5fe45620-83bc-4ee0-9785-0ad0a9a5d161}",
+                "ConnectFromNumber": 12,
                 "ConnectFromType": "Class",
-                "ConnectToDirection": 1,
-                "ConnectToID": 0,
-                "ConnectToNumber": 7,
+                "ConnectToDirection": 3,
+                "ConnectToID": "{522ddec9-22f1-4c09-a32a-237730f1d3dd}",
+                "ConnectToNumber": 20,
                 "ConnectToType": "Class",
-                "ID": 0
-            },
-            {
-                "AttributesNames": [
-                ],
-                "ConnectFromDirection": 2,
-                "ConnectFromID": 19,
-                "ConnectFromNumber": 3,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 1,
-                "ConnectToID": 1,
-                "ConnectToNumber": 47,
-                "ConnectToType": "Class",
-                "ID": 4
-            },
-            {
-                "AttributesNames": [
-                ],
-                "ConnectFromDirection": 2,
-                "ConnectFromID": 21,
-                "ConnectFromNumber": 1,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 1,
-                "ConnectToID": 18,
-                "ConnectToNumber": 9,
-                "ConnectToType": "Class",
-                "ID": 2
-            },
-            {
-                "AttributesNames": [
-                ],
-                "ConnectFromDirection": 2,
-                "ConnectFromID": 23,
-                "ConnectFromNumber": 1,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 1,
-                "ConnectToID": 18,
-                "ConnectToNumber": 21,
-                "ConnectToType": "Class",
-                "ID": 3
-            },
-            {
-                "AttributesNames": [
-                ],
-                "ConnectFromDirection": 2,
-                "ConnectFromID": 22,
-                "ConnectFromNumber": 1,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 1,
-                "ConnectToID": 18,
-                "ConnectToNumber": 15,
-                "ConnectToType": "Class",
-                "ID": 5
-            },
-            {
-                "AttributesNames": [
-                ],
-                "ConnectFromDirection": 2,
-                "ConnectFromID": 20,
-                "ConnectFromNumber": 1,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 1,
-                "ConnectToID": 18,
-                "ConnectToNumber": 3,
-                "ConnectToType": "Class",
-                "ID": 1
+                "ID": "{a0436da3-86a7-415f-b31e-0b5da9aa1911}",
+                "PositionX": 0,
+                "PositionY": 0
             },
             {
                 "AttributesNames": [
                 ],
                 "ConnectFromDirection": 4,
-                "ConnectFromID": 0,
-                "ConnectFromNumber": 7,
+                "ConnectFromID": "{e6f25201-e7d2-4bde-b26d-897b91b2af2b}",
+                "ConnectFromNumber": 10,
                 "ConnectFromType": "Class",
                 "ConnectToDirection": 3,
-                "ConnectToID": 26,
+                "ConnectToID": "{522ddec9-22f1-4c09-a32a-237730f1d3dd}",
                 "ConnectToNumber": 3,
                 "ConnectToType": "Class",
-                "ID": 6
+                "ID": "{ce447fcb-1cdb-4141-a86e-b9d418cf558f}",
+                "PositionX": 0,
+                "PositionY": 0
             },
             {
                 "AttributesNames": [
                 ],
                 "ConnectFromDirection": 4,
-                "ConnectFromID": 16,
-                "ConnectFromNumber": 6,
+                "ConnectFromID": "{f0a33b18-5505-4a70-9357-ee72c38e8471}",
+                "ConnectFromNumber": 9,
                 "ConnectFromType": "Class",
                 "ConnectToDirection": 3,
-                "ConnectToID": 26,
+                "ConnectToID": "{26532e5a-530f-4668-b193-34612a736fba}",
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": "{325483e4-e868-4675-8be3-50633b38165c}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{ae330a0b-561b-49d6-a05f-a5dac3a333c9}",
+                "ConnectFromNumber": 14,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": "{26532e5a-530f-4668-b193-34612a736fba}",
+                "ConnectToNumber": 14,
+                "ConnectToType": "Class",
+                "ID": "{b26c1ec4-8ee8-40e0-942b-f4732ed6b8e2}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{bd236713-7208-44c6-a383-a3f2190c6b91}",
+                "ConnectFromNumber": 14,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": "{ae330a0b-561b-49d6-a05f-a5dac3a333c9}",
+                "ConnectToNumber": 14,
+                "ConnectToType": "Class",
+                "ID": "{556389e7-cf0f-486e-82e0-d4b3cce956a9}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{26532e5a-530f-4668-b193-34612a736fba}",
+                "ConnectFromNumber": 20,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": "{522ddec9-22f1-4c09-a32a-237730f1d3dd}",
                 "ConnectToNumber": 22,
                 "ConnectToType": "Class",
-                "ID": 7
+                "ID": "{b12540fa-c88a-4379-a201-2dc9260d3ba7}",
+                "PositionX": 0,
+                "PositionY": 0
             },
             {
                 "AttributesNames": [
                 ],
-                "ConnectFromDirection": 1,
-                "ConnectFromID": 27,
+                "ConnectFromDirection": 2,
+                "ConnectFromID": "{5e26dc17-1254-42a7-b803-d066f2ea4fbb}",
                 "ConnectFromNumber": 7,
                 "ConnectFromType": "Class",
-                "ConnectToDirection": 2,
-                "ConnectToID": 26,
-                "ConnectToNumber": 7,
+                "ConnectToDirection": 1,
+                "ConnectToID": "{4a41b019-e962-4451-a04d-87776e4e9a57}",
+                "ConnectToNumber": 9,
                 "ConnectToType": "Class",
-                "ID": 9
-            },
-            {
-                "AttributesNames": [
-                ],
-                "ConnectFromDirection": 1,
-                "ConnectFromID": 29,
-                "ConnectFromNumber": 3,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 2,
-                "ConnectToID": 30,
-                "ConnectToNumber": 3,
-                "ConnectToType": "Class",
-                "ID": 10
-            },
-            {
-                "AttributesNames": [
-                ],
-                "ConnectFromDirection": 1,
-                "ConnectFromID": 30,
-                "ConnectFromNumber": 3,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 2,
-                "ConnectToID": 27,
-                "ConnectToNumber": 4,
-                "ConnectToType": "Class",
-                "ID": 11
-            },
-            {
-                "AttributesNames": [
-                ],
-                "ConnectFromDirection": 4,
-                "ConnectFromID": 31,
-                "ConnectFromNumber": 4,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 3,
-                "ConnectToID": 27,
-                "ConnectToNumber": 6,
-                "ConnectToType": "Class",
-                "ID": 12
+                "ID": "{bd844582-23c9-4cd7-b98e-765541e20eb0}",
+                "PositionX": 0,
+                "PositionY": 0
             }
         ],
         "Generalizations": [
             {
                 "ConnectFromDirection": 3,
-                "ConnectFromID": 0,
+                "ConnectFromID": "{09bd2867-a356-439e-b3e2-372ccdde6f8c}",
                 "ConnectFromNumber": 7,
                 "ConnectFromType": "Class",
                 "ConnectToDirection": 4,
-                "ConnectToID": 1,
-                "ConnectToNumber": 6,
+                "ConnectToID": "{1145b2c7-6525-47b2-9138-6221a4cd92c0}",
+                "ConnectToNumber": 7,
                 "ConnectToType": "Class",
-                "ID": 0
+                "ID": "{a2f075af-cc6d-48a9-9b7f-f1f0a63ff17a}",
+                "PositionX": 0,
+                "PositionY": 0
             },
             {
                 "ConnectFromDirection": 3,
-                "ConnectFromID": 1,
-                "ConnectFromNumber": 27,
+                "ConnectFromID": "{57595286-c869-4875-8593-088811813afb}",
+                "ConnectFromNumber": 7,
                 "ConnectFromType": "Class",
                 "ConnectToDirection": 4,
-                "ConnectToID": 2,
-                "ConnectToNumber": 3,
+                "ConnectToID": "{09bd2867-a356-439e-b3e2-372ccdde6f8c}",
+                "ConnectToNumber": 7,
                 "ConnectToType": "Class",
-                "ID": 1
+                "ID": "{5758cf85-e105-4f81-9979-58a1170af034}",
+                "PositionX": 0,
+                "PositionY": 0
             },
             {
                 "ConnectFromDirection": 3,
-                "ConnectFromID": 1,
-                "ConnectFromNumber": 19,
+                "ConnectFromID": "{b2f26d7f-926a-42c1-9c3f-d45bf9db23ea}",
+                "ConnectFromNumber": 8,
                 "ConnectFromType": "Class",
                 "ConnectToDirection": 4,
-                "ConnectToID": 3,
-                "ConnectToNumber": 6,
+                "ConnectToID": "{57595286-c869-4875-8593-088811813afb}",
+                "ConnectToNumber": 8,
                 "ConnectToType": "Class",
-                "ID": 2
+                "ID": "{8f0fcef2-fb23-44d5-bf7a-cd174eb8459f}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": "{b8cd9eff-5477-4d71-8d96-946b50dfb08a}",
+                "ConnectFromNumber": 8,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": "{b2f26d7f-926a-42c1-9c3f-d45bf9db23ea}",
+                "ConnectToNumber": 7,
+                "ConnectToType": "Class",
+                "ID": "{702f0a7b-d5b0-4e71-a3dd-df5b3c8ef0a8}",
+                "PositionX": 0,
+                "PositionY": 0
             },
             {
                 "ConnectFromDirection": 1,
-                "ConnectFromID": 6,
-                "ConnectFromNumber": 5,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 2,
-                "ConnectToID": 4,
-                "ConnectToNumber": 5,
-                "ConnectToType": "Class",
-                "ID": 3
-            },
-            {
-                "ConnectFromDirection": 3,
-                "ConnectFromID": 3,
-                "ConnectFromNumber": 5,
+                "ConnectFromID": "{adf6bfce-bec9-43e2-b677-f79aeac66b3c}",
+                "ConnectFromNumber": 4,
                 "ConnectFromType": "Class",
                 "ConnectToDirection": 4,
-                "ConnectToID": 5,
+                "ConnectToID": "{b8cd9eff-5477-4d71-8d96-946b50dfb08a}",
+                "ConnectToNumber": 8,
+                "ConnectToType": "Class",
+                "ID": "{db9a7949-e0b9-4626-96d0-3e9987d65648}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{adf6bfce-bec9-43e2-b677-f79aeac66b3c}",
+                "ConnectFromNumber": 15,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": "{d6134599-9632-40ed-bdb7-5599646af4b8}",
+                "ConnectToNumber": 16,
+                "ConnectToType": "Class",
+                "ID": "{fcad5409-8675-4e32-ba1e-f81822435c25}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 2,
+                "ConnectFromID": "{09bd2867-a356-439e-b3e2-372ccdde6f8c}",
+                "ConnectFromNumber": 7,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": "{5e93bbae-e787-40e1-8fc7-90bd4009a12a}",
                 "ConnectToNumber": 5,
                 "ConnectToType": "Class",
-                "ID": 4
+                "ID": "{42e8fdc5-bcd7-4b8b-aab7-f0aae94ddf4d}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{0b093adf-3403-47cd-b122-7a0dfc4e204d}",
+                "ConnectFromNumber": 6,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": "{5e93bbae-e787-40e1-8fc7-90bd4009a12a}",
+                "ConnectToNumber": 18,
+                "ConnectToType": "Class",
+                "ID": "{ac340ff3-ebfb-489b-bd74-06580a06c997}",
+                "PositionX": 0,
+                "PositionY": 0
             },
             {
                 "ConnectFromDirection": 3,
-                "ConnectFromID": 7,
+                "ConnectFromID": "{30c3948d-8037-4184-a8d5-825e71df0abb}",
+                "ConnectFromNumber": 12,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": "{0b093adf-3403-47cd-b122-7a0dfc4e204d}",
+                "ConnectToNumber": 12,
+                "ConnectToType": "Class",
+                "ID": "{95d075f7-3759-4fe6-9314-4f92cf2be737}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": "{9069cab2-ec4e-4b30-9e1d-cd8e076f4a14}",
+                "ConnectFromNumber": 11,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": "{30c3948d-8037-4184-a8d5-825e71df0abb}",
+                "ConnectToNumber": 12,
+                "ConnectToType": "Class",
+                "ID": "{9b9f5a7d-4e2a-4664-88a2-69da753e420e}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": "{f793ae8a-d9b1-41ea-97aa-95d631fca2f9}",
+                "ConnectFromNumber": 12,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": "{9069cab2-ec4e-4b30-9e1d-cd8e076f4a14}",
+                "ConnectToNumber": 11,
+                "ConnectToType": "Class",
+                "ID": "{12d45d98-64f0-4667-8b94-879ae12f43c1}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": "{f6de95ac-3dd6-4184-98e1-cd1be4be2a85}",
+                "ConnectFromNumber": 12,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": "{f793ae8a-d9b1-41ea-97aa-95d631fca2f9}",
+                "ConnectToNumber": 12,
+                "ConnectToType": "Class",
+                "ID": "{33d48b25-f0d3-447f-8357-9334160dc087}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 2,
+                "ConnectFromID": "{4a41b019-e962-4451-a04d-87776e4e9a57}",
+                "ConnectFromNumber": 9,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": "{051b6fab-0d56-4c18-980a-091675718117}",
+                "ConnectToNumber": 8,
+                "ConnectToType": "Class",
+                "ID": "{e0bb86f0-fd24-45f1-8004-8740d6745d9d}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": "{4a41b019-e962-4451-a04d-87776e4e9a57}",
+                "ConnectFromNumber": 12,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": "{f6de95ac-3dd6-4184-98e1-cd1be4be2a85}",
+                "ConnectToNumber": 10,
+                "ConnectToType": "Class",
+                "ID": "{2926c095-2faf-4893-93a0-fd3f50871edf}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": "{5fe45620-83bc-4ee0-9785-0ad0a9a5d161}",
+                "ConnectFromNumber": 12,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": "{4a41b019-e962-4451-a04d-87776e4e9a57}",
+                "ConnectToNumber": 20,
+                "ConnectToType": "Class",
+                "ID": "{e59d2585-bc60-4a68-896d-e42f27263aea}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": "{e6f25201-e7d2-4bde-b26d-897b91b2af2b}",
                 "ConnectFromNumber": 10,
                 "ConnectFromType": "Class",
                 "ConnectToDirection": 4,
-                "ConnectToID": 8,
+                "ConnectToID": "{4a41b019-e962-4451-a04d-87776e4e9a57}",
                 "ConnectToNumber": 5,
                 "ConnectToType": "Class",
-                "ID": 6
-            },
-            {
-                "ConnectFromDirection": 3,
-                "ConnectFromID": 7,
-                "ConnectFromNumber": 5,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 4,
-                "ConnectToID": 9,
-                "ConnectToNumber": 5,
-                "ConnectToType": "Class",
-                "ID": 7
+                "ID": "{a887a66f-ebbd-4ef2-b489-449098230296}",
+                "PositionX": 0,
+                "PositionY": 0
             },
             {
                 "ConnectFromDirection": 2,
-                "ConnectFromID": 13,
-                "ConnectFromNumber": 5,
+                "ConnectFromID": "{522ddec9-22f1-4c09-a32a-237730f1d3dd}",
+                "ConnectFromNumber": 6,
                 "ConnectFromType": "Class",
                 "ConnectToDirection": 1,
-                "ConnectToID": 4,
-                "ConnectToNumber": 5,
-                "ConnectToType": "Class",
-                "ID": 8
-            },
-            {
-                "ConnectFromDirection": 3,
-                "ConnectFromID": 10,
-                "ConnectFromNumber": 5,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 4,
-                "ConnectToID": 11,
-                "ConnectToNumber": 5,
-                "ConnectToType": "Class",
-                "ID": 11
-            },
-            {
-                "ConnectFromDirection": 3,
-                "ConnectFromID": 11,
-                "ConnectFromNumber": 5,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 4,
-                "ConnectToID": 12,
-                "ConnectToNumber": 5,
-                "ConnectToType": "Class",
-                "ID": 12
-            },
-            {
-                "ConnectFromDirection": 3,
-                "ConnectFromID": 12,
-                "ConnectFromNumber": 5,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 4,
-                "ConnectToID": 13,
-                "ConnectToNumber": 5,
-                "ConnectToType": "Class",
-                "ID": 10
-            },
-            {
-                "ConnectFromDirection": 3,
-                "ConnectFromID": 9,
-                "ConnectFromNumber": 5,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 4,
-                "ConnectToID": 10,
-                "ConnectToNumber": 5,
-                "ConnectToType": "Class",
-                "ID": 9
-            },
-            {
-                "ConnectFromDirection": 3,
-                "ConnectFromID": 14,
-                "ConnectFromNumber": 5,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 4,
-                "ConnectToID": 6,
-                "ConnectToNumber": 5,
-                "ConnectToType": "Class",
-                "ID": 13
-            },
-            {
-                "ConnectFromDirection": 2,
-                "ConnectFromID": 10,
-                "ConnectFromNumber": 3,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 1,
-                "ConnectToID": 14,
-                "ConnectToNumber": 6,
-                "ConnectToType": "Class",
-                "ID": 14
-            },
-            {
-                "ConnectFromDirection": 3,
-                "ConnectFromID": 13,
-                "ConnectFromNumber": 5,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 4,
-                "ConnectToID": 15,
-                "ConnectToNumber": 5,
-                "ConnectToType": "Class",
-                "ID": 15
-            },
-            {
-                "ConnectFromDirection": 3,
-                "ConnectFromID": 16,
-                "ConnectFromNumber": 5,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 4,
-                "ConnectToID": 1,
-                "ConnectToNumber": 29,
-                "ConnectToType": "Class",
-                "ID": 16
-            },
-            {
-                "ConnectFromDirection": 3,
-                "ConnectFromID": 5,
-                "ConnectFromNumber": 5,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 4,
-                "ConnectToID": 17,
-                "ConnectToNumber": 5,
-                "ConnectToType": "Class",
-                "ID": 17
-            },
-            {
-                "ConnectFromDirection": 3,
-                "ConnectFromID": 17,
-                "ConnectFromNumber": 5,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 4,
-                "ConnectToID": 14,
-                "ConnectToNumber": 5,
-                "ConnectToType": "Class",
-                "ID": 5
-            },
-            {
-                "ConnectFromDirection": 3,
-                "ConnectFromID": 18,
-                "ConnectFromNumber": 5,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 4,
-                "ConnectToID": 19,
-                "ConnectToNumber": 5,
-                "ConnectToType": "Class",
-                "ID": 18
-            },
-            {
-                "ConnectFromDirection": 1,
-                "ConnectFromID": 20,
-                "ConnectFromNumber": 1,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 2,
-                "ConnectToID": 24,
-                "ConnectToNumber": 1,
-                "ConnectToType": "Class",
-                "ID": 19
-            },
-            {
-                "ConnectFromDirection": 1,
-                "ConnectFromID": 21,
-                "ConnectFromNumber": 1,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 2,
-                "ConnectToID": 24,
-                "ConnectToNumber": 7,
-                "ConnectToType": "Class",
-                "ID": 20
-            },
-            {
-                "ConnectFromDirection": 1,
-                "ConnectFromID": 22,
-                "ConnectFromNumber": 1,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 2,
-                "ConnectToID": 24,
+                "ConnectToID": "{56602ef6-d49b-4c91-8487-f90ecc1076c2}",
                 "ConnectToNumber": 13,
                 "ConnectToType": "Class",
-                "ID": 21
+                "ID": "{52cc4d8a-da47-4c55-aa78-2f99aa8f590c}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": "{a79779d6-5b31-4087-9433-1b7e70df4b76}",
+                "ConnectFromNumber": 12,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": "{5e26dc17-1254-42a7-b803-d066f2ea4fbb}",
+                "ConnectToNumber": 10,
+                "ConnectToType": "Class",
+                "ID": "{eadba507-5c85-417b-acf3-e45592fbf440}",
+                "PositionX": 0,
+                "PositionY": 0
             },
             {
                 "ConnectFromDirection": 1,
-                "ConnectFromID": 23,
-                "ConnectFromNumber": 2,
+                "ConnectFromID": "{a79779d6-5b31-4087-9433-1b7e70df4b76}",
+                "ConnectFromNumber": 3,
                 "ConnectFromType": "Class",
                 "ConnectToDirection": 2,
-                "ConnectToID": 24,
-                "ConnectToNumber": 20,
+                "ConnectToID": "{3913a471-8517-4c41-9e1f-379a4daf3874}",
+                "ConnectToNumber": 4,
                 "ConnectToType": "Class",
-                "ID": 22
+                "ID": "{84ddf14b-3762-4675-a873-78a13feaf7d1}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{a79779d6-5b31-4087-9433-1b7e70df4b76}",
+                "ConnectFromNumber": 17,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": "{8d26d4d4-dbe2-40b6-b7ab-6baa47588e01}",
+                "ConnectToNumber": 5,
+                "ConnectToType": "Class",
+                "ID": "{761b2957-7b6d-4a4e-8dd2-b5f8e358e885}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{a79779d6-5b31-4087-9433-1b7e70df4b76}",
+                "ConnectFromNumber": 30,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": "{c35e0484-0636-4041-9674-b435c6d65c77}",
+                "ConnectToNumber": 4,
+                "ConnectToType": "Class",
+                "ID": "{5f6f0095-3de0-4854-95a3-0795ef0d3a78}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{a79779d6-5b31-4087-9433-1b7e70df4b76}",
+                "ConnectFromNumber": 44,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": "{0c96390e-a64c-4936-a8d5-7e6428dacfd9}",
+                "ConnectToNumber": 4,
+                "ConnectToType": "Class",
+                "ID": "{183d9d50-4bb6-4372-935b-ae7ae97aaf55}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{3913a471-8517-4c41-9e1f-379a4daf3874}",
+                "ConnectFromNumber": 3,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 3,
+                "ConnectToID": "{3584803a-f8df-4a7d-b2a7-2c65e6d48fd6}",
+                "ConnectToNumber": 12,
+                "ConnectToType": "Class",
+                "ID": "{a82a0121-88b0-4440-b99f-be66cd7c2025}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{8d26d4d4-dbe2-40b6-b7ab-6baa47588e01}",
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": "{3584803a-f8df-4a7d-b2a7-2c65e6d48fd6}",
+                "ConnectToNumber": 9,
+                "ConnectToType": "Class",
+                "ID": "{60d100c7-ea07-441a-9868-5e2dae4646ff}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{c35e0484-0636-4041-9674-b435c6d65c77}",
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": "{3584803a-f8df-4a7d-b2a7-2c65e6d48fd6}",
+                "ConnectToNumber": 24,
+                "ConnectToType": "Class",
+                "ID": "{7597ea60-4c50-4c34-b865-664ee2d62fd1}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{0c96390e-a64c-4936-a8d5-7e6428dacfd9}",
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": "{3584803a-f8df-4a7d-b2a7-2c65e6d48fd6}",
+                "ConnectToNumber": 11,
+                "ConnectToType": "Class",
+                "ID": "{13305b5e-f2f0-436b-a358-92e47e8d6075}",
+                "PositionX": 0,
+                "PositionY": 0
             },
             {
                 "ConnectFromDirection": 2,
-                "ConnectFromID": 26,
-                "ConnectFromNumber": 2,
+                "ConnectFromID": "{b8cd9eff-5477-4d71-8d96-946b50dfb08a}",
+                "ConnectFromNumber": 12,
                 "ConnectFromType": "Class",
-                "ConnectToDirection": 4,
-                "ConnectToID": 28,
-                "ConnectToNumber": 1,
+                "ConnectToDirection": 1,
+                "ConnectToID": "{30c3948d-8037-4184-a8d5-825e71df0abb}",
+                "ConnectToNumber": 9,
                 "ConnectToType": "Class",
-                "ID": 23
+                "ID": "{2e19a43d-7b1a-4b12-9b55-d4c732006b90}",
+                "PositionX": 0,
+                "PositionY": 0
+            },
+            {
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{4a41b019-e962-4451-a04d-87776e4e9a57}",
+                "ConnectFromNumber": 3,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": "{09bd2867-a356-439e-b3e2-372ccdde6f8c}",
+                "ConnectToNumber": 14,
+                "ConnectToType": "Class",
+                "ID": "{1b670d43-2cb5-4dc7-9cc8-ba0adb1697bd}",
+                "PositionX": 0,
+                "PositionY": 0
             }
         ]
     }
