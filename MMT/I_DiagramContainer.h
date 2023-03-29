@@ -67,7 +67,7 @@ public:
     bool isConnectableContainerAtPos(QPoint p_Pos) const {return true;}
 
     // I_Serializable
-    QJsonObject toJson();
+    QJsonObject toJson() const;
     void fromJson(QJsonObject p_Json);
 
     /**

@@ -18,7 +18,7 @@ public:
         {
             delete l_Items[i_item];
         }
-    };
+    }
 
     virtual void clearAll()
     {
@@ -253,7 +253,7 @@ public:
 
         return l_Ret;
     }
-    virtual QJsonObject toJson()
+    virtual QJsonObject toJson() const
     {
         QJsonObject l_MyJson = I_ConnectableContainer::toJson();
 

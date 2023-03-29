@@ -18,45 +18,51 @@ class I_GraphicsItem:
         public I_Serializable
 {
 public:
-    I_GraphicsItem(const QPoint& p_Pos):
+    I_GraphicsItem(const QPoint& p_Pos, bool p_byPassGrid=false):
         m_Plan(MAX_PLAN)
       , m_ID(QUuid::createUuid())
-      , m_Pos(GridReferential::getPointOnGrid(p_Pos))
+      , m_Pos(p_byPassGrid?p_Pos:GridReferential::getPointOnGrid(p_Pos))
     {
     }
-    I_GraphicsItem(const QJsonObject& p_JSon)
+    I_GraphicsItem(const QJsonObject& p_JSon):
+        m_Plan(MAX_PLAN)
     {
-
+        I_GraphicsItem::fromJson(p_JSon);
     }
 
     // I_Serializable
-    QJsonObject toJson() const
+    virtual QJsonObject toJson() const
     {
         QJsonObject l_Ret;
 
-        l_Ret.insert("Plan", static_cast<qint64>(this->getPlan()));
         l_Ret.insert("ID", this->getID().toString());
         l_Ret.insert("PositionX", this->getPos().x());
         l_Ret.insert("PositionY", this->getPos().y());
 
         return l_Ret;
     }
-    void fromJson(const QJsonObject& p_Json)
+    virtual void fromJson(QJsonObject p_Json)
     {
-        this->setPlan(p_Json.find("Plan")->toInt());
         this->setID(p_Json.find("ID")->toString());
-        this->setPos(QPoint(p_Json.find("PositionX")->toInt(),
-                                 p_Json.find("PositionY")->toInt()));
+        m_Pos = QPoint(p_Json.find("PositionX")->toInt(),
+                         p_Json.find("PositionY")->toInt());
     }
 
     QPoint getPos() const
     {
         return m_Pos;
     }
-    void setPos(const QPoint& p_Pos)
+    void setPos(const QPoint& p_Pos, bool p_byPassGrid = false)
     {
         QPoint l_Before = this->getPos();
-        m_Pos = GridReferential::getPointOnGrid(m_Pos);
+        if( !p_byPassGrid )
+        {
+            m_Pos = GridReferential::getPointOnGrid(p_Pos);
+        }
+        else
+        {
+            m_Pos = p_Pos;
+        }
         QPoint l_After = this->getPos();
 
         this->moveChildren(l_Before, l_After);
@@ -103,7 +109,7 @@ public:
     }
     void setID(const QString& p_StringID)
     {
-        m_ID.fromString(p_StringID);
+        m_ID = QUuid::fromString(p_StringID);
     }
 
 private:

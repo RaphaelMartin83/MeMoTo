@@ -204,7 +204,7 @@ void I_ConnectableContainer::unselectAll()
     m_CurrentSelectedID.clear();
 }
 
-QJsonObject I_ConnectableContainer::toJson()
+QJsonObject I_ConnectableContainer::toJson() const
 {
     QJsonObject l_MyJson;
 
@@ -216,7 +216,6 @@ QJsonObject I_ConnectableContainer::toJson()
         {
             l_Array = l_TempContainedArray->toArray();
         }
-        QJsonObject l_CurrentObject = m_Selectables[i_sel]->toJson();
         l_Array.append(m_Selectables[i_sel]->toJson());
         l_MyJson.insert(m_Selectables[i_sel]->getSerializableName(), l_Array);
     }
@@ -229,7 +228,6 @@ QJsonObject I_ConnectableContainer::toJson()
         {
             l_Array = l_TempContainedArray->toArray();
         }
-        QJsonObject l_CurrentObject = m_Connectables[i_con]->toJson();
         l_Array.append(m_Connectables[i_con]->toJson());
         l_MyJson.insert(m_Connectables[i_con]->getSerializableName(), l_Array);
     }

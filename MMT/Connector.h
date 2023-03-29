@@ -53,8 +53,8 @@ public:
     void route(const QPoint& p_fromPoint, const QPoint& p_toPoint);
 
     // I_Serializable
-    QJsonObject toJson();
-    void fromJson(QJsonObject p_Json);
+    virtual QJsonObject toJson() const;
+    virtual void fromJson(QJsonObject p_Json);
 
 private:
     // Route algorithm is divided into multiple simple cases

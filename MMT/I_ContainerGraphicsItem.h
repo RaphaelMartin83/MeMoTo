@@ -12,6 +12,19 @@ public:
     I_ContainerGraphicsItem(const QPoint& p_Pos);
     I_ContainerGraphicsItem(const QJsonObject& p_Json);
 
+    // I_Serializabre overrides
+    virtual QJsonObject toJson() const
+    {
+        QJsonObject l_Ret = I_Connectable::toJson();
+        l_Ret.insert(QString("Contained"), I_ContainersContainer::toJson());
+
+        return l_Ret;
+    }
+    virtual void fromJson(QJsonObject p_Json)
+    {
+        I_Connectable::fromJson(p_Json);
+    }
+
     void moveChildren(
             const QPoint& p_PosBefore, const QPoint& p_PosAfter);
 

@@ -35,7 +35,7 @@ public:
     bool isItYou(QPoint p_Pos) const;
     bool isFullySelected() const;
     QPoint getFocusPosition() const;
-    virtual QRect getCollisionRectangle() const { return QRect(); };
+    virtual QRect getCollisionRectangle() const { return QRect(); }
 
     void route(QPoint p_From, QPoint p_To);
     virtual void reroute();

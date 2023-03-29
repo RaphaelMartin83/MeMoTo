@@ -168,7 +168,6 @@ void I_DiagramContainer::copyPressed()
             {
                 l_Array = l_ArrayFound->toArray();
             }
-            QJsonObject l_CurrentObject = l_CurrentSelectable->toJson();
             l_Array.append(l_CurrentSelectable->toJson());
             l_MyJson.insert(l_CurrentSelectable->getSerializableName(), l_Array);
         }
@@ -401,7 +400,7 @@ void I_DiagramContainer::deleteConnectableConnections(I_Connectable* p_Connectab
     }
 }
 
-QJsonObject I_DiagramContainer::toJson()
+QJsonObject I_DiagramContainer::toJson() const
 {
     QJsonObject l_MyJson = I_ContainersContainer::toJson();
 
@@ -416,7 +415,6 @@ QJsonObject I_DiagramContainer::toJson()
             {
                 l_Array = l_ArrayFound->toArray();
             }
-            QJsonObject l_CurrentObject = l_CurrentSelectable->toJson();
             l_Array.append(l_CurrentSelectable->toJson());
             l_MyJson.insert(l_CurrentSelectable->getSerializableName(), l_Array);
         }
@@ -452,7 +450,12 @@ void I_DiagramContainer::fromJson(QJsonObject p_Json)
                 // Containers may contain diagrams
                 if(this->getToolBox()->getToolsList()[i_tools]->createsContainers())
                 {
-                    this->fromJson(l_CurrentTypeIt->toObject());
+                    QJsonObject l_ContainerObject = l_CurrentTypeIt->toObject();
+                    QJsonObject::iterator l_ContainedJson = l_ContainerObject.find("Contained");
+                    if( l_ContainerObject.end() != l_ContainedJson )
+                    {
+                        this->fromJson(l_ContainedJson->toObject());
+                    }
                 }
             }
         }

@@ -31,7 +31,7 @@ public:
     {
         return I_Selectable::toJson();
     }
-    void fromJson(const QJsonObject& p_Json)
+    void fromJson(QJsonObject p_Json)
     {
         I_Selectable::fromJson(p_Json);
     }
@@ -42,7 +42,8 @@ public:
     // A connector shall be able to wrap around the connectable
     virtual QString getConnectableName() const = 0;
     virtual bool isConnectable() const {return true;}
-    virtual const I_Connectable* getConnectable(const QString& p_ConnectableType, const QUuid& p_connectableID) const
+    virtual const I_Connectable* getConnectable(const QString& p_ConnectableType,
+                                                const QUuid& p_connectableID) const
     {
         if( (this->getConnectableType() == p_ConnectableType) &&
                 (this->getID() == p_connectableID) )

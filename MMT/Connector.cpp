@@ -62,7 +62,7 @@ Connector::Connector(const QJsonObject& p_JsonObject,
 }
 
 // I_Serializable
-QJsonObject Connector::toJson()
+QJsonObject Connector::toJson() const
 {
     QJsonObject l_MyJson = I_Connector::toJson();
 

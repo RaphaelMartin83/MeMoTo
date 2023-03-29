@@ -210,11 +210,11 @@ void I_SquarishGraphicsItem::setHeight(unsigned short p_Height)
                        m_Width,
                        m_Height));
 }
-unsigned short I_SquarishGraphicsItem::getWidth()
+unsigned short I_SquarishGraphicsItem::getWidth() const
 {
     return m_Width;
 }
-unsigned short I_SquarishGraphicsItem::getHeight()
+unsigned short I_SquarishGraphicsItem::getHeight() const
 {
     return m_Height;
 }
@@ -730,14 +730,11 @@ void I_SquarishGraphicsItem::resizeToFitContent()
     resizeToContain(QRect(l_minX, l_minY, l_maxX - l_minX, l_maxY - l_minY));
 }
 
-QJsonObject I_SquarishGraphicsItem::toJson()
+QJsonObject I_SquarishGraphicsItem::toJson() const
 {
-    QJsonObject l_MyJson = I_ContainersContainer::toJson();
+    QJsonObject l_MyJson = I_ContainerGraphicsItem::toJson();
 
-    l_MyJson.insert("ID", this->getID().toString());
     l_MyJson.insert("Name", this->getName());
-    l_MyJson.insert("PositionX", this->getPos().x());
-    l_MyJson.insert("PositionY", this->getPos().y());
     l_MyJson.insert("Width", this->getWidth());
     l_MyJson.insert("Height", this->getHeight());
     l_MyJson.insert("Color", this->getColorName());

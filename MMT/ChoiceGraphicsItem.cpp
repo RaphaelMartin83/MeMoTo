@@ -68,6 +68,13 @@ ChoiceGraphicsItem::ChoiceGraphicsItem(const QJsonObject& p_JsonObject):
     m_Width = p_JsonObject.find("Width")->toInt();
     m_Height = p_JsonObject.find("Height")->toInt();
 
+    m_Polygon = new QGraphicsPolygonItem();
+    m_Polygon->setBrush(Qt::green);
+    this->addToGroup(m_Polygon);
+
+    m_NameGraphicsItem = new QGraphicsTextItem(m_Name);
+    this->addToGroup(m_NameGraphicsItem);
+
     ChoiceGraphicsItem::refreshDisplay();
 }
 

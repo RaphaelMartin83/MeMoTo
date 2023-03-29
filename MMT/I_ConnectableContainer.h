@@ -136,7 +136,7 @@ public:
 
     QPoint getSelectionCoord();
     void unselectAll();
-    virtual QJsonObject toJson();
+    virtual QJsonObject toJson() const;
 private:
     QList<QString> m_CurrentSelectedType;
     QList<QUuid> m_CurrentSelectedID;

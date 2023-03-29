@@ -112,7 +112,7 @@ QString I_ClassGraphicsItem::getDataFromField(const QString& p_FieldName) const
     return l_Ret;
 }
 
-QJsonObject I_ClassGraphicsItem::toJson()
+QJsonObject I_ClassGraphicsItem::toJson() const
 {
     QJsonArray l_MethodsJson;
 

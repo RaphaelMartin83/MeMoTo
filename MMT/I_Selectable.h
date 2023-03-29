@@ -9,8 +9,8 @@ class I_Selectable:
         public I_GraphicsItem
 {
 public:
-    I_Selectable(const QPoint& p_Pos):
-        I_GraphicsItem(p_Pos)
+    I_Selectable(const QPoint& p_Pos, bool p_byPassGrid = false):
+        I_GraphicsItem(p_Pos, p_byPassGrid)
     {
 
     }
@@ -19,11 +19,11 @@ public:
     {
 
     }
-    QJsonObject toJson() const
+    virtual QJsonObject toJson() const
     {
         return I_GraphicsItem::toJson();
     }
-    void fromJson(const QJsonObject& p_Json)
+    virtual void fromJson(const QJsonObject& p_Json)
     {
         I_GraphicsItem::fromJson(p_Json);
     }

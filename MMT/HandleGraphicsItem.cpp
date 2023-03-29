@@ -14,7 +14,7 @@ static const Qt::GlobalColor DEFAULT_HANDLE_CONNECTION_COLOR = Qt::magenta;
 HandleGraphicsItem::HandleGraphicsItem(
         const QPoint& p_Position, const eConnectDirection& p_HandlePosition,
         bool p_VisibleUnselected):
-    I_Selectable(p_Position)
+    I_Selectable(p_Position, true)
   , m_isSelected(false)
   , m_isVisibleUnselected(p_VisibleUnselected)
 {

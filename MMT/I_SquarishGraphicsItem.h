@@ -37,8 +37,8 @@ public:
     // Squarish business
     void setWidth(unsigned short p_Width);
     void setHeight(unsigned short p_Height);
-    unsigned short getWidth();
-    unsigned short getHeight();
+    unsigned short getWidth() const;
+    unsigned short getHeight() const;
     void setName(const QString& p_Name);
     const QString& getName() const;
     void setColor(QColor p_Color);
@@ -74,7 +74,7 @@ public:
     virtual QString getConnectableName() const;
 
     // I_Serializable
-    QJsonObject toJson();
+    QJsonObject toJson() const;
     void fromJson(QJsonObject p_Json);
 
     // I_GraphicsItem overrides
