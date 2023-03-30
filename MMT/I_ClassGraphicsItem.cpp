@@ -138,7 +138,31 @@ QJsonObject I_ClassGraphicsItem::toJson() const
 
 void I_ClassGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
+    I_SquarishGraphicsItem::fromJson(p_Json);
 
+    QJsonObject::const_iterator l_FoundMethods = p_Json.find("Methods");
+    m_Methods.clear();
+    if( p_Json.end() != l_FoundMethods )
+    {
+        QJsonArray l_MethodsJson = l_FoundMethods->toArray();
+        for(QJsonArray::iterator l_methods = l_MethodsJson.begin();
+            l_methods < l_MethodsJson.end(); l_methods++ )
+        {
+            m_Methods.append(l_methods->toString());
+        }
+    }
+    QJsonObject::const_iterator l_FoundAttributes = p_Json.find("Attributes");
+    m_Attributes.clear();
+    if( p_Json.end() != l_FoundAttributes )
+    {
+        QJsonArray l_AttributesJson = l_FoundAttributes->toArray();
+        for(QJsonArray::iterator l_attributes = l_AttributesJson.begin();
+            l_attributes < l_AttributesJson.end(); l_attributes++)
+        {
+            m_Attributes.append(l_attributes->toString());
+        }
+    }
+    this->refreshDisplay();
 }
 
 void I_ClassGraphicsItem::refreshText()

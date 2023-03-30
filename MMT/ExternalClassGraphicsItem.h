@@ -30,7 +30,7 @@ public:
     QString getConnectableType() const;
 
     // I_Serializable overloads
-    QJsonObject toJson();
+    QJsonObject toJson() const;
     void fromJson(const QJsonObject& p_Json);
     QString getSerializableName() const;
 

@@ -32,8 +32,8 @@ public:
     QString getDataFromField(const QString& p_FieldName) const;
 
     // I_Serializable overloads
-    QJsonObject toJson() const;
-    void fromJson(const QJsonObject& p_Json);
+    virtual QJsonObject toJson() const;
+    virtual void fromJson(const QJsonObject& p_Json);
 
 private:
     void refreshText();

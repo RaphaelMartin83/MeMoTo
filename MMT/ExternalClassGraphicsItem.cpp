@@ -181,7 +181,7 @@ QString ExternalClassGraphicsItem::getConnectableType() const
     return EXTERNAL_CLASS_CONNECTABLE_NAME;
 }
 
-QJsonObject ExternalClassGraphicsItem::toJson()
+QJsonObject ExternalClassGraphicsItem::toJson() const
 {
     // Call 2nd parent toJson only to bypass serialization of methods and attributes
     QJsonObject l_MyJson = I_SquarishGraphicsItem::toJson();
@@ -193,7 +193,22 @@ QJsonObject ExternalClassGraphicsItem::toJson()
 }
 void ExternalClassGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
+    I_SquarishGraphicsItem::fromJson(p_Json);
 
+    m_Root = "";
+    QJsonObject::const_iterator l_FoundRoot = p_Json.find("Root");
+    if( p_Json.end() != l_FoundRoot )
+    {
+        m_Root = l_FoundRoot->toString();
+    }
+    m_Path = "";
+    QJsonObject::const_iterator l_FoundPath = p_Json.find("Path");
+    if( p_Json.end() != l_FoundPath )
+    {
+        m_Path = l_FoundPath->toString();
+    }
+
+    this->refreshDisplay();
 }
 
 QString ExternalClassGraphicsItem::getSerializableName() const
