@@ -518,6 +518,10 @@ void I_SquarishGraphicsItem::selectHandlesOnSide(eConnectDirection p_Direction)
     }
 }
 
+bool I_SquarishGraphicsItem::isSelected() const
+{
+    return (isFullySelected() || (eConnectionDirection_None != m_SelectedHandlesDirection));
+}
 bool I_SquarishGraphicsItem::isFullySelected() const
 {
     return m_isFullySelected;

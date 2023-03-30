@@ -32,6 +32,7 @@ public:
     virtual void unselect() = 0;
     virtual void move(QPoint p_Pos) = 0;
     virtual bool isItYou(QPoint p_Pos) const = 0;
+    virtual bool isSelected() const = 0;
     virtual bool isFullySelected() const = 0;
     virtual QPoint getFocusPosition() const = 0;
     virtual QString getSelectableType() const = 0;

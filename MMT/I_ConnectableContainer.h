@@ -99,9 +99,19 @@ public:
 
         for( unsigned int i_Selectables = 0U; i_Selectables < l_AllSelectables.count(); i_Selectables++ )
         {
-            if( (!p_fully) || (l_AllSelectables[i_Selectables]->isFullySelected()) )
+            if( p_fully )
             {
-                l_Ret.append(l_AllSelectables[i_Selectables]);
+                if( l_AllSelectables[i_Selectables]->isFullySelected() )
+                {
+                    l_Ret.append(l_AllSelectables[i_Selectables]);
+                }
+            }
+            else
+            {
+                if( l_AllSelectables[i_Selectables]->isSelected() )
+                {
+                    l_Ret.append(l_AllSelectables[i_Selectables]);
+                }
             }
         }
 

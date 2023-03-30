@@ -293,6 +293,10 @@ bool GraphicConnector::isItYou(QPoint p_Pos) const
     return l_ret;
 }
 
+bool GraphicConnector::isSelected() const
+{
+    return (isFullySelected() || (-1 != m_SelectedHandleID));
+}
 bool GraphicConnector::isFullySelected() const
 {
     return m_isFullySelected;

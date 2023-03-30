@@ -450,6 +450,10 @@ QString ChoiceGraphicsItem::getConnectableName() const
 {
     return m_Name;
 }
+bool ChoiceGraphicsItem::isSelected() const
+{
+    return (isFullySelected() || (nullptr != m_SelectedHandle));
+}
 bool ChoiceGraphicsItem::isFullySelected() const
 {
     return m_isFullySelected;

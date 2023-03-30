@@ -64,6 +64,7 @@ public:
     void unselect();
     void move(QPoint p_Pos);
     bool isItYou(QPoint p_Pos) const;
+    bool isSelected() const;
     bool isFullySelected() const;
     QPoint getFocusPosition() const;
 

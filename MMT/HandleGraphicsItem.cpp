@@ -114,6 +114,10 @@ void HandleGraphicsItem::move(QPoint p_Pos)
     this->setPos(p_Pos);
 }
 
+bool HandleGraphicsItem::isSelected() const
+{
+    return m_isSelected;
+}
 bool HandleGraphicsItem::isFullySelected() const
 {
     return m_isSelected;

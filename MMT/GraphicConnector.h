@@ -33,6 +33,7 @@ public:
     QPoint getPos() const;
     void setPos(const QPoint& p_Pos);
     bool isItYou(QPoint p_Pos) const;
+    bool isSelected() const;
     bool isFullySelected() const;
     QPoint getFocusPosition() const;
     virtual QRect getCollisionRectangle() const { return QRect(); }

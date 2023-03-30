@@ -323,6 +323,10 @@ bool InitialStateGraphicsItem::isItYou(QPoint p_Pos) const
     return l_isItMe;
 }
 
+bool InitialStateGraphicsItem::isSelected() const
+{
+    return (isFullySelected() || (eConnectionDirection_None != m_SelectedHandlesDirection));
+}
 bool InitialStateGraphicsItem::isFullySelected() const
 {
     return m_isFullySelected;

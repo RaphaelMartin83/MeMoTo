@@ -329,6 +329,10 @@ QString EntryStateGraphicsItem::getSerializableName() const
     return SERIALIZABLE_NAME;
 }
 
+bool EntryStateGraphicsItem::isSelected() const
+{
+    return (isFullySelected() || (eConnectionDirection_None != m_SelectedHandlesDirection));
+}
 bool EntryStateGraphicsItem::isFullySelected() const
 {
     return m_isFullySelected;
