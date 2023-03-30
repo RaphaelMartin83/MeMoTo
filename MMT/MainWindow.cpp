@@ -11,6 +11,7 @@
 #include "SaveFileConfiguration.h"
 #include "LoadFileConfiguration.h"
 #include "SharingManager.h"
+#include "MeMoToApplication.h"
 
 #include "SMDiagramScene.h"
 #include "ClassDiagramScene.h"
@@ -34,6 +35,11 @@ MainWindow::MainWindow(QWidget *parent)
     this->initGUI();
 
     this->initDiagrams();
+
+    if( "" != MeMoToApplication::getFileToOpen() )
+    {
+        MainWindow::fileSelectedForLoading(MeMoToApplication::getFileToOpen());
+    }
 }
 
 MainWindow::MainWindow(const char* argv, QWidget *parent)
@@ -46,6 +52,11 @@ MainWindow::~MainWindow()
 {
     m_mainLayout->removeWidget(&ConfigWidget::getInstance());
     ConfigWidget::deleteInstance();
+}
+
+I_DiagramContainer* MainWindow::getCurrentDiagram()
+{
+    return m_Diagrams[m_CurrentDiagramID];
 }
 
 // I_SaveFileConfigurationListener
@@ -65,12 +76,15 @@ void MainWindow::fileSavingCanceled()
 
 void MainWindow::fileSelectedForLoading(QString p_File)
 {
-    m_FileName = p_File;
+    if( QFile(p_File).exists() )
+    {
+        m_FileName = p_File;
 
-    ConfigWidget::close();
+        ConfigWidget::close();
 
-    this->loadDiagrams();
-    this->updateTitle();
+        this->loadDiagrams();
+        this->updateTitle();
+    }
 }
 void MainWindow::fileLoadingCanceled()
 {
@@ -166,8 +180,22 @@ void MainWindow::initDiagrams()
     m_Diagrams.last()->registerDiagramView(m_DiagramView);
     m_SerializablesIndexes.append(m_Diagrams.last()->getSerializableName());
 
-    // Force for initialization
-    this->switchToContext(0U, true);
+    // Displays the default diagram
+    bool l_Found = false;
+    for(unsigned short i_diagrams = 0U;
+        (i_diagrams < m_Diagrams.count()) && (false == l_Found);
+        i_diagrams++ )
+    {
+        if( MeMoToApplication::getDefaultDiagarm() == m_Diagrams[i_diagrams]->getSerializableName() )
+        {
+            this->switchToContext(i_diagrams, true);
+            l_Found = true;
+        }
+    }
+    if( !l_Found )
+    {
+        this->switchToContext(0U, true);
+    }
 }
 
 void MainWindow::saveDiagrams()

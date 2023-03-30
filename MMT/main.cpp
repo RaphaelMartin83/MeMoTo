@@ -21,17 +21,21 @@ int main(int argc, char** argv)
         }
     }
 
-    MainWindow* l_MainWindow = nullptr;
-    if( argc > 1 )
+    bool l_isHeadless = l_Application.isHeadless();
+
+    MainWindow* l_MainWindow = new MainWindow();
+
+    if( false == l_isHeadless )
     {
-        l_MainWindow = new MainWindow(argv[1]);
+        l_MainWindow->show();
+        return l_Application.exec();
     }
     else
     {
-        l_MainWindow = new MainWindow();
+        if( "" != MeMoToApplication::getPNGToCreate() )
+        {
+            // Need to generate PNG file
+            l_MainWindow->getCurrentDiagram()->printPressed(MeMoToApplication::getPNGToCreate());
+        }
     }
-    l_MainWindow->show();
-
-    // Does not delete the main window because the process is ending anyway
-    return l_Application.exec();
 }

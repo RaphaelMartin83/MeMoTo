@@ -133,7 +133,7 @@ void I_DiagramContainer::escapePressed()
     }
     ConfigWidget::close();
 }
-void I_DiagramContainer::printPressed()
+void I_DiagramContainer::printPressed(QString p_OutputFile)
 {
     // Get a bigger ROI
     QRectF l_ROI = this->itemsBoundingRect();
@@ -145,7 +145,14 @@ void I_DiagramContainer::printPressed()
 
     QPainter l_painter(&l_image);
     this->render(&l_painter);
-    l_image.save(this->getDiagramString() + ".png");
+    if( "" == p_OutputFile )
+    {
+        l_image.save(this->getDiagramString() + ".png");
+    }
+    else
+    {
+        l_image.save(p_OutputFile);
+    }
     this->setSceneRect(QRect(0, 0,
                              this->getDiagramMaxWidth(),
                              this->getDiagramMaxHeight()));

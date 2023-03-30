@@ -24,17 +24,19 @@ public:
     MainWindow(const char* argv, QWidget *parent = nullptr);
     ~MainWindow();
 
+    I_DiagramContainer* getCurrentDiagram();
+
     // I_SaveFileConfigurationListener
     virtual void fileSelectedForSaving(QString p_File);
     virtual void fileSavingCanceled();
 
     // I_LoadFileConfigurationListener
-    virtual void fileSelectedForLoading(QString p_File);
-    virtual void fileLoadingCanceled();
+    void fileSelectedForLoading(QString p_File);
+    void fileLoadingCanceled();
 
     // I_DataManager
-    virtual void getApplicationData(QJsonObject& p_rData) const;
-    virtual void setApplicationData(const QJsonObject& p_Data);
+    void getApplicationData(QJsonObject& p_rData) const;
+    void setApplicationData(const QJsonObject& p_Data);
 
     void startSharing();
 
