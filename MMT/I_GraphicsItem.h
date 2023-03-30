@@ -48,11 +48,11 @@ public:
                          p_Json.find("PositionY")->toInt());
     }
 
-    QPoint getPos() const
+    virtual QPoint getPos() const
     {
         return m_Pos;
     }
-    void setPos(const QPoint& p_Pos, bool p_byPassGrid = false)
+    virtual void setPos(const QPoint& p_Pos, bool p_byPassGrid = false)
     {
         QPoint l_Before = this->getPos();
         if( !p_byPassGrid )

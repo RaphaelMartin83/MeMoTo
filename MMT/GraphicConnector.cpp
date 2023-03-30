@@ -219,6 +219,8 @@ void GraphicConnector::unselect()
         m_Handles[m_SelectedHandleID]->unselect();
         m_SelectedHandleID = -1;
     }
+
+    m_isFullySelected = false;
 }
 void GraphicConnector::move(QPoint p_Pos)
 {
@@ -267,12 +269,10 @@ void GraphicConnector::move(QPoint p_Pos)
 }
 QPoint GraphicConnector::getPos() const
 {
-    return this->getPath().first();
-}
-void GraphicConnector::setPos(const QPoint& p_Pos)
-{
-    this->setPath(0U, p_Pos);
-    this->refreshDisplay();
+    QPoint l_MiddlePoint;
+    l_MiddlePoint.setX((this->getPath().first().x() + this->getPath().last().x())/2);
+    l_MiddlePoint.setY((this->getPath().first().y() + this->getPath().last().y())/2);
+    return l_MiddlePoint;
 }
 bool GraphicConnector::isItYou(QPoint p_Pos) const
 {

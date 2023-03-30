@@ -22,13 +22,15 @@ I_ClassGraphicsItem::I_ClassGraphicsItem(const QJsonObject& p_Json):
   , m_Methods()
   , m_Attributes()
 {
-    QJsonArray l_MethodsJson = p_Json.find("Methods")->toArray();
+    QJsonObject::const_iterator l_FoundMethods = p_Json.find("Methods");
+    QJsonArray l_MethodsJson = l_FoundMethods->toArray();
     for( unsigned short i_methods = 0U; i_methods < l_MethodsJson.count(); i_methods++ )
     {
         m_Methods.append(l_MethodsJson[i_methods].toString());
     }
 
-    QJsonArray l_AttributesJson = p_Json.find("Attributes")->toArray();
+    QJsonObject::const_iterator l_FoundAttributes = p_Json.find("Attributes");
+    QJsonArray l_AttributesJson = l_FoundAttributes->toArray();
     for( unsigned short i_attributes = 0U; i_attributes < l_AttributesJson.count(); i_attributes++ )
     {
         m_Attributes.append(l_AttributesJson[i_attributes].toString());
