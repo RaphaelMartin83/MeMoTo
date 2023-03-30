@@ -372,7 +372,7 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
     }
     else if( p_Event->matches(QKeySequence::Print) )
     {
-        m_Diagrams[m_CurrentDiagramID]->printPressed();
+        m_Diagrams[m_CurrentDiagramID]->printPressed("");
     }
     else if( p_Event->matches(QKeySequence::Copy) )
     {

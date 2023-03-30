@@ -2,6 +2,7 @@
 #include <QClipboard>
 #include <QJsonDocument>
 #include <QGraphicsSceneMouseEvent>
+#include <QFile>
 
 #include "I_DiagramContainer.h"
 #include "SharingManager.h"
@@ -135,6 +136,13 @@ void I_DiagramContainer::escapePressed()
 }
 void I_DiagramContainer::printPressed(QString p_OutputFile)
 {
+    QFile l_FileOutput(p_OutputFile);
+    if( ("" != p_OutputFile) && (false == l_FileOutput.isWritable()) )
+    {
+        // Do not go default and polute user machine
+        return;
+    }
+
     // Get a bigger ROI
     QRectF l_ROI = this->itemsBoundingRect();
 
@@ -151,7 +159,7 @@ void I_DiagramContainer::printPressed(QString p_OutputFile)
     }
     else
     {
-        l_image.save(p_OutputFile);
+        l_image.save(&l_FileOutput);
     }
     this->setSceneRect(QRect(0, 0,
                              this->getDiagramMaxWidth(),
