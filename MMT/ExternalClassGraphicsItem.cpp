@@ -60,35 +60,37 @@ void ExternalClassGraphicsItem::refreshDisplay()
     QFile l_File;
     QString l_FileString = this->getResolvedFullPath();
     l_File.setFileName(l_FileString);
-    l_File.open(QIODevice::ReadOnly | QIODevice::Text);
-    QByteArray l_FileContent = l_File.readAll();
-    l_File.close();
-
-    QJsonDocument l_JsonDoc;
-    QJsonParseError l_Error;
-    l_JsonDoc = QJsonDocument::fromJson(l_FileContent, &l_Error);
-
-    QJsonObject l_JsonObject;
-    l_JsonObject = l_JsonDoc.object();
-
-    // Finds myself into the json file
-    // Breaks encapsulation, todo: improve
-    QJsonObject::iterator l_tmpObjectFound = l_JsonObject.find("ClassDiagram");
-    if( l_JsonObject.end() != l_tmpObjectFound )
+    if( l_File.exists() )
     {
-        l_JsonObject = l_tmpObjectFound->toObject();
+        l_File.open(QIODevice::ReadOnly | QIODevice::Text);
+        QByteArray l_FileContent = l_File.readAll();
+        l_File.close();
 
-        QJsonArray l_JsonArray = l_JsonObject.find(ClassGraphicsItem::SERIALIZABLE_NAME)->toArray();
+        QJsonDocument l_JsonDoc;
+        QJsonParseError l_Error;
+        l_JsonDoc = QJsonDocument::fromJson(l_FileContent, &l_Error);
 
-        for(QJsonArray::Iterator l_ClassesIterator = l_JsonArray.begin();
-            l_ClassesIterator < l_JsonArray.end(); l_ClassesIterator++)
+        QJsonObject l_JsonObject;
+        l_JsonObject = l_JsonDoc.object();
+
+        // Finds myself into the json file
+        // Breaks encapsulation, todo: improve
+        QJsonObject::iterator l_tmpObjectFound = l_JsonObject.find("ClassDiagram");
+        if( l_JsonObject.end() != l_tmpObjectFound )
         {
-            if( this->getName() == l_ClassesIterator->toObject().find("Name")->toString() )
+            l_JsonObject = l_tmpObjectFound->toObject();
+
+            QJsonArray l_JsonArray = l_JsonObject.find(ClassGraphicsItem::SERIALIZABLE_NAME)->toArray();
+
+            for(QJsonArray::Iterator l_ClassesIterator = l_JsonArray.begin();
+                l_ClassesIterator < l_JsonArray.end(); l_ClassesIterator++)
             {
-                this->fromExternalJson(l_ClassesIterator->toObject());
+                if( this->getName() == l_ClassesIterator->toObject().find("Name")->toString() )
+                {
+                    this->fromExternalJson(l_ClassesIterator->toObject());
+                }
             }
         }
-
     }
     I_ClassGraphicsItem::refreshDisplay();
 }
