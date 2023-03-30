@@ -51,6 +51,5 @@ Note: The sharing feature is a bit wierd. It relies on a common network reposito
 # What is planed
 
 - Usability: Hide class content, png generation path asking
-- CD integration: Headless png generation
 - Aesthetic: curved connections, rounded items
 
