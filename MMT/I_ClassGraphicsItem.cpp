@@ -10,6 +10,7 @@ I_ClassGraphicsItem::I_ClassGraphicsItem(const QPoint& p_Pos, const QString& p_N
     I_SquarishGraphicsItem(p_Pos, p_Name, p_Width, p_Height)
   , m_Methods()
   , m_Attributes()
+  , m_isContentToHide(false)
 {
     m_ClassContentToDisplay = new QGraphicsTextItem();
     this->addToGroup(m_ClassContentToDisplay);
@@ -21,19 +22,36 @@ I_ClassGraphicsItem::I_ClassGraphicsItem(const QJsonObject& p_Json):
     I_SquarishGraphicsItem(p_Json)
   , m_Methods()
   , m_Attributes()
+  , m_isContentToHide(false)
 {
-    QJsonObject::const_iterator l_FoundMethods = p_Json.find("Methods");
-    QJsonArray l_MethodsJson = l_FoundMethods->toArray();
-    for( unsigned short i_methods = 0U; i_methods < l_MethodsJson.count(); i_methods++ )
+    QJsonObject::const_iterator l_FoundContentToHide = p_Json.find("HideContent");
+    if( p_Json.end() != l_FoundContentToHide )
     {
-        m_Methods.append(l_MethodsJson[i_methods].toString());
+        this->setContentToHide(l_FoundContentToHide->toString().toLower() == "true");
+    }
+    else
+    {
+        this->setContentToHide(false);
+    }
+
+    QJsonObject::const_iterator l_FoundMethods = p_Json.find("Methods");
+    if( p_Json.end() != l_FoundMethods )
+    {
+        QJsonArray l_MethodsJson = l_FoundMethods->toArray();
+        for( unsigned short i_methods = 0U; i_methods < l_MethodsJson.count(); i_methods++ )
+        {
+            m_Methods.append(l_MethodsJson[i_methods].toString());
+        }
     }
 
     QJsonObject::const_iterator l_FoundAttributes = p_Json.find("Attributes");
-    QJsonArray l_AttributesJson = l_FoundAttributes->toArray();
-    for( unsigned short i_attributes = 0U; i_attributes < l_AttributesJson.count(); i_attributes++ )
+    if( p_Json.end() != l_FoundAttributes )
     {
-        m_Attributes.append(l_AttributesJson[i_attributes].toString());
+        QJsonArray l_AttributesJson = l_FoundAttributes->toArray();
+        for( unsigned short i_attributes = 0U; i_attributes < l_AttributesJson.count(); i_attributes++ )
+        {
+            m_Attributes.append(l_AttributesJson[i_attributes].toString());
+        }
     }
 
     m_ClassContentToDisplay = new QGraphicsTextItem();
@@ -76,6 +94,15 @@ void I_ClassGraphicsItem::setAttributesList(const QList<QString>& p_Attributes)
 const QList<QString>& I_ClassGraphicsItem::getAttributesList()
 {
     return m_Attributes;
+}
+
+bool I_ClassGraphicsItem::isContentToHide() const
+{
+    return m_isContentToHide;
+}
+void I_ClassGraphicsItem::setContentToHide(bool p_isContentToHide)
+{
+    m_isContentToHide = p_isContentToHide;
 }
 
 QStringList I_ClassGraphicsItem::getSearchFields() const
@@ -134,6 +161,7 @@ QJsonObject I_ClassGraphicsItem::toJson() const
 
     l_MyJson.insert("Methods", l_MethodsJson);
     l_MyJson.insert("Attributes", l_AttributesJson);
+    l_MyJson.insert("HideContent", this->isContentToHide()?"true":"false");
 
     return l_MyJson;
 }
@@ -141,6 +169,16 @@ QJsonObject I_ClassGraphicsItem::toJson() const
 void I_ClassGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
     I_SquarishGraphicsItem::fromJson(p_Json);
+
+    QJsonObject::const_iterator l_FoundContentToHide = p_Json.find("HideContent");
+    if( p_Json.end() != l_FoundContentToHide )
+    {
+        this->setContentToHide(QString("true") == l_FoundContentToHide->toString().toLower());
+    }
+    else
+    {
+        this->setContentToHide(false);
+    }
 
     QJsonObject::const_iterator l_FoundMethods = p_Json.find("Methods");
     m_Methods.clear();
@@ -169,6 +207,13 @@ void I_ClassGraphicsItem::fromJson(const QJsonObject& p_Json)
 
 void I_ClassGraphicsItem::refreshText()
 {
+    // If to hide then nothing to display
+    if( this->isContentToHide() )
+    {
+        m_ClassContentToDisplay->setPlainText("");
+        return;
+    }
+
     QString l_fullText;
 
     if( m_Methods.count() > 0U )

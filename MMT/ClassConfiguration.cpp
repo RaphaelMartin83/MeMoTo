@@ -27,6 +27,9 @@ ClassConfiguration::ClassConfiguration()
     m_AttributesList->setMinimumHeight(200);
     this->attributesChanged();
 
+    m_HideContent = new QLabel("Hide content");
+    m_HideContentCheckBox = new QCheckBox();
+
     m_Layout = new QGridLayout();
 
     // Setup layout
@@ -42,6 +45,9 @@ ClassConfiguration::ClassConfiguration()
 
     m_Layout->addWidget(m_AttributesLabel, l_row++, 0, 1, -1, Qt::Alignment());
     m_Layout->addWidget(m_AttributesList, l_row++, 0, 1, -1, Qt::Alignment());
+
+    m_Layout->addWidget(m_HideContent, l_row, 0, 1, 1, Qt::Alignment(Qt::AlignRight));
+    m_Layout->addWidget(m_HideContentCheckBox, l_row++, 1, 1, 1, Qt::Alignment());
 
     m_Layout->addWidget(m_CancelButton, l_row, 0, 1, 1, Qt::Alignment());
     m_Layout->addWidget(m_OKButton, l_row, 1, 1, 1, Qt::Alignment());
@@ -144,6 +150,15 @@ QColor ClassConfiguration::getColor() const
 void ClassConfiguration::setColor(QString p_Color)
 {
     m_ColorSelection->setCurrentText(p_Color);
+}
+
+bool ClassConfiguration::isContentToHide() const
+{
+    return m_HideContentCheckBox->isChecked();
+}
+void ClassConfiguration::setContentToHide(bool p_isContentToHide)
+{
+    m_HideContentCheckBox->setChecked(p_isContentToHide);
 }
 
 // I_ConfigurationContent

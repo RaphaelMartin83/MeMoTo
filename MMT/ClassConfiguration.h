@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QComboBox>
+#include <QCheckBox>
 
 #include "ConfigLineEdit.h"
 #include "ConfigList.h"
@@ -30,6 +31,8 @@ public:
     void setAttributes(const QList<QString>& p_Attributes);
     QColor getColor() const;
     void setColor(QString p_Color);
+    bool isContentToHide() const;
+    void setContentToHide(bool p_isContentToHide);
 
     // I_ConfigurationContent
     void setFocusOnFirstZone();
@@ -65,6 +68,9 @@ private:
     // Attributes
     QLabel* m_AttributesLabel;
     ConfigList* m_AttributesList;
+
+    QLabel* m_HideContent;
+    QCheckBox* m_HideContentCheckBox;
 };
 
 #endif // CLASSCONFIGURATION_H

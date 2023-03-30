@@ -84,6 +84,7 @@ void ClassGraphicsItem::openConfiguration()
     s_ConfigurationContext->setMethods(this->getMethodsList());
     s_ConfigurationContext->setAttributes(this->getAttributesList());
     s_ConfigurationContext->setColor(this->getColorName());
+    s_ConfigurationContext->setContentToHide(this->isContentToHide());
 
     // Let's rock
     ConfigWidget::open(s_ConfigurationContext);
@@ -94,12 +95,12 @@ void ClassGraphicsItem::closeConfiguration()
 }
 void ClassGraphicsItem::applyConfiguration()
 {
+    this->getDiagramContainer()->changed(this);
+    this->setContentToHide(s_ConfigurationContext->isContentToHide());
     this->setName(s_ConfigurationContext->getName());
     this->setMethodsList(s_ConfigurationContext->getMethods());
     this->setAttributesList(s_ConfigurationContext->getAttributes());
     this->setColor(s_ConfigurationContext->getColor());
-
-    this->getDiagramContainer()->changed(this);
 
     ConfigWidget::close();
 }

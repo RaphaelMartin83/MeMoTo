@@ -27,6 +27,9 @@ public:
     void setAttributesList(const QList<QString>& p_Attributes);
     const QList<QString>& getAttributesList();
 
+    bool isContentToHide() const;
+    void setContentToHide(bool p_isContentToHide);
+
     // I_Selectable
     QStringList getSearchFields() const;
     QString getDataFromField(const QString& p_FieldName) const;
@@ -37,6 +40,8 @@ public:
 
 private:
     void refreshText();
+
+    bool m_isContentToHide;
 
     QGraphicsTextItem* m_ClassContentToDisplay;
 

@@ -230,7 +230,7 @@ void MainWindow::loadDiagrams()
     QJsonObject l_JsonObject;
     l_JsonObject = l_JsonDoc.object();
 
-    this->setApplicationData(l_JsonObject);
+    MainWindow::setApplicationData(l_JsonObject);
 }
 
 void MainWindow::switchToContext(unsigned short p_ContextID, bool p_Force)
