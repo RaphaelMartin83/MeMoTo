@@ -96,6 +96,8 @@ public:
 private:
     void rerouteConnections();
     I_ContainerGraphicsItem* getContainerAtPos(QPoint p_Pos);
+    void pasteJson(const QJsonObject& p_Json,
+                   const QPoint& p_MiddlePointToPaste);
 
     // Data
     QList<I_Connector*> m_Connectors;

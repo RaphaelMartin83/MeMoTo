@@ -234,65 +234,7 @@ void I_DiagramContainer::pastePressed()
         return;
     }
 
-    QList<unsigned short> l_ConnectorsIDs;
-
-    for(unsigned short i_tools = 0U; i_tools < this->getToolBox()->getToolsQuantity(); i_tools++ )
-    {
-        if(this->getToolBox()->getToolsList()[i_tools]->createsConnectors())
-        {
-            // Connectors shall be created last
-            l_ConnectorsIDs.append(i_tools);
-        }
-        else
-        {
-            QJsonObject::iterator l_ArrayFound = l_JsonObject.find(this->getToolBox()->getToolsList()[i_tools]->getItemName());
-            QJsonArray l_ItemTypeJson;
-            if( l_JsonObject.end() != l_ArrayFound )
-            {
-                l_ItemTypeJson = l_ArrayFound->toArray();
-            }
-
-            for(QJsonArray::Iterator l_CurrentTypeIt = l_ItemTypeJson.begin();
-                l_CurrentTypeIt < l_ItemTypeJson.end(); l_CurrentTypeIt++)
-            {
-                QUuid l_RetrievedID;
-                QUuid l_NewID;
-                this->getToolBox()->getToolsList()[i_tools]->paste(l_CurrentTypeIt->toObject(),
-                                                                   l_MiddlePointToPaste, this,
-                                                                   &l_RetrievedID, &l_NewID);
-                this->addIDOverride(l_RetrievedID, l_NewID);
-
-                // Containers may contain diagrams
-                if(this->getToolBox()->getToolsList()[i_tools]->createsContainers())
-                {
-                    this->fromJson(l_CurrentTypeIt->toObject());
-                }
-            }
-        }
-    }
-
-    for(unsigned short i_connectors = 0U; i_connectors < l_ConnectorsIDs.count(); i_connectors++)
-    {
-        QJsonObject::iterator l_ArrayFound = l_JsonObject.find(this->getToolBox()->getToolsList()[l_ConnectorsIDs[i_connectors]]->getItemName());
-        QJsonArray l_ItemTypeJson;
-        if( l_JsonObject.end() != l_ArrayFound )
-        {
-            l_ItemTypeJson = l_ArrayFound->toArray();
-        }
-
-        for(QJsonArray::iterator l_CurrentTypeIt = l_ItemTypeJson.begin();
-            l_CurrentTypeIt < l_ItemTypeJson.end(); l_CurrentTypeIt++)
-        {
-            this->getToolBox()->getToolsList()[l_ConnectorsIDs[i_connectors]]->paste(l_CurrentTypeIt->toObject(),
-                                                                                     l_MiddlePointToPaste, this);
-
-            // Containers may contain diagrams
-            if(this->getToolBox()->getToolsList()[l_ConnectorsIDs[i_connectors]]->createsContainers())
-            {
-                this->fromJson(l_CurrentTypeIt->toObject());
-            }
-        }
-    }
+    this->pasteJson(l_JsonObject, l_MiddlePointToPaste);
 
     this->clearIDOverrides();
 }
@@ -505,12 +447,6 @@ void I_DiagramContainer::fromJson(const QJsonObject& p_Json)
         l_CurrentTypeIt < l_ItemTypeJson.end(); l_CurrentTypeIt++)
         {
             this->getToolBox()->getToolsList()[l_ConnectorsIDs[i_connectors]]->use(l_CurrentTypeIt->toObject(), this);
-
-            // Containers may contain diagrams
-            if(this->getToolBox()->getToolsList()[l_ConnectorsIDs[i_connectors]]->createsContainers())
-            {
-                this->fromJson(l_CurrentTypeIt->toObject());
-            }
         }
     }
 }
@@ -681,4 +617,66 @@ I_ContainerGraphicsItem* I_DiagramContainer::getContainerAtPos(QPoint p_Pos)
         }
     }
     return l_Ret;
+}
+
+void I_DiagramContainer::pasteJson(const QJsonObject& p_Json, const QPoint& p_MiddlePointToPaste)
+{
+    QList<unsigned short> l_ConnectorsIDs;
+
+    for(unsigned short i_tools = 0U; i_tools < this->getToolBox()->getToolsQuantity(); i_tools++ )
+    {
+        if(this->getToolBox()->getToolsList()[i_tools]->createsConnectors())
+        {
+            // Connectors shall be created last
+            l_ConnectorsIDs.append(i_tools);
+        }
+        else
+        {
+            QJsonObject::const_iterator l_ArrayFound = p_Json.find(this->getToolBox()->getToolsList()[i_tools]->getItemName());
+            QJsonArray l_ItemTypeJson;
+            if( p_Json.end() != l_ArrayFound )
+            {
+                l_ItemTypeJson = l_ArrayFound->toArray();
+            }
+
+            for(QJsonArray::const_iterator l_CurrentTypeIt = l_ItemTypeJson.begin();
+                l_CurrentTypeIt < l_ItemTypeJson.end(); l_CurrentTypeIt++)
+            {
+                QUuid l_RetrievedID;
+                QUuid l_NewID;
+                this->getToolBox()->getToolsList()[i_tools]->paste(l_CurrentTypeIt->toObject(),
+                                                                   p_MiddlePointToPaste, this,
+                                                                   &l_RetrievedID, &l_NewID);
+                this->addIDOverride(l_RetrievedID, l_NewID);
+
+                // Containers may contain diagrams
+                if(this->getToolBox()->getToolsList()[i_tools]->createsContainers())
+                {
+                    QJsonObject l_ContainerObject = l_CurrentTypeIt->toObject();
+                    QJsonObject::const_iterator l_ContainedJson = l_ContainerObject.find("Contained");
+                    if( l_ContainerObject.end() != l_ContainedJson )
+                    {
+                        this->pasteJson(l_ContainedJson->toObject(), p_MiddlePointToPaste);
+                    }
+                }
+            }
+        }
+    }
+
+    for(unsigned short i_connectors = 0U; i_connectors < l_ConnectorsIDs.count(); i_connectors++)
+    {
+        QJsonObject::const_iterator l_ArrayFound = p_Json.find(this->getToolBox()->getToolsList()[l_ConnectorsIDs[i_connectors]]->getItemName());
+        QJsonArray l_ItemTypeJson;
+        if( p_Json.end() != l_ArrayFound )
+        {
+            l_ItemTypeJson = l_ArrayFound->toArray();
+        }
+
+        for(QJsonArray::iterator l_CurrentTypeIt = l_ItemTypeJson.begin();
+            l_CurrentTypeIt < l_ItemTypeJson.end(); l_CurrentTypeIt++)
+        {
+            this->getToolBox()->getToolsList()[l_ConnectorsIDs[i_connectors]]->paste(l_CurrentTypeIt->toObject(),
+                                                                                     p_MiddlePointToPaste, this);
+        }
+    }
 }
