@@ -204,7 +204,7 @@ QJsonObject AggregationGraphicsItem::toJson() const
 
     return l_MyJson;
 }
-void AggregationGraphicsItem::fromJson(QJsonObject p_Json)
+void AggregationGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
     GraphicConnector::fromJson(p_Json);
 

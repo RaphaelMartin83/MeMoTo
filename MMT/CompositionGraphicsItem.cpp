@@ -204,7 +204,7 @@ QJsonObject CompositionGraphicsItem::toJson() const
 
     return l_MyJson;
 }
-void CompositionGraphicsItem::fromJson(QJsonObject p_Json)
+void CompositionGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
     GraphicConnector::fromJson(p_Json);
 

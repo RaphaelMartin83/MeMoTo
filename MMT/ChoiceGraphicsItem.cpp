@@ -63,6 +63,14 @@ ChoiceGraphicsItem::ChoiceGraphicsItem(const QJsonObject& p_JsonObject):
   , m_SelectedHandleForConnectionTo(nullptr)
   , m_Name(QString("C"))
 {
+    // Instanciate configuration layout if needed
+    static bool ls_isConfigInited = false;
+    if( false == ls_isConfigInited )
+    {
+        ls_isConfigInited = true;
+        s_ConfigurationContext = new ChoiceConfiguration();
+    }
+
     m_Name = p_JsonObject.find("Name")->toString();
 
     m_Width = p_JsonObject.find("Width")->toInt();
