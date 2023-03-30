@@ -113,7 +113,7 @@ void MainWindow::initGUI()
     QIcon l_ApplicationIcon = QIcon("logo.ico");
     this->setWindowIcon(l_ApplicationIcon);
 
-    m_mainLayout = new QGridLayout(this);
+    m_mainLayout = new QGridLayout();
 
     m_ToolBoxView = new QGraphicsView();
     m_ToolBoxView->setFixedWidth(100);
