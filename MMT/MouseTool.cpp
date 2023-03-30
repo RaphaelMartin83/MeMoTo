@@ -28,7 +28,7 @@ void MouseTool::use(
     }
     else if( Qt::MouseButton::RightButton == p_How )
     {
-        QList<I_Selectable*> l_Selected = p_Target->getCurrentSelected();
+        QList<I_Selectable*> l_Selected = p_Target->getCurrentSelected(false);
         if( 1U == l_Selected.count() )
         {
             l_Selected[0U]->move(p_Pos);

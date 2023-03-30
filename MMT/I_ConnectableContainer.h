@@ -92,14 +92,14 @@ public:
         }
     }
 
-    QList<I_Selectable*> getCurrentSelected() const
+    QList<I_Selectable*> getCurrentSelected(bool p_fully=true) const
     {
         QList<I_Selectable*> l_Ret;
         QList<I_Selectable*> l_AllSelectables = this->getAllSelectables(true);
 
         for( unsigned int i_Selectables = 0U; i_Selectables < l_AllSelectables.count(); i_Selectables++ )
         {
-            if( l_AllSelectables[i_Selectables]->isFullySelected() )
+            if( (!p_fully) || (l_AllSelectables[i_Selectables]->isFullySelected()) )
             {
                 l_Ret.append(l_AllSelectables[i_Selectables]);
             }
