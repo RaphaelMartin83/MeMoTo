@@ -209,10 +209,7 @@ void I_ConnectableContainer::unselectAll()
     QList<I_Selectable*> l_AllSelectables = this->getAllSelectables(true);
     for( unsigned int i_items = 0U; i_items < l_AllSelectables.count(); i_items++ )
     {
-        if( l_AllSelectables[i_items]->isFullySelected() )
-        {
-            l_AllSelectables[i_items]->unselect();
-        }
+        l_AllSelectables[i_items]->unselect();
     }
 }
 
