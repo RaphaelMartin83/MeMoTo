@@ -1,3 +1,6 @@
+#include <QApplication>
+#include <QClipboard>
+#include <QJsonDocument>
 #include <QGraphicsSceneMouseEvent>
 
 #include "I_DiagramContainer.h"
@@ -13,6 +16,16 @@ I_DiagramContainer::I_DiagramContainer():
     , m_isFirstDisplay(true)
 {
 
+}
+
+QPoint I_DiagramContainer::getCurrentCursorPosition() const
+{
+    QPoint l_Ret;
+
+    l_Ret.setX(static_cast<int>(m_CurrentCursorPosition.x()));
+    l_Ret.setY(static_cast<int>(m_CurrentCursorPosition.y()));
+
+    return GridReferential::getPointOnGrid(l_Ret);
 }
 
 void I_DiagramContainer::changed(I_GraphicsItem* p_WhoChanged)
@@ -103,7 +116,6 @@ void I_DiagramContainer::deletePressed()
             l_hasChanged = true;
         }
     }
-    this->setCurrentSelected(nullptr);
 
     if(l_hasChanged)
     {
@@ -138,6 +150,93 @@ void I_DiagramContainer::printPressed()
                              this->getDiagramMaxWidth(),
                              this->getDiagramMaxHeight()));
 }
+void I_DiagramContainer::copyPressed()
+{
+    QJsonObject l_MyJson;
+    QList<I_Selectable*> l_CurrentSelectedItems = this->getCurrentSelected();
+    QPoint l_CurrentSelectionCoord = this->getSelectionCoord();
+
+    for( unsigned int i_con = 0U; i_con < l_CurrentSelectedItems.count(); i_con++ )
+    {
+        I_Selectable* l_CurrentSelectable = l_CurrentSelectedItems[i_con];
+        if( nullptr != l_CurrentSelectable && l_CurrentSelectable->isFullySelected() )
+        {
+            QJsonObject::iterator l_ArrayFound = l_MyJson.find(l_CurrentSelectable->getSerializableName());
+            QJsonArray l_Array;
+            if( l_MyJson.end() != l_ArrayFound )
+            {
+                l_Array = l_ArrayFound->toArray();
+            }
+            l_Array.append(l_CurrentSelectable->toJson());
+            l_MyJson.insert(l_CurrentSelectable->getSerializableName(), l_Array);
+        }
+    }
+
+    // Encapsulate current diagram Json with diagram type name
+    // This way, avoid mixing diagrams on paste
+    QJsonObject l_JsonToCopy;
+    l_JsonToCopy.insert(this->getDiagramString(), l_MyJson);
+    l_JsonToCopy.insert("SelectionCoordX", l_CurrentSelectionCoord.x());
+    l_JsonToCopy.insert("SelectionCoordY", l_CurrentSelectionCoord.y());
+
+    QJsonDocument l_JSonDoc;
+    l_JSonDoc.setObject(l_JsonToCopy);
+    QByteArray l_JsonText = l_JSonDoc.toJson(QJsonDocument::Indented);
+
+    QClipboard* l_pClipboard = QApplication::clipboard();
+    l_pClipboard->clear(QClipboard::Clipboard);
+    l_pClipboard->setText(l_JsonText, QClipboard::Clipboard);
+}
+void I_DiagramContainer::pastePressed()
+{
+    QClipboard* l_pClipboard = QApplication::clipboard();
+    QString l_currentClipboard = l_pClipboard->text();
+
+    QJsonDocument l_JsonDoc;
+    QJsonParseError l_Error;
+    l_JsonDoc = QJsonDocument::fromJson(l_currentClipboard.toUtf8(), &l_Error);
+
+    QJsonObject l_JsonObject;
+    l_JsonObject = l_JsonDoc.object();
+
+    QPoint l_MiddlePointToPaste;
+    QJsonObject::iterator l_tmpObject;
+    l_tmpObject = l_JsonObject.find("SelectionCoordX");
+    if( l_JsonObject.end() != l_tmpObject )
+    {
+        l_MiddlePointToPaste.setX(l_tmpObject->toInt());
+    }
+    else
+    {
+        // No chance this will be pasted safely
+        return;
+    }
+
+    l_tmpObject = l_JsonObject.find("SelectionCoordY");
+    if( l_JsonObject.end() != l_tmpObject )
+    {
+        l_MiddlePointToPaste.setY(l_tmpObject->toInt());
+    }
+    else
+    {
+        return;
+    }
+
+    l_tmpObject = l_JsonObject.find(this->getDiagramString());
+    if( l_JsonObject.end() != l_tmpObject )
+    {
+        l_JsonObject = l_tmpObject->toObject();
+    }
+    else
+    {
+        // Trying to paste something not compliant for sure
+        return;
+    }
+
+    this->pasteJson(l_JsonObject, l_MiddlePointToPaste);
+
+    this->clearIDOverrides();
+}
 void I_DiagramContainer::selectToolByID(unsigned short p_ID)
 {
     this->getToolBox()->selectByID(p_ID);
@@ -165,6 +264,10 @@ void I_DiagramContainer::mousePressEvent(QGraphicsSceneMouseEvent* p_Event)
             // Unhandled
         }
     }
+}
+void I_DiagramContainer::mouseMoveEvent(QGraphicsSceneMouseEvent* p_Event)
+{
+    m_CurrentCursorPosition = p_Event->scenePos();
 }
 
 void I_DiagramContainer::registerDiagramView(DiagramGraphicsView* p_View)
@@ -269,7 +372,7 @@ void I_DiagramContainer::deleteConnectableConnections(I_Connectable* p_Connectab
     }
 }
 
-QJsonObject I_DiagramContainer::toJson()
+QJsonObject I_DiagramContainer::toJson() const
 {
     QJsonObject l_MyJson = I_ContainersContainer::toJson();
 
@@ -284,7 +387,6 @@ QJsonObject I_DiagramContainer::toJson()
             {
                 l_Array = l_ArrayFound->toArray();
             }
-            QJsonObject l_CurrentObject = l_CurrentSelectable->toJson();
             l_Array.append(l_CurrentSelectable->toJson());
             l_MyJson.insert(l_CurrentSelectable->getSerializableName(), l_Array);
         }
@@ -292,7 +394,7 @@ QJsonObject I_DiagramContainer::toJson()
 
     return l_MyJson;
 }
-void I_DiagramContainer::fromJson(QJsonObject p_Json)
+void I_DiagramContainer::fromJson(const QJsonObject& p_Json)
 {
     QList<unsigned short> l_ConnectorsIDs;
 
@@ -305,14 +407,14 @@ void I_DiagramContainer::fromJson(QJsonObject p_Json)
         }
         else
         {
-            QJsonObject::iterator l_ArrayFound = p_Json.find(this->getToolBox()->getToolsList()[i_tools]->getItemName());
+            QJsonObject::const_iterator l_ArrayFound = p_Json.find(this->getToolBox()->getToolsList()[i_tools]->getItemName());
             QJsonArray l_ItemTypeJson;
             if( p_Json.end() != l_ArrayFound )
             {
                 l_ItemTypeJson = l_ArrayFound->toArray();
             }
 
-            for(QJsonArray::Iterator l_CurrentTypeIt = l_ItemTypeJson.begin();
+            for(QJsonArray::const_iterator l_CurrentTypeIt = l_ItemTypeJson.begin();
                 l_CurrentTypeIt < l_ItemTypeJson.end(); l_CurrentTypeIt++)
             {
                 this->getToolBox()->getToolsList()[i_tools]->use(l_CurrentTypeIt->toObject(), this);
@@ -320,7 +422,12 @@ void I_DiagramContainer::fromJson(QJsonObject p_Json)
                 // Containers may contain diagrams
                 if(this->getToolBox()->getToolsList()[i_tools]->createsContainers())
                 {
-                    this->fromJson(l_CurrentTypeIt->toObject());
+                    QJsonObject l_ContainerObject = l_CurrentTypeIt->toObject();
+                    QJsonObject::const_iterator l_ContainedJson = l_ContainerObject.find("Contained");
+                    if( l_ContainerObject.end() != l_ContainedJson )
+                    {
+                        this->fromJson(l_ContainedJson->toObject());
+                    }
                 }
             }
         }
@@ -328,23 +435,17 @@ void I_DiagramContainer::fromJson(QJsonObject p_Json)
 
     for(unsigned short i_connectors = 0U; i_connectors < l_ConnectorsIDs.count(); i_connectors++)
     {
-        QJsonObject::iterator l_ArrayFound = p_Json.find(this->getToolBox()->getToolsList()[l_ConnectorsIDs[i_connectors]]->getItemName());
+        QJsonObject::const_iterator l_ArrayFound = p_Json.find(this->getToolBox()->getToolsList()[l_ConnectorsIDs[i_connectors]]->getItemName());
         QJsonArray l_ItemTypeJson;
         if( p_Json.end() != l_ArrayFound )
         {
             l_ItemTypeJson = l_ArrayFound->toArray();
         }
 
-        for(QJsonArray::Iterator l_CurrentTypeIt = l_ItemTypeJson.begin();
+        for(QJsonArray::const_iterator l_CurrentTypeIt = l_ItemTypeJson.begin();
         l_CurrentTypeIt < l_ItemTypeJson.end(); l_CurrentTypeIt++)
         {
             this->getToolBox()->getToolsList()[l_ConnectorsIDs[i_connectors]]->use(l_CurrentTypeIt->toObject(), this);
-
-            // Containers may contain diagrams
-            if(this->getToolBox()->getToolsList()[l_ConnectorsIDs[i_connectors]]->createsContainers())
-            {
-                this->fromJson(l_CurrentTypeIt->toObject());
-            }
         }
     }
 }
@@ -452,7 +553,6 @@ void I_DiagramContainer::focusOnItem(QString p_Type, QString p_Field,
                     if( true == p_Select )
                     {
                         this->unselectAll();
-                        this->setCurrentSelected(l_Selectables[i_selectables]);
                         l_Selectables[i_selectables]->select();
                     }
                     this->setCurrentPosition(l_Selectables[i_selectables]->getFocusPosition());
@@ -515,4 +615,66 @@ I_ContainerGraphicsItem* I_DiagramContainer::getContainerAtPos(QPoint p_Pos)
         }
     }
     return l_Ret;
+}
+
+void I_DiagramContainer::pasteJson(const QJsonObject& p_Json, const QPoint& p_MiddlePointToPaste)
+{
+    QList<unsigned short> l_ConnectorsIDs;
+
+    for(unsigned short i_tools = 0U; i_tools < this->getToolBox()->getToolsQuantity(); i_tools++ )
+    {
+        if(this->getToolBox()->getToolsList()[i_tools]->createsConnectors())
+        {
+            // Connectors shall be created last
+            l_ConnectorsIDs.append(i_tools);
+        }
+        else
+        {
+            QJsonObject::const_iterator l_ArrayFound = p_Json.find(this->getToolBox()->getToolsList()[i_tools]->getItemName());
+            QJsonArray l_ItemTypeJson;
+            if( p_Json.end() != l_ArrayFound )
+            {
+                l_ItemTypeJson = l_ArrayFound->toArray();
+            }
+
+            for(QJsonArray::const_iterator l_CurrentTypeIt = l_ItemTypeJson.begin();
+                l_CurrentTypeIt < l_ItemTypeJson.end(); l_CurrentTypeIt++)
+            {
+                QUuid l_RetrievedID;
+                QUuid l_NewID;
+                this->getToolBox()->getToolsList()[i_tools]->paste(l_CurrentTypeIt->toObject(),
+                                                                   p_MiddlePointToPaste, this,
+                                                                   &l_RetrievedID, &l_NewID);
+                this->addIDOverride(l_RetrievedID, l_NewID);
+
+                // Containers may contain diagrams
+                if(this->getToolBox()->getToolsList()[i_tools]->createsContainers())
+                {
+                    QJsonObject l_ContainerObject = l_CurrentTypeIt->toObject();
+                    QJsonObject::const_iterator l_ContainedJson = l_ContainerObject.find("Contained");
+                    if( l_ContainerObject.end() != l_ContainedJson )
+                    {
+                        this->pasteJson(l_ContainedJson->toObject(), p_MiddlePointToPaste);
+                    }
+                }
+            }
+        }
+    }
+
+    for(unsigned short i_connectors = 0U; i_connectors < l_ConnectorsIDs.count(); i_connectors++)
+    {
+        QJsonObject::const_iterator l_ArrayFound = p_Json.find(this->getToolBox()->getToolsList()[l_ConnectorsIDs[i_connectors]]->getItemName());
+        QJsonArray l_ItemTypeJson;
+        if( p_Json.end() != l_ArrayFound )
+        {
+            l_ItemTypeJson = l_ArrayFound->toArray();
+        }
+
+        for(QJsonArray::iterator l_CurrentTypeIt = l_ItemTypeJson.begin();
+            l_CurrentTypeIt < l_ItemTypeJson.end(); l_CurrentTypeIt++)
+        {
+            this->getToolBox()->getToolsList()[l_ConnectorsIDs[i_connectors]]->paste(l_CurrentTypeIt->toObject(),
+                                                                                     p_MiddlePointToPaste, this);
+        }
+    }
 }

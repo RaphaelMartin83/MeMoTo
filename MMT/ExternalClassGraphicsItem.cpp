@@ -15,18 +15,14 @@ static const QColor DEFAULT_EXTERNAL_CLASS_COLOR = Qt::yellow;
 
 static ExternalClassConfiguration* s_ConfigurationContext;
 
-static unsigned long long s_ExtClassUniqueIDs= 0U;
-
 ExternalClassGraphicsItem::ExternalClassGraphicsItem(
-                            QPointF p_Pos,
+                            const QPoint& p_Pos,
                             unsigned short p_Width,
                             unsigned short p_Height):
-    I_ClassGraphicsItem(p_Pos, QString("ExtClass" + QString::number(s_ExtClassUniqueIDs)), s_ExtClassUniqueIDs, p_Width, p_Height)
+    I_ClassGraphicsItem(p_Pos, QString("ExtClass"), p_Width, p_Height)
   , m_Root()
   , m_Path()
 {
-    s_ExtClassUniqueIDs++;
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -43,11 +39,6 @@ ExternalClassGraphicsItem::ExternalClassGraphicsItem(
   , m_Root(p_Json.find("Root")->toString())
   , m_Path(p_Json.find("Path")->toString())
 {
-    if( this->getID() >= s_ExtClassUniqueIDs )
-    {
-        s_ExtClassUniqueIDs = this->getID() + 1U;
-    }
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -55,9 +46,6 @@ ExternalClassGraphicsItem::ExternalClassGraphicsItem(
         ls_isConfigInited = true;
         s_ConfigurationContext = new ExternalClassConfiguration();
     }
-
-    this->setColor(DEFAULT_EXTERNAL_CLASS_COLOR);
-    this->setPlan(static_cast<unsigned short>(p_Json.find("Plan")->toInt()));
 
     ExternalClassGraphicsItem::refreshDisplay();
 }
@@ -85,18 +73,23 @@ void ExternalClassGraphicsItem::refreshDisplay()
 
     // Finds myself into the json file
     // Breaks encapsulation, todo: improve
-    l_JsonObject = l_JsonObject.find("ClassDiagram")->toObject();
-    QJsonArray l_JsonArray = l_JsonObject.find(ClassGraphicsItem::SERIALIZABLE_NAME)->toArray();
-
-    for(QJsonArray::Iterator l_ClassesIterator = l_JsonArray.begin();
-        l_ClassesIterator < l_JsonArray.end(); l_ClassesIterator++)
+    QJsonObject::iterator l_tmpObjectFound = l_JsonObject.find("ClassDiagram");
+    if( l_JsonObject.end() != l_tmpObjectFound )
     {
-        if( this->getName() == l_ClassesIterator->toObject().find("Name")->toString() )
-        {
-            this->fromExternalJson(l_ClassesIterator->toObject());
-        }
-    }
+        l_JsonObject = l_tmpObjectFound->toObject();
 
+        QJsonArray l_JsonArray = l_JsonObject.find(ClassGraphicsItem::SERIALIZABLE_NAME)->toArray();
+
+        for(QJsonArray::Iterator l_ClassesIterator = l_JsonArray.begin();
+            l_ClassesIterator < l_JsonArray.end(); l_ClassesIterator++)
+        {
+            if( this->getName() == l_ClassesIterator->toObject().find("Name")->toString() )
+            {
+                this->fromExternalJson(l_ClassesIterator->toObject());
+            }
+        }
+
+    }
     I_ClassGraphicsItem::refreshDisplay();
 }
 
@@ -188,7 +181,7 @@ QString ExternalClassGraphicsItem::getConnectableType() const
     return EXTERNAL_CLASS_CONNECTABLE_NAME;
 }
 
-QJsonObject ExternalClassGraphicsItem::toJson()
+QJsonObject ExternalClassGraphicsItem::toJson() const
 {
     // Call 2nd parent toJson only to bypass serialization of methods and attributes
     QJsonObject l_MyJson = I_SquarishGraphicsItem::toJson();
@@ -198,9 +191,24 @@ QJsonObject ExternalClassGraphicsItem::toJson()
 
     return l_MyJson;
 }
-void ExternalClassGraphicsItem::fromJson(QJsonObject p_Json)
+void ExternalClassGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
+    I_SquarishGraphicsItem::fromJson(p_Json);
 
+    m_Root = "";
+    QJsonObject::const_iterator l_FoundRoot = p_Json.find("Root");
+    if( p_Json.end() != l_FoundRoot )
+    {
+        m_Root = l_FoundRoot->toString();
+    }
+    m_Path = "";
+    QJsonObject::const_iterator l_FoundPath = p_Json.find("Path");
+    if( p_Json.end() != l_FoundPath )
+    {
+        m_Path = l_FoundPath->toString();
+    }
+
+    this->refreshDisplay();
 }
 
 QString ExternalClassGraphicsItem::getSerializableName() const

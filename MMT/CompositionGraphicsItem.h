@@ -46,8 +46,8 @@ public:
     void applyConfiguration();
 
     // I_Serializable
-    QJsonObject toJson();
-    void fromJson(QJsonObject p_Json);
+    QJsonObject toJson() const;
+    void fromJson(const QJsonObject& p_Json);
     QString getSerializableName() const;
 
     static const char* SERIALIZABLE_NAME;

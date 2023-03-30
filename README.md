@@ -29,7 +29,8 @@ Simple GUI comes with a few shortcuts to know:
 - Save as with ctrl+shift+s
 - load with ctrl+o
 - undo with ctrl+z
-- redo with ctrl+y
+- redo with ctrl+shift+z
+- Copy/paste with ctrl+c and ctrl+v
 - share with ctrl+space
 - find into diagram with ctrl+f
 - print to png with ctrl+p
@@ -49,6 +50,7 @@ Note: The sharing feature is a bit wierd. It relies on a common network reposito
 
 # What is planed
 
-- Improve usability: Multiple selection, Copy/paste, hide class content
-- Beauty: curved connections, rounded items
+- Usability: Hide class content, png generation path asking
 - CD integration: Headless png generation
+- Aesthetic: curved connections, rounded items
+

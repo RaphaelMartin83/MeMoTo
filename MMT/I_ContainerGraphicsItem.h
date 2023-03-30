@@ -9,6 +9,22 @@ class I_ContainerGraphicsItem:
         public I_ContainersContainer
 {
 public:
+    I_ContainerGraphicsItem(const QPoint& p_Pos);
+    I_ContainerGraphicsItem(const QJsonObject& p_Json);
+
+    // I_Serializabre overrides
+    virtual QJsonObject toJson() const
+    {
+        QJsonObject l_Ret = I_Connectable::toJson();
+        l_Ret.insert(QString("Contained"), I_ContainersContainer::toJson());
+
+        return l_Ret;
+    }
+    virtual void fromJson(QJsonObject p_Json)
+    {
+        I_Connectable::fromJson(p_Json);
+    }
+
     void moveChildren(
             const QPoint& p_PosBefore, const QPoint& p_PosAfter);
 
@@ -48,8 +64,8 @@ public:
         }
     }
 
-    virtual I_Selectable* getSelectable(const QString& p_SelectableType, const unsigned int& p_selectableID) const;
-    virtual const I_Connectable* getConnectable(const QString& p_ConnectableType, const unsigned int& p_connectableID) const;
+    virtual I_Selectable* getSelectable(const QString& p_SelectableType, const QUuid& p_selectableID) const;
+    virtual const I_Connectable* getConnectable(const QString& p_ConnectableType, const QUuid& p_connectableID) const;
 
     // I_ConnectableContainer
     virtual QList<I_Connector*> getAllConnectors() const;

@@ -14,14 +14,12 @@ public:
             const I_Connectable* p_ConnectTo,
             const QPoint& p_fromPoint,
             const QPoint& p_toPoint,
-            unsigned long long p_ID,
             I_ConnectableContainer* p_Container);
     GraphicConnector(
             const I_Connectable* p_ConnectFrom,
             const I_Connectable* p_ConnectTo,
             const QPoint& p_fromPoint,
             const QPoint& p_toPoint,
-            unsigned long long p_ID,
             I_ConnectableContainer* p_Container,
             const QList<QPoint>& p_ForcedPath);
     GraphicConnector(const QJsonObject& p_JsonObject,
@@ -33,11 +31,11 @@ public:
     void unselect();
     void move(QPoint p_Pos);
     QPoint getPos() const;
-    void setPos(const QPoint& p_Pos);
     bool isItYou(QPoint p_Pos) const;
+    bool isSelected() const;
     bool isFullySelected() const;
     QPoint getFocusPosition() const;
-    virtual QRect getCollisionRectangle() const { return QRect(); };
+    virtual QRect getCollisionRectangle() const { return QRect(); }
 
     void route(QPoint p_From, QPoint p_To);
     virtual void reroute();

@@ -21,7 +21,6 @@ void MouseTool::use(
             p_Target->unselectAll();
         }
         I_Selectable* l_Selected = p_Target->getSelectable(p_Pos);
-        p_Target->setCurrentSelected(l_Selected);
         if( nullptr != l_Selected )
         {
             l_Selected->select(p_Pos);
@@ -29,7 +28,7 @@ void MouseTool::use(
     }
     else if( Qt::MouseButton::RightButton == p_How )
     {
-        QList<I_Selectable*> l_Selected = p_Target->getCurrentSelected();
+        QList<I_Selectable*> l_Selected = p_Target->getCurrentSelected(false);
         if( 1U == l_Selected.count() )
         {
             l_Selected[0U]->move(p_Pos);

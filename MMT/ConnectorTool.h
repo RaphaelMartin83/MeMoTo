@@ -91,6 +91,19 @@ public:
         }
     }
 
+    void paste(const QJsonObject& p_JsonObject,
+               QPoint p_middlePos,
+               I_ToolListener* p_Target,
+               QUuid* p_rIDPasted = nullptr, QUuid* p_rIDRerolled = nullptr)
+    {
+        ConnectorTemplate* l_NewConnector = new ConnectorTemplate(p_JsonObject, p_Target);
+        l_NewConnector->registerDiagramContainer(dynamic_cast<I_DiagramContainer*>(p_Target));
+        l_NewConnector->rerollID();
+
+        p_Target->addConnector(l_NewConnector);
+        p_Target->changed(nullptr);
+    }
+
     QString getItemName() const
     {
         return ConnectorTemplate::SERIALIZABLE_NAME;

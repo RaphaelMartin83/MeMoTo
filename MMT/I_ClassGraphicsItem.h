@@ -13,8 +13,7 @@ class I_ClassGraphicsItem:
         public I_SquarishGraphicsItem
 {
 public:
-    I_ClassGraphicsItem(QPointF p_Pos, const QString& p_Name,
-                            unsigned int p_ID,
+    I_ClassGraphicsItem(const QPoint& p_Pos, const QString& p_Name,
                             unsigned short p_Width = DEFAULT_CLASS_WIDTH,
                             unsigned short p_Height = DEFAULT_CLASS_HEIGHT);
     I_ClassGraphicsItem(const QJsonObject& p_JSon);
@@ -33,8 +32,8 @@ public:
     QString getDataFromField(const QString& p_FieldName) const;
 
     // I_Serializable overloads
-    QJsonObject toJson();
-    void fromJson(QJsonObject p_Json);
+    virtual QJsonObject toJson() const;
+    virtual void fromJson(const QJsonObject& p_Json);
 
 private:
     void refreshText();

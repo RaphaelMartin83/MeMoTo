@@ -15,11 +15,11 @@ public:
     virtual QList<I_Selectable*> getAllSelectables(bool p_recursive=false) const;
     virtual const QList<I_Selectable*>& getPureSelectables() const;
     virtual I_Selectable* getSelectableFromTypeAndID(const QString& p_ConnectableType,
-                                                             const unsigned long long& p_ConnectableID) const;
+                                                     const QUuid& p_SelectableID) const;
     virtual QList<I_Connectable*> getAllConnectables(bool p_recursive=false) const;
     virtual const QList<I_Connectable*>& getPureConnectables() const;
     virtual const I_Connectable* getConnectableFromTypeAndID(const QString& p_ConnectableType,
-                                                             const unsigned long long& p_ConnectableID) const;
+                                                             const QUuid& p_ConnectableID) const;
 
     virtual I_Selectable* getSelectable(QPoint p_Pos) const;
     virtual I_Selectable* getSelectableAt(unsigned int p_index) const;
@@ -92,30 +92,30 @@ public:
         }
     }
 
-    QList<I_Selectable*> getCurrentSelected() const
+    QList<I_Selectable*> getCurrentSelected(bool p_fully=true) const
     {
         QList<I_Selectable*> l_Ret;
+        QList<I_Selectable*> l_AllSelectables = this->getAllSelectables(true);
 
-        for( unsigned int i_itemsSelected = 0U; i_itemsSelected < m_CurrentSelectedType.count(); i_itemsSelected++ )
+        for( unsigned int i_Selectables = 0U; i_Selectables < l_AllSelectables.count(); i_Selectables++ )
         {
-                l_Ret.append(this->getSelectableFromTypeAndID(
-                                 m_CurrentSelectedType[i_itemsSelected],
-                                 m_CurrentSelectedID[i_itemsSelected]));
+            if( p_fully )
+            {
+                if( l_AllSelectables[i_Selectables]->isFullySelected() )
+                {
+                    l_Ret.append(l_AllSelectables[i_Selectables]);
+                }
+            }
+            else
+            {
+                if( l_AllSelectables[i_Selectables]->isSelected() )
+                {
+                    l_Ret.append(l_AllSelectables[i_Selectables]);
+                }
+            }
         }
 
         return l_Ret;
-    }
-    void setCurrentSelected(const I_Selectable* p_NewSelection)
-    {
-        if( nullptr != p_NewSelection )
-        {
-            m_CurrentSelectedType.append(p_NewSelection->getSelectableType());
-            m_CurrentSelectedID.append(p_NewSelection->getID());
-        }
-        else
-        {
-            // Nullptr, do nothing
-        }
     }
     const I_Connectable* getFromConnectable()
     {
@@ -134,18 +134,31 @@ public:
         }
     }
 
+    void addIDOverride(const QUuid& p_IDToOverride, const QUuid& p_IDToApplyInstead)
+    {
+        QList<QUuid> l_IDOverride;
+        l_IDOverride.append(p_IDToOverride);
+        l_IDOverride.append(p_IDToApplyInstead);
+        m_IDOverrides.append(l_IDOverride);
+    }
+    void clearIDOverrides()
+    {
+        m_IDOverrides.clear();
+    }
+
     QPoint getSelectionCoord();
     void unselectAll();
-    virtual QJsonObject toJson();
+    virtual QJsonObject toJson() const;
+
 private:
-    QList<QString> m_CurrentSelectedType;
-    QList<unsigned long long> m_CurrentSelectedID;
 
     QString m_FromConnectableType;
-    unsigned long long m_FromConnectableID;
+    QUuid m_FromConnectableID;
 
     QList<I_Selectable*> m_Selectables;
     QList<I_Connectable*> m_Connectables;
+
+    QList<QList<QUuid>> m_IDOverrides;
 };
 
 #endif // I_CONNECTABLECONTAINER_H

@@ -4,11 +4,10 @@
 
 static const unsigned short CLASS_TEXT_LABELS_HEIGHT = 15U;
 
-I_ClassGraphicsItem::I_ClassGraphicsItem(QPointF p_Pos, const QString& p_Name,
-                            unsigned int p_ID,
+I_ClassGraphicsItem::I_ClassGraphicsItem(const QPoint& p_Pos, const QString& p_Name,
                             unsigned short p_Width,
                             unsigned short p_Height):
-    I_SquarishGraphicsItem(p_Pos, p_Name, p_ID, p_Width, p_Height)
+    I_SquarishGraphicsItem(p_Pos, p_Name, p_Width, p_Height)
   , m_Methods()
   , m_Attributes()
 {
@@ -23,13 +22,15 @@ I_ClassGraphicsItem::I_ClassGraphicsItem(const QJsonObject& p_Json):
   , m_Methods()
   , m_Attributes()
 {
-    QJsonArray l_MethodsJson = p_Json.find("Methods")->toArray();
+    QJsonObject::const_iterator l_FoundMethods = p_Json.find("Methods");
+    QJsonArray l_MethodsJson = l_FoundMethods->toArray();
     for( unsigned short i_methods = 0U; i_methods < l_MethodsJson.count(); i_methods++ )
     {
         m_Methods.append(l_MethodsJson[i_methods].toString());
     }
 
-    QJsonArray l_AttributesJson = p_Json.find("Attributes")->toArray();
+    QJsonObject::const_iterator l_FoundAttributes = p_Json.find("Attributes");
+    QJsonArray l_AttributesJson = l_FoundAttributes->toArray();
     for( unsigned short i_attributes = 0U; i_attributes < l_AttributesJson.count(); i_attributes++ )
     {
         m_Attributes.append(l_AttributesJson[i_attributes].toString());
@@ -113,7 +114,7 @@ QString I_ClassGraphicsItem::getDataFromField(const QString& p_FieldName) const
     return l_Ret;
 }
 
-QJsonObject I_ClassGraphicsItem::toJson()
+QJsonObject I_ClassGraphicsItem::toJson() const
 {
     QJsonArray l_MethodsJson;
 
@@ -137,9 +138,33 @@ QJsonObject I_ClassGraphicsItem::toJson()
     return l_MyJson;
 }
 
-void I_ClassGraphicsItem::fromJson(QJsonObject p_Json)
+void I_ClassGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
+    I_SquarishGraphicsItem::fromJson(p_Json);
 
+    QJsonObject::const_iterator l_FoundMethods = p_Json.find("Methods");
+    m_Methods.clear();
+    if( p_Json.end() != l_FoundMethods )
+    {
+        QJsonArray l_MethodsJson = l_FoundMethods->toArray();
+        for(QJsonArray::iterator l_methods = l_MethodsJson.begin();
+            l_methods < l_MethodsJson.end(); l_methods++ )
+        {
+            m_Methods.append(l_methods->toString());
+        }
+    }
+    QJsonObject::const_iterator l_FoundAttributes = p_Json.find("Attributes");
+    m_Attributes.clear();
+    if( p_Json.end() != l_FoundAttributes )
+    {
+        QJsonArray l_AttributesJson = l_FoundAttributes->toArray();
+        for(QJsonArray::iterator l_attributes = l_AttributesJson.begin();
+            l_attributes < l_AttributesJson.end(); l_attributes++)
+        {
+            m_Attributes.append(l_attributes->toString());
+        }
+    }
+    this->refreshDisplay();
 }
 
 void I_ClassGraphicsItem::refreshText()

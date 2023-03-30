@@ -9,15 +9,11 @@ const char* ClassGraphicsItem::SERIALIZABLE_NAME = "Classes";
 
 static ClassConfiguration* s_ConfigurationContext;
 
-static unsigned long long s_ClassesUniqueIDs = 0U;
-
-ClassGraphicsItem::ClassGraphicsItem(QPointF p_Pos,
+ClassGraphicsItem::ClassGraphicsItem(const QPoint& p_Pos,
                             unsigned short p_Width,
                             unsigned short p_Height):
-    I_ClassGraphicsItem(p_Pos, QString("Class" + QString::number(s_ClassesUniqueIDs)), s_ClassesUniqueIDs, p_Width, p_Height)
+    I_ClassGraphicsItem(p_Pos, QString("Class"), p_Width, p_Height)
 {
-    s_ClassesUniqueIDs++;
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -31,11 +27,6 @@ ClassGraphicsItem::ClassGraphicsItem(QPointF p_Pos,
 ClassGraphicsItem::ClassGraphicsItem(const QJsonObject& p_JSon):
     I_ClassGraphicsItem(p_JSon)
 {
-    if( this->getID() >= s_ClassesUniqueIDs)
-    {
-        s_ClassesUniqueIDs = this->getID() + 1U;
-    }
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -43,6 +34,8 @@ ClassGraphicsItem::ClassGraphicsItem(const QJsonObject& p_JSon):
         ls_isConfigInited = true;
         s_ConfigurationContext = new ClassConfiguration();
     }
+
+    ClassGraphicsItem::refreshDisplay();
 }
 
 ClassGraphicsItem::~ClassGraphicsItem()

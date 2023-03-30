@@ -21,7 +21,7 @@ const QList<I_Selectable*>& I_ConnectableContainer::getPureSelectables() const
     return m_Selectables;
 }
 I_Selectable* I_ConnectableContainer::getSelectableFromTypeAndID(const QString& p_SelectableType,
-                                                 const unsigned long long& p_SelectableID) const
+                                                 const QUuid& p_SelectableID) const
 {
     I_Selectable* l_Ret = nullptr;
 
@@ -45,8 +45,20 @@ const QList<I_Connectable*>& I_ConnectableContainer::getPureConnectables() const
     return m_Connectables;
 }
 const I_Connectable* I_ConnectableContainer::getConnectableFromTypeAndID(const QString& p_ConnectableType,
-                                                 const unsigned long long& p_ConnectableID) const
+                                                                         const QUuid& p_ConnectableID) const
 {
+    /*
+     * IDs can be overridden
+     */
+    QUuid l_ConnectableID = p_ConnectableID;
+    for(unsigned int i_ids = 0U; i_ids < m_IDOverrides.count(); i_ids++ )
+    {
+        if( m_IDOverrides[i_ids][0] == l_ConnectableID )
+        {
+            l_ConnectableID = m_IDOverrides[i_ids][1];
+        }
+    }
+
     const I_Connectable* l_Ret = nullptr;
 
     QList<I_Connectable*> l_Connectables = this->getAllConnectables();
@@ -55,7 +67,7 @@ const I_Connectable* I_ConnectableContainer::getConnectableFromTypeAndID(const Q
          (i_connectables < l_Connectables.count()) && (nullptr == l_Ret);
          i_connectables++ )
     {
-        l_Ret = l_Connectables[i_connectables]->getConnectable(p_ConnectableType, p_ConnectableID);
+        l_Ret = l_Connectables[i_connectables]->getConnectable(p_ConnectableType, l_ConnectableID);
     }
 
     return l_Ret;
@@ -170,19 +182,23 @@ QPoint I_ConnectableContainer::getSelectionCoord()
     unsigned long long l_XSum = 0U;
     unsigned long long l_YSum = 0U;
 
-    for( unsigned int i_items = 0U; i_items < m_CurrentSelectedType.count(); i_items++ )
+    QList<I_Selectable*> l_AllSelectables = this->getAllSelectables(true);
+    unsigned int l_count = 0U;
+    for( unsigned int i_items = 0U; i_items < l_AllSelectables.count(); i_items++ )
     {
-        I_Selectable* l_Selectable = this->getSelectableFromTypeAndID(m_CurrentSelectedType[i_items],
-                                                                      m_CurrentSelectedID[i_items]);
-        l_XSum += l_Selectable->getPos().x();
-        l_YSum += l_Selectable->getPos().y();
+        if( l_AllSelectables[i_items]->isFullySelected() )
+        {
+            l_XSum += l_AllSelectables[i_items]->getPos().x();
+            l_YSum += l_AllSelectables[i_items]->getPos().y();
+            l_count++;
+        }
     }
 
     QPoint l_Ret;
-    if( 0U != m_CurrentSelectedType.count() )
+    if( l_count != 0U )
     {
-        l_Ret.setX(l_XSum / m_CurrentSelectedType.count());
-        l_Ret.setY(l_YSum / m_CurrentSelectedType.count());
+        l_Ret.setX(l_XSum / l_count);
+        l_Ret.setY(l_YSum / l_count);
     }
 
     return l_Ret;
@@ -190,32 +206,37 @@ QPoint I_ConnectableContainer::getSelectionCoord()
 
 void I_ConnectableContainer::unselectAll()
 {
-    for( unsigned int i_items = 0U; i_items < m_CurrentSelectedType.count(); i_items++ )
+    QList<I_Selectable*> l_AllSelectables = this->getAllSelectables(true);
+    for( unsigned int i_items = 0U; i_items < l_AllSelectables.count(); i_items++ )
     {
-        this->getSelectableFromTypeAndID(m_CurrentSelectedType[i_items],
-                                         m_CurrentSelectedID[i_items])->unselect();
+        l_AllSelectables[i_items]->unselect();
     }
-
-    m_CurrentSelectedType.clear();
-    m_CurrentSelectedID.clear();
 }
 
-QJsonObject I_ConnectableContainer::toJson()
+QJsonObject I_ConnectableContainer::toJson() const
 {
     QJsonObject l_MyJson;
 
     for( unsigned int i_sel = 0U; i_sel < m_Selectables.count(); i_sel++ )
     {
-        QJsonArray l_Array = l_MyJson.find(m_Selectables[i_sel]->getSerializableName())->toArray();
-        QJsonObject l_CurrentObject = m_Selectables[i_sel]->toJson();
+        QJsonObject::iterator l_TempContainedArray = l_MyJson.find(m_Selectables[i_sel]->getSerializableName());
+        QJsonArray l_Array;
+        if( l_MyJson.end() != l_TempContainedArray )
+        {
+            l_Array = l_TempContainedArray->toArray();
+        }
         l_Array.append(m_Selectables[i_sel]->toJson());
         l_MyJson.insert(m_Selectables[i_sel]->getSerializableName(), l_Array);
     }
 
     for( unsigned int i_con = 0U; i_con < m_Connectables.count(); i_con++ )
     {
-        QJsonArray l_Array = l_MyJson.find(m_Connectables[i_con]->getSerializableName())->toArray();
-        QJsonObject l_CurrentObject = m_Connectables[i_con]->toJson();
+        QJsonObject::iterator l_TempContainedArray = l_MyJson.find(m_Connectables[i_con]->getSerializableName());
+        QJsonArray l_Array;
+        if( l_MyJson.end() != l_TempContainedArray )
+        {
+            l_Array = l_TempContainedArray->toArray();
+        }
         l_Array.append(m_Connectables[i_con]->toJson());
         l_MyJson.insert(m_Connectables[i_con]->getSerializableName(), l_Array);
     }

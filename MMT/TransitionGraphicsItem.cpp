@@ -18,15 +18,13 @@ const char* TransitionGraphicsItem::SERIALIZABLE_NAME = "Transitions";
 
 static TransitionConfiguration* s_ConfigurationContext;
 
-static unsigned long long s_TransitionsUID = 0U;
-
 TransitionGraphicsItem::TransitionGraphicsItem(
             const I_Connectable* p_ConnectFrom,
             const I_Connectable* p_ConnectTo,
             const QPoint& p_fromPoint,
             const QPoint& p_toPoint,
             I_ConnectableContainer* p_Container):
-    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, s_TransitionsUID, p_Container)
+    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container)
   , m_Guard()
   , m_Event()
   , m_Action()
@@ -36,8 +34,6 @@ TransitionGraphicsItem::TransitionGraphicsItem(
   , m_LabelWidth()
   , m_Text(nullptr)
 {
-    s_TransitionsUID++;
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -55,7 +51,7 @@ TransitionGraphicsItem::TransitionGraphicsItem(
             const QPoint& p_toPoint,
             I_ConnectableContainer* p_Container,
             const QList<QPoint>& p_ForcedPath):
-    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, s_TransitionsUID, p_Container, p_ForcedPath)
+    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container, p_ForcedPath)
   , m_Guard()
   , m_Event()
   , m_Action()
@@ -65,8 +61,6 @@ TransitionGraphicsItem::TransitionGraphicsItem(
   , m_LabelWidth()
   , m_Text(nullptr)
 {
-    s_TransitionsUID++;
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -89,10 +83,6 @@ TransitionGraphicsItem::TransitionGraphicsItem(const QJsonObject& p_JsonObject,
   , m_LabelWidth()
   , m_Text(nullptr)
 {
-    if(this->getID() >= s_TransitionsUID)
-    {
-        s_TransitionsUID = this->getID() + 1U;
-    }
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -378,7 +368,7 @@ void TransitionGraphicsItem::applyConfiguration()
     ConfigWidget::close();
 }
 
-QJsonObject TransitionGraphicsItem::toJson()
+QJsonObject TransitionGraphicsItem::toJson() const
 {
     QJsonObject l_MyJson = GraphicConnector::toJson();
 

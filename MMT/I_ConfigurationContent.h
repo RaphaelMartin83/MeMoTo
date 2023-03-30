@@ -38,7 +38,7 @@ public:
         }
     }
 
-    void setListener(const QString& p_Type, const unsigned long long p_ID)
+    void setListener(const QString& p_Type, const QUuid& p_ID)
     {
         m_ListenerType = p_Type;
         m_ListenerID = p_ID;
@@ -53,7 +53,7 @@ public:
 
 private:
     QString m_ListenerType;
-    unsigned long long m_ListenerID;
+    QUuid m_ListenerID;
 
     unsigned int m_Width = 200U;
 

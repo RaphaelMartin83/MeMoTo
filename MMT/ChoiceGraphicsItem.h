@@ -12,16 +12,12 @@ class ChoiceGraphicsItem:
         public I_Configurable
 {
 public:
-    ChoiceGraphicsItem(QPointF p_Pos);
+    ChoiceGraphicsItem(const QPoint& p_Pos);
     ChoiceGraphicsItem(const QJsonObject& p_JsonObject);
     ~ChoiceGraphicsItem();
 
     void setName(const QString& p_Name);
     const QString& getName() const;
-
-    QPoint getPos() const;
-    void setPos(const QPoint& p_Pos);
-    void setPos(const QPointF& p_Pos);
 
     void refreshDisplay();
     void translateTo(QPoint p_Pos);
@@ -32,7 +28,8 @@ public:
     void unselect();
     void move(QPoint p_Pos);
     bool isItYou(QPoint p_Pos) const;
-    virtual bool isFullySelected() const;
+    bool isSelected() const;
+    bool isFullySelected() const;
     QPoint getFocusPosition() const;
     QString getSelectableType() const;
     QStringList getSearchFields() const;
@@ -50,8 +47,8 @@ public:
     void applyConfiguration();
 
     // I_Serializable
-    QJsonObject toJson();
-    void fromJson(QJsonObject p_Json);
+    QJsonObject toJson() const;
+    void fromJson(const QJsonObject& p_Json);
     QString getSerializableName() const;
 
     static const char* SERIALIZABLE_NAME;
@@ -63,7 +60,6 @@ private:
     void selectAllHandles();
     void selectHandlesOnSide(eConnectDirection p_Side);
 
-    QPoint m_Pos;
     unsigned short m_Width;
     unsigned short m_Height;
 

@@ -25,8 +25,7 @@ class I_SquarishGraphicsItem:
         public I_ContainerGraphicsItem
 {
 public:
-    I_SquarishGraphicsItem(QPointF p_Pos, const QString& p_Name,
-                            unsigned int p_ID,
+    I_SquarishGraphicsItem(const QPoint& p_Pos, const QString& p_Name,
                             unsigned short p_Width = DEFAULT_SQUARE_WIDTH,
                             unsigned short p_Height = DEFAULT_SQUARE_HEIGHT);
     I_SquarishGraphicsItem(const QJsonObject& p_JSon);
@@ -38,10 +37,8 @@ public:
     // Squarish business
     void setWidth(unsigned short p_Width);
     void setHeight(unsigned short p_Height);
-    unsigned short getWidth();
-    unsigned short getHeight();
-    QPoint getPos() const;
-    void setPos(const QPoint& p_Pos);
+    unsigned short getWidth() const;
+    unsigned short getHeight() const;
     void setName(const QString& p_Name);
     const QString& getName() const;
     void setColor(QColor p_Color);
@@ -67,6 +64,7 @@ public:
     void unselect();
     void move(QPoint p_Pos);
     bool isItYou(QPoint p_Pos) const;
+    bool isSelected() const;
     bool isFullySelected() const;
     QPoint getFocusPosition() const;
 
@@ -77,8 +75,8 @@ public:
     virtual QString getConnectableName() const;
 
     // I_Serializable
-    QJsonObject toJson();
-    void fromJson(QJsonObject p_Json);
+    QJsonObject toJson() const;
+    void fromJson(const QJsonObject& p_Json);
 
     // I_GraphicsItem overrides
     virtual void setPlan(unsigned short p_Plan);

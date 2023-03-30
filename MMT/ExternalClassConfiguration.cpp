@@ -127,8 +127,11 @@ QString ExternalClassConfiguration::getResolvedPath(QString p_Root, QString p_Pa
     }
 
     l_resolvedFullPath.append(p_Path);
-    l_resolvedFullPath.append(p_Name);
-    l_resolvedFullPath.append(MeMoToApplication::FileExtension());
+    if( !l_resolvedFullPath.contains(MeMoToApplication::FileExtension()) )
+    {
+        l_resolvedFullPath.append(p_Name);
+        l_resolvedFullPath.append(MeMoToApplication::FileExtension());
+    }
 
     return l_resolvedFullPath;
 }

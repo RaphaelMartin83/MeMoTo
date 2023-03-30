@@ -11,16 +11,16 @@
 #include "StateConfiguration.h"
 
 static const unsigned short DEFAULT_STATE_WIDTH =
-        static_cast<unsigned short>(GridReferential::getGridDistance(140U));
+        static_cast<unsigned short>(GridReferential::getGridDistance(160U));
 static const unsigned short DEFAULT_STATE_HEIGHT =
-        static_cast<unsigned short>(GridReferential::getGridDistance(140U));
+        static_cast<unsigned short>(GridReferential::getGridDistance(160U));
 
 class StateGraphicsItem:
         public I_SquarishGraphicsItem,
         public I_Configurable
 {
 public:
-    StateGraphicsItem(QPointF p_Pos,
+    StateGraphicsItem(const QPoint& p_Pos,
                       unsigned short p_Width = DEFAULT_STATE_WIDTH,
                       unsigned short p_Height = DEFAULT_STATE_HEIGHT);
     StateGraphicsItem(const QJsonObject& p_JSon);
@@ -56,8 +56,8 @@ public:
     void applyConfiguration();
 
     // I_Serializable overrides
-    QJsonObject toJson();
-    void fromJson(QJsonObject p_Json);
+    virtual QJsonObject toJson() const;
+    void fromJson(const QJsonObject& p_Json);
     QString getSerializableName() const;
 
     static const char* SERIALIZABLE_NAME;

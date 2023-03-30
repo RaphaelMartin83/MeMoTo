@@ -18,7 +18,7 @@ public:
         {
             delete l_Items[i_item];
         }
-    };
+    }
 
     virtual void clearAll()
     {
@@ -100,7 +100,7 @@ public:
 
         return l_Ret;
     }
-    QList<I_Selectable*> getAllSelectables(bool p_recursive=false) const
+    virtual QList<I_Selectable*> getAllSelectables(bool p_recursive=false) const
     {
         QList<I_Selectable*> l_Ret = I_ConnectableContainer::getAllSelectables(p_recursive);
 
@@ -253,7 +253,7 @@ public:
 
         return l_Ret;
     }
-    virtual QJsonObject toJson()
+    virtual QJsonObject toJson() const
     {
         QJsonObject l_MyJson = I_ConnectableContainer::toJson();
 

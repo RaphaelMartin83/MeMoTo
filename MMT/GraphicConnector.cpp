@@ -13,9 +13,8 @@ GraphicConnector::GraphicConnector(
             const I_Connectable* p_ConnectTo,
             const QPoint& p_fromPoint,
             const QPoint& p_toPoint,
-            unsigned long long p_ID,
             I_ConnectableContainer* p_Container):
-    Connector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_ID, p_Container)
+    Connector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container)
   , m_Lines()
   , m_Handles()
   , m_SelectedHandleID(-1)
@@ -31,10 +30,9 @@ GraphicConnector::GraphicConnector(
             const I_Connectable* p_ConnectTo,
             const QPoint& p_fromPoint,
             const QPoint& p_toPoint,
-            unsigned long long p_ID,
             I_ConnectableContainer* p_Container,
             const QList<QPoint>& p_ForcedPath):
-    Connector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_ID, p_Container, p_ForcedPath)
+    Connector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container, p_ForcedPath)
   , m_Lines()
   , m_Handles()
   , m_SelectedHandleID(-1)
@@ -221,6 +219,8 @@ void GraphicConnector::unselect()
         m_Handles[m_SelectedHandleID]->unselect();
         m_SelectedHandleID = -1;
     }
+
+    m_isFullySelected = false;
 }
 void GraphicConnector::move(QPoint p_Pos)
 {
@@ -269,12 +269,10 @@ void GraphicConnector::move(QPoint p_Pos)
 }
 QPoint GraphicConnector::getPos() const
 {
-    return this->getPath().first();
-}
-void GraphicConnector::setPos(const QPoint& p_Pos)
-{
-    this->setPath(0U, p_Pos);
-    this->refreshDisplay();
+    QPoint l_MiddlePoint;
+    l_MiddlePoint.setX((this->getPath().first().x() + this->getPath().last().x())/2);
+    l_MiddlePoint.setY((this->getPath().first().y() + this->getPath().last().y())/2);
+    return l_MiddlePoint;
 }
 bool GraphicConnector::isItYou(QPoint p_Pos) const
 {
@@ -295,6 +293,10 @@ bool GraphicConnector::isItYou(QPoint p_Pos) const
     return l_ret;
 }
 
+bool GraphicConnector::isSelected() const
+{
+    return (isFullySelected() || (-1 != m_SelectedHandleID));
+}
 bool GraphicConnector::isFullySelected() const
 {
     return m_isFullySelected;

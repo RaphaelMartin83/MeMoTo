@@ -7,19 +7,15 @@ static const unsigned int DEFAULT_ENTRY_STATE_DIAMETER = static_cast<unsigned in
 static const char* ENTRY_STATE_CONNECTABLE_NAME = "EntryState";
 const char* EntryStateGraphicsItem::SERIALIZABLE_NAME = "EntryStates";
 
-static unsigned long long s_EntryStatesUID = 0U;
-
-EntryStateGraphicsItem::EntryStateGraphicsItem(QPointF p_Pos):
-  m_isFullySelected(false)
+EntryStateGraphicsItem::EntryStateGraphicsItem(const QPoint& p_Pos):
+    I_Connectable(p_Pos)
+  , m_isFullySelected(false)
   , m_SelectedHandlesDirection(eConnectionDirection_None)
   , m_Handles()
   , m_SelectedHandleForConnectionFrom(nullptr)
   , m_SelectedHandleForConnectionTo(nullptr)
 {
-    this->setID(s_EntryStatesUID);
-    s_EntryStatesUID++;
-    m_Diameter = DEFAULT_ENTRY_STATE_DIAMETER;
-    this->setPos(p_Pos);
+    this->setDiameter(DEFAULT_ENTRY_STATE_DIAMETER);
     m_Circle = new QGraphicsEllipseItem();
     m_Circle->setBrush(Qt::green);
     this->addToGroup(m_Circle);
@@ -28,16 +24,17 @@ EntryStateGraphicsItem::EntryStateGraphicsItem(QPointF p_Pos):
 }
 
 EntryStateGraphicsItem::EntryStateGraphicsItem(const QJsonObject& p_JsonObject):
-    EntryStateGraphicsItem(QPointF(p_JsonObject.find("PositionX")->toDouble(),
-                                   p_JsonObject.find("PositionY")->toDouble()))
+    I_Connectable(p_JsonObject)
+  , m_isFullySelected(false)
+  , m_SelectedHandlesDirection(eConnectionDirection_None)
+  , m_Handles()
+  , m_SelectedHandleForConnectionFrom(nullptr)
+  , m_SelectedHandleForConnectionTo(nullptr)
 {
-    this->setID(p_JsonObject.find("ID")->toInt());
-    s_EntryStatesUID--;
-    if(this->getID() >= s_EntryStatesUID)
-    {
-        s_EntryStatesUID = this->getID() + 1U;
-    }
     this->setDiameter(p_JsonObject.find("Diameter")->toInt());
+    m_Circle = new QGraphicsEllipseItem();
+    m_Circle->setBrush(Qt::green);
+    this->addToGroup(m_Circle);
 
     EntryStateGraphicsItem::refreshDisplay();
 }
@@ -50,22 +47,6 @@ EntryStateGraphicsItem::~EntryStateGraphicsItem()
     deleteHandles();
 }
 
-QPoint EntryStateGraphicsItem::getPos() const
-{
-    return m_Pos;
-}
-void EntryStateGraphicsItem::setPos(const QPoint& p_Pos)
-{
-    m_Pos = GridReferential::getPointOnGrid(p_Pos);
-    this->refreshDisplay();
-}
-void EntryStateGraphicsItem::setPos(const QPointF& p_Pos)
-{
-    QPoint l_TempPoint;
-    l_TempPoint.setX(p_Pos.x());
-    l_TempPoint.setY(p_Pos.y());
-    m_Pos = GridReferential::getPointOnGrid(l_TempPoint);
-}
 void EntryStateGraphicsItem::setDiameter(unsigned short p_Diameter)
 {
     m_Diameter = GridReferential::getGridDistance(p_Diameter);
@@ -73,8 +54,8 @@ void EntryStateGraphicsItem::setDiameter(unsigned short p_Diameter)
 
 void EntryStateGraphicsItem::refreshDisplay()
 {
-    QRect l_CircleRect = QRect(m_Pos.x() - m_Diameter/2,
-                      m_Pos.y() - m_Diameter/2,
+    QRect l_CircleRect = QRect(this->getPos().x() - m_Diameter/2,
+                      this->getPos().y() - m_Diameter/2,
                       m_Diameter, m_Diameter);
     m_Circle->setRect(l_CircleRect);
 
@@ -118,26 +99,26 @@ void EntryStateGraphicsItem::setupHandles()
     QPoint l_HandleCoordinates;
 
     // Top handle
-    l_HandleCoordinates.setX(m_Pos.x());
-    l_HandleCoordinates.setY(m_Pos.y() - m_Diameter/2);
+    l_HandleCoordinates.setX(this->getPos().x());
+    l_HandleCoordinates.setY(this->getPos().y() - m_Diameter/2);
     m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_Top));
     this->addToGroup(m_Handles.last());
 
     // Left handle
-    l_HandleCoordinates.setX(m_Pos.x() - m_Diameter/2);
-    l_HandleCoordinates.setY(m_Pos.y());
+    l_HandleCoordinates.setX(this->getPos().x() - m_Diameter/2);
+    l_HandleCoordinates.setY(this->getPos().y());
     m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_Left));
     this->addToGroup(m_Handles.last());
 
     // Bottom handle
-    l_HandleCoordinates.setX(m_Pos.x());
-    l_HandleCoordinates.setY(m_Pos.y() + m_Diameter/2);
+    l_HandleCoordinates.setX(this->getPos().x());
+    l_HandleCoordinates.setY(this->getPos().y() + m_Diameter/2);
     m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_Bottom));
     this->addToGroup(m_Handles.last());
 
     // Right handle
-    l_HandleCoordinates.setX(m_Pos.x() + m_Diameter/2);
-    l_HandleCoordinates.setY(m_Pos.y());
+    l_HandleCoordinates.setX(this->getPos().x() + m_Diameter/2);
+    l_HandleCoordinates.setY(this->getPos().y());
     m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_Right));
     this->addToGroup(m_Handles.last());
 }
@@ -231,7 +212,7 @@ void EntryStateGraphicsItem::resizeTo(QPoint p_Pos)
     case eConnectionDirection_Left:
     {
         // Modifies size and position
-        this->setDiameter(2*(m_Pos.x() - p_Pos.x()));
+        this->setDiameter(2*(this->getPos().x() - p_Pos.x()));
         if( m_Diameter < DEFAULT_ENTRY_STATE_DIAMETER )
         {
             m_Diameter = DEFAULT_ENTRY_STATE_DIAMETER;
@@ -240,7 +221,7 @@ void EntryStateGraphicsItem::resizeTo(QPoint p_Pos)
     }
     case eConnectionDirection_Right:
     {
-        this->setDiameter(2*(p_Pos.x() - m_Pos.x()));
+        this->setDiameter(2*(p_Pos.x() - this->getPos().x()));
         if( m_Diameter < DEFAULT_ENTRY_STATE_DIAMETER )
         {
             m_Diameter = DEFAULT_ENTRY_STATE_DIAMETER;
@@ -249,7 +230,7 @@ void EntryStateGraphicsItem::resizeTo(QPoint p_Pos)
     }
     case eConnectionDirection_Top:
     {
-        this->setDiameter(2*(m_Pos.y() - p_Pos.y()));
+        this->setDiameter(2*(this->getPos().y() - p_Pos.y()));
         if( m_Diameter < DEFAULT_ENTRY_STATE_DIAMETER )
         {
             m_Diameter = DEFAULT_ENTRY_STATE_DIAMETER;
@@ -258,7 +239,7 @@ void EntryStateGraphicsItem::resizeTo(QPoint p_Pos)
     }
     case eConnectionDirection_Bottom:
     {
-        this->setDiameter(2*(p_Pos.y() - m_Pos.y()));
+        this->setDiameter(2*(p_Pos.y() - this->getPos().y()));
         if( m_Diameter < DEFAULT_ENTRY_STATE_DIAMETER )
         {
             m_Diameter = DEFAULT_ENTRY_STATE_DIAMETER;
@@ -316,32 +297,31 @@ const QList<HandleGraphicsItem*>& EntryStateGraphicsItem::getConnectableHandles(
 }
 QRect EntryStateGraphicsItem::getCollisionRectangle() const
 {
-    return QRect(m_Pos.x() - m_Diameter/2, m_Pos.y() - m_Diameter/2, m_Diameter, m_Diameter);
+    return QRect(this->getPos().x() - m_Diameter/2, this->getPos().y() - m_Diameter/2, m_Diameter, m_Diameter);
 }
 QString EntryStateGraphicsItem::getConnectableName() const
 {
-    return QString("EntryState" + QString::number(this->getID()));
+    return QString("EntryState" + this->getID().toString());
 }
 
-QJsonObject EntryStateGraphicsItem::toJson()
+QJsonObject EntryStateGraphicsItem::toJson() const
 {
-    QJsonObject l_MyJson;
-
-    l_MyJson.insert("PositionX", m_Pos.x());
-    l_MyJson.insert("PositionY", m_Pos.y());
+    QJsonObject l_MyJson = I_Connectable::toJson();
 
     l_MyJson.insert("Diameter", m_Diameter);
-
-    l_MyJson.insert("ID", static_cast<qint64>(this->getID()));
-
     l_MyJson.insert("Name", m_Name);
 
     return l_MyJson;
 }
 
-void EntryStateGraphicsItem::fromJson(QJsonObject p_Json)
+void EntryStateGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
+    I_Connectable::fromJson(p_Json);
 
+    this->setDiameter(p_Json.find("Diameter")->toInt());
+    m_Name = p_Json.find("Name")->toString();
+
+    this->refreshDisplay();
 }
 
 QString EntryStateGraphicsItem::getSerializableName() const
@@ -349,6 +329,10 @@ QString EntryStateGraphicsItem::getSerializableName() const
     return SERIALIZABLE_NAME;
 }
 
+bool EntryStateGraphicsItem::isSelected() const
+{
+    return (isFullySelected() || (eConnectionDirection_None != m_SelectedHandlesDirection));
+}
 bool EntryStateGraphicsItem::isFullySelected() const
 {
     return m_isFullySelected;
@@ -373,7 +357,7 @@ QString EntryStateGraphicsItem::getDataFromField(const QString& p_FieldName) con
 
     if( "ID" == p_FieldName )
     {
-        l_Ret = QString::number(this->getID());
+        l_Ret = this->getID().toString();
     }
 
     return l_Ret;

@@ -9,7 +9,7 @@ class ExternalClassGraphicsItem:
         public I_Configurable
 {
 public:
-    ExternalClassGraphicsItem(QPointF p_Pos,
+    ExternalClassGraphicsItem(const QPoint& p_Pos,
                             unsigned short p_Width = DEFAULT_CLASS_WIDTH,
                             unsigned short p_Height = DEFAULT_CLASS_HEIGHT);
     ExternalClassGraphicsItem(const QJsonObject& p_JSon);
@@ -30,8 +30,8 @@ public:
     QString getConnectableType() const;
 
     // I_Serializable overloads
-    QJsonObject toJson();
-    void fromJson(QJsonObject p_Json);
+    QJsonObject toJson() const;
+    void fromJson(const QJsonObject& p_Json);
     QString getSerializableName() const;
 
     const QString& getRoot() const;

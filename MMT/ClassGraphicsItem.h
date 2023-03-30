@@ -9,7 +9,7 @@ class ClassGraphicsItem:
         public I_Configurable
 {
 public:
-    ClassGraphicsItem(QPointF p_Pos,
+    ClassGraphicsItem(const QPoint& p_Pos,
                             unsigned short p_Width = DEFAULT_CLASS_WIDTH,
                             unsigned short p_Height = DEFAULT_CLASS_HEIGHT);
     ClassGraphicsItem(const QJsonObject& p_JSon);

@@ -10,14 +10,11 @@ Connector::Connector(const I_Connectable* p_ConnectFrom,
               const I_Connectable* p_ConnectTo,
               const QPoint& p_fromPoint,
               const QPoint& p_toPoint,
-              unsigned long long p_ID,
               I_ConnectableContainer* p_Container):
     m_Path()
   , m_PathIsForced(false)
   , m_Container(p_Container)
 {
-    this->setID(p_ID);
-
     m_ConnectFrom = p_ConnectFrom;
     m_ConnectTo = p_ConnectTo;
 
@@ -34,15 +31,12 @@ Connector::Connector(const I_Connectable* p_ConnectFrom,
               const I_Connectable* p_ConnectTo,
               const QPoint& p_fromPoint,
               const QPoint& p_toPoint,
-              unsigned long long p_ID,
               I_ConnectableContainer* p_Container,
               const QList<QPoint>& p_ForcedPath):
     m_Path()
   , m_PathIsForced(true)
   , m_Container(p_Container)
 {
-    this->setID(p_ID);
-
     m_ConnectFrom = p_ConnectFrom;
     m_ConnectTo = p_ConnectTo;
 
@@ -59,7 +53,8 @@ Connector::Connector(const I_Connectable* p_ConnectFrom,
 
 Connector::Connector(const QJsonObject& p_JsonObject,
                      I_ConnectableContainer* p_Container):
-    m_Path()
+    I_Connector(p_JsonObject)
+  , m_Path()
   , m_PathIsForced(false)
   , m_Container(p_Container)
 {
@@ -67,19 +62,17 @@ Connector::Connector(const QJsonObject& p_JsonObject,
 }
 
 // I_Serializable
-QJsonObject Connector::toJson()
+QJsonObject Connector::toJson() const
 {
-    QJsonObject l_MyJson;
-
-    l_MyJson.insert("ID", static_cast<qint64>(this->getID()));
+    QJsonObject l_MyJson = I_Connector::toJson();
 
     l_MyJson.insert("ConnectFromType", this->getConnectFrom()->getConnectableType());
-    l_MyJson.insert("ConnectFromID", static_cast<qint64>(this->getConnectFrom()->getID()));
+    l_MyJson.insert("ConnectFromID", this->getConnectFrom()->getID().toString());
     l_MyJson.insert("ConnectFromDirection", this->getConnectFrom()->getConnectDirectionFromPos(this->getPath()[0U]));
     l_MyJson.insert("ConnectFromNumber", this->getConnectFrom()->getConnectionIDFromPos(this->getPath()[0U]));
 
     l_MyJson.insert("ConnectToType", this->getConnectTo()->getConnectableType());
-    l_MyJson.insert("ConnectToID", static_cast<qint64>(this->getConnectTo()->getID()));
+    l_MyJson.insert("ConnectToID", this->getConnectTo()->getID().toString());
     l_MyJson.insert("ConnectToDirection", this->getConnectTo()->getConnectDirectionFromPos(this->getPath().last()));
     l_MyJson.insert("ConnectToNumber", this->getConnectTo()->getConnectionIDFromPos(this->getPath().last()));
 
@@ -100,16 +93,16 @@ QJsonObject Connector::toJson()
     return l_MyJson;
 }
 
-void Connector::fromJson(QJsonObject p_JsonObject)
+void Connector::fromJson(const QJsonObject& p_JsonObject)
 {
-    this->setID(p_JsonObject.find("ID")->toInt());
+    I_Connector::fromJson(p_JsonObject);
 
     Connector::setConnectFrom(m_Container->getConnectableFromTypeAndID(
                             p_JsonObject.find("ConnectFromType")->toString(),
-                            p_JsonObject.find("ConnectFromID")->toInteger()));
+                            QUuid::fromString(p_JsonObject.find("ConnectFromID")->toString())));
     Connector::setConnectTo(m_Container->getConnectableFromTypeAndID(
                             p_JsonObject.find("ConnectToType")->toString(),
-                            p_JsonObject.find("ConnectToID")->toInteger()));
+                            QUuid::fromString(p_JsonObject.find("ConnectToID")->toString())));
 
     QPoint l_FromPoint = Connector::getConnectFrom()->getConnectionPosFromIDAndDirection(
                                     p_JsonObject.find("ConnectFromNumber")->toInt(),
@@ -118,7 +111,7 @@ void Connector::fromJson(QJsonObject p_JsonObject)
                                     p_JsonObject.find("ConnectToNumber")->toInt(),
                                     static_cast<eConnectDirection>(p_JsonObject.find("ConnectToDirection")->toInt()));
     QJsonArray l_PathJson;
-    QJsonObject::iterator l_PathFound = p_JsonObject.find("ForcedPath");
+    QJsonObject::const_iterator l_PathFound = p_JsonObject.find("ForcedPath");
     if( p_JsonObject.end() != l_PathFound )
     {
         l_PathJson = l_PathFound->toArray();

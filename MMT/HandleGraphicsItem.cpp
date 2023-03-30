@@ -14,7 +14,7 @@ static const Qt::GlobalColor DEFAULT_HANDLE_CONNECTION_COLOR = Qt::magenta;
 HandleGraphicsItem::HandleGraphicsItem(
         const QPoint& p_Position, const eConnectDirection& p_HandlePosition,
         bool p_VisibleUnselected):
-    m_Position(p_Position)
+    I_Selectable(p_Position, true)
   , m_isSelected(false)
   , m_isVisibleUnselected(p_VisibleUnselected)
 {
@@ -47,15 +47,15 @@ const eConnectDirection& HandleGraphicsItem::getHandlePosition() const
 
 QPoint HandleGraphicsItem::getHandleCoordinates() const
 {
-    return m_Position;
+    return this->getPos();
 }
 
 bool HandleGraphicsItem::isItYou(QPoint p_Pos) const
 {
     bool l_ret;
 
-    if( abs(p_Pos.x() - m_Position.x()) < DEFAULT_HANDLES_DIAMETER &&
-            abs(p_Pos.y() - m_Position.y()) < DEFAULT_HANDLES_DIAMETER )
+    if( abs(p_Pos.x() - this->getPos().x()) < DEFAULT_HANDLES_DIAMETER &&
+            abs(p_Pos.y() - this->getPos().y()) < DEFAULT_HANDLES_DIAMETER )
     {
         l_ret = true;
     }
@@ -70,8 +70,8 @@ bool HandleGraphicsItem::isItYou(QPoint p_Pos) const
 void HandleGraphicsItem::selectForConnection()
 {
     m_Circle->setRect(QRect(
-                          m_Position.x() - (DEFAULT_HANDLES_DIAMETER/2) * SELECTION_GROWING_FACTOR,
-                          m_Position.y() - (DEFAULT_HANDLES_DIAMETER/2) * SELECTION_GROWING_FACTOR,
+                          this->getPos().x() - (DEFAULT_HANDLES_DIAMETER/2) * SELECTION_GROWING_FACTOR,
+                          this->getPos().y() - (DEFAULT_HANDLES_DIAMETER/2) * SELECTION_GROWING_FACTOR,
                           DEFAULT_HANDLES_DIAMETER * SELECTION_GROWING_FACTOR,
                           DEFAULT_HANDLES_DIAMETER * SELECTION_GROWING_FACTOR));
     m_Circle->setBrush(DEFAULT_HANDLE_CONNECTION_COLOR);
@@ -96,8 +96,8 @@ void HandleGraphicsItem::select(QPoint p_Pos)
 void HandleGraphicsItem::unselect()
 {
     m_Circle->setRect(QRect(
-                          m_Position.x() - (DEFAULT_HANDLES_DIAMETER/2),
-                          m_Position.y() - (DEFAULT_HANDLES_DIAMETER/2),
+                          this->getPos().x() - (DEFAULT_HANDLES_DIAMETER/2),
+                          this->getPos().y() - (DEFAULT_HANDLES_DIAMETER/2),
                           DEFAULT_HANDLES_DIAMETER,
                           DEFAULT_HANDLES_DIAMETER));
     m_Circle->setBrush(DEFAULT_HANDLE_COLOR);
@@ -111,20 +111,13 @@ void HandleGraphicsItem::unselect()
 
 void HandleGraphicsItem::move(QPoint p_Pos)
 {
-    m_Position = p_Pos;
+    this->setPos(p_Pos);
 }
 
-QPoint HandleGraphicsItem::getPos() const
+bool HandleGraphicsItem::isSelected() const
 {
-    return m_Position;
+    return m_isSelected;
 }
-void HandleGraphicsItem::setPos(const QPoint& p_Pos)
-{
-    m_Position = p_Pos;
-
-    m_Circle->setPos(p_Pos);
-}
-
 bool HandleGraphicsItem::isFullySelected() const
 {
     return m_isSelected;

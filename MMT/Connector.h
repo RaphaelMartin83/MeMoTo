@@ -15,19 +15,16 @@ public:
               const I_Connectable* p_ConnectTo,
               const QPoint& p_fromPoint,
               const QPoint& p_toPoint,
-              unsigned long long p_ID,
               I_ConnectableContainer* p_Container);
     Connector(const I_Connectable* p_ConnectFrom,
               const I_Connectable* p_ConnectTo,
               const QPoint& p_fromPoint,
               const QPoint& p_toPoint,
-              unsigned long long p_ID,
               I_ConnectableContainer* p_Container,
               const QList<QPoint>& p_ForcedPath);
     Connector(I_Connectable* p_ConnectFrom,
               I_Connectable* p_ConnectTo,
-              const QList<QPoint>& p_Path,
-              unsigned long long p_ID);
+              const QList<QPoint>& p_Path);
     Connector(const QJsonObject& p_JsonObject,
               I_ConnectableContainer* p_Container);
 
@@ -56,8 +53,8 @@ public:
     void route(const QPoint& p_fromPoint, const QPoint& p_toPoint);
 
     // I_Serializable
-    QJsonObject toJson();
-    void fromJson(QJsonObject p_Json);
+    virtual QJsonObject toJson() const;
+    virtual void fromJson(const QJsonObject& p_Json);
 
 private:
     // Route algorithm is divided into multiple simple cases

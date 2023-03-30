@@ -9,20 +9,14 @@ const char* StateGraphicsItem::SERIALIZABLE_NAME = "States";
 
 static StateConfiguration* s_ConfigurationContext = nullptr;
 
-// Enough to create one state per second until the sun explodes, and even more than that...
-// Should be enough
-static unsigned long long s_StatesUniqueIDs = 0U;
-
-StateGraphicsItem::StateGraphicsItem(QPointF p_Pos,
+StateGraphicsItem::StateGraphicsItem(const QPoint& p_Pos,
                                      unsigned short p_Width,
                                      unsigned short p_Height):
-    I_SquarishGraphicsItem(p_Pos, QString("State" + QString::number(s_StatesUniqueIDs)), s_StatesUniqueIDs, p_Width, p_Height)
+    I_SquarishGraphicsItem(p_Pos, QString("State"), p_Width, p_Height)
   , m_EntryAction("")
   , m_ExitAction("")
   , m_Stereotype("")
 {
-    s_StatesUniqueIDs++;
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -52,11 +46,6 @@ StateGraphicsItem::StateGraphicsItem(const QJsonObject& p_JSonObject):
     {
         ls_isConfigInited = true;
         s_ConfigurationContext = new StateConfiguration();
-    }
-
-    if( this->getID() >= s_StatesUniqueIDs )
-    {
-        s_StatesUniqueIDs = this->getID() + 1U;
     }
 
     m_EntryActionGraphicsItem = new QGraphicsTextItem(m_EntryAction);
@@ -248,7 +237,7 @@ void StateGraphicsItem::applyConfiguration()
     ConfigWidget::close();
 }
 
-QJsonObject StateGraphicsItem::toJson()
+QJsonObject StateGraphicsItem::toJson() const
 {
     QJsonObject l_MyJson = I_SquarishGraphicsItem::toJson();
 
@@ -259,8 +248,15 @@ QJsonObject StateGraphicsItem::toJson()
     return l_MyJson;
 }
 
-void StateGraphicsItem::fromJson(QJsonObject p_Json)
+void StateGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
+    I_SquarishGraphicsItem::fromJson(p_Json);
+
+    this->setEntryAction(p_Json.find("EntryAction")->toString());
+    this->setExitAction(p_Json.find("ExitAction")->toString());
+    this->setStereotype(p_Json.find("Stereotype")->toString());
+
+    this->refreshDisplay();
 }
 
 QString StateGraphicsItem::getSerializableName() const

@@ -11,23 +11,19 @@ const char* CompositionGraphicsItem::SERIALIZABLE_NAME = "Compositions";
 
 static CompositionConfiguration* s_ConfigurationContext;
 
-static unsigned long long s_CompositionUID = 0U;
-
 CompositionGraphicsItem::CompositionGraphicsItem(
             const I_Connectable* p_ConnectFrom,
             const I_Connectable* p_ConnectTo,
             const QPoint& p_fromPoint,
             const QPoint& p_toPoint,
             I_ConnectableContainer* p_Container):
-    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, s_CompositionUID, p_Container)
+    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container)
   , m_AttributeNames()
   , m_Text(nullptr)
   , m_LabelPosition()
   , m_LabelWidth()
   , m_Tip(nullptr)
 {
-    s_CompositionUID++;
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -45,15 +41,13 @@ CompositionGraphicsItem::CompositionGraphicsItem(
             const QPoint& p_toPoint,
             I_ConnectableContainer* p_Container,
             const QList<QPoint>& p_ForcedPath):
-    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, s_CompositionUID, p_Container, p_ForcedPath)
+    GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container, p_ForcedPath)
   , m_AttributeNames()
   , m_Text(nullptr)
   , m_LabelPosition()
   , m_LabelWidth()
   , m_Tip(nullptr)
 {
-    s_CompositionUID++;
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -73,11 +67,6 @@ CompositionGraphicsItem::CompositionGraphicsItem(const QJsonObject& p_JsonObject
   , m_LabelWidth()
   , m_Tip(nullptr)
 {
-    if(this->getID() >= s_CompositionUID)
-    {
-        s_CompositionUID = this->getID() + 1U;
-    }
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -202,7 +191,7 @@ void CompositionGraphicsItem::applyConfiguration()
 }
 
 // I_Serializable
-QJsonObject CompositionGraphicsItem::toJson()
+QJsonObject CompositionGraphicsItem::toJson() const
 {
     QJsonObject l_MyJson = GraphicConnector::toJson();
 
@@ -215,7 +204,7 @@ QJsonObject CompositionGraphicsItem::toJson()
 
     return l_MyJson;
 }
-void CompositionGraphicsItem::fromJson(QJsonObject p_Json)
+void CompositionGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
     GraphicConnector::fromJson(p_Json);
 

@@ -11,8 +11,8 @@
 #include "GridReferential.h"
 #include "I_DiagramContainer.h"
 
-static const unsigned short DEFAULT_CHOICE_WIDTH = 50U;
-static const unsigned short DEFALUT_CHOICE_HEIGHT = 60U;
+static const unsigned short DEFAULT_CHOICE_WIDTH = 80U;
+static const unsigned short DEFALUT_CHOICE_HEIGHT = 80U;
 static const unsigned short CHOICE_TEXT_LABELS_HEIGHT = 15U;
 static const unsigned short MIN_HANDLES_DISTANCE = 30U;
 static const unsigned short SELECTION_FIELD_DIVISOR = 5U;
@@ -22,20 +22,16 @@ const char* ChoiceGraphicsItem::SERIALIZABLE_NAME = "Choices";
 
 static ChoiceConfiguration* s_ConfigurationContext;
 
-static unsigned long long s_ChoicesUID = 0U;
-
-ChoiceGraphicsItem::ChoiceGraphicsItem(QPointF p_Pos):
-  m_isFullySelected(false)
+ChoiceGraphicsItem::ChoiceGraphicsItem(const QPoint& p_Pos):
+    I_Connectable(p_Pos)
+  , m_isFullySelected(false)
   , m_SelectedHandlesDirection(eConnectionDirection_None)
   , m_Handles()
   , m_SelectedHandle(nullptr)
   , m_SelectedHandleForConnectionFrom(nullptr)
   , m_SelectedHandleForConnectionTo(nullptr)
-  , m_Name(QString("C") + QString::number(s_ChoicesUID))
+  , m_Name(QString("C"))
 {
-    this->setID(s_ChoicesUID);
-    s_ChoicesUID++;
-
     // Instanciate configuration layout if needed
     static bool ls_isConfigInited = false;
     if( false == ls_isConfigInited )
@@ -46,7 +42,6 @@ ChoiceGraphicsItem::ChoiceGraphicsItem(QPointF p_Pos):
 
     m_Width = DEFAULT_CHOICE_WIDTH;
     m_Height = DEFALUT_CHOICE_HEIGHT;
-    this->setPos(p_Pos);
 
     m_Polygon = new QGraphicsPolygonItem();
     m_Polygon->setBrush(Qt::green);
@@ -59,19 +54,34 @@ ChoiceGraphicsItem::ChoiceGraphicsItem(QPointF p_Pos):
 }
 
 ChoiceGraphicsItem::ChoiceGraphicsItem(const QJsonObject& p_JsonObject):
-    ChoiceGraphicsItem(QPointF(p_JsonObject.find("PositionX")->toDouble(),
-                               p_JsonObject.find("PositionY")->toDouble()))
+    I_Connectable(p_JsonObject)
+  , m_isFullySelected(false)
+  , m_SelectedHandlesDirection(eConnectionDirection_None)
+  , m_Handles()
+  , m_SelectedHandle(nullptr)
+  , m_SelectedHandleForConnectionFrom(nullptr)
+  , m_SelectedHandleForConnectionTo(nullptr)
+  , m_Name(QString("C"))
 {
-    m_Name = p_JsonObject.find("Name")->toString();
-    this->setID(p_JsonObject.find("ID")->toInt());
-
-    s_ChoicesUID--;
-    if( this->getID() >= s_ChoicesUID )
+    // Instanciate configuration layout if needed
+    static bool ls_isConfigInited = false;
+    if( false == ls_isConfigInited )
     {
-        s_ChoicesUID = this->getID() + 1U;
+        ls_isConfigInited = true;
+        s_ConfigurationContext = new ChoiceConfiguration();
     }
+
+    m_Name = p_JsonObject.find("Name")->toString();
+
     m_Width = p_JsonObject.find("Width")->toInt();
     m_Height = p_JsonObject.find("Height")->toInt();
+
+    m_Polygon = new QGraphicsPolygonItem();
+    m_Polygon->setBrush(Qt::green);
+    this->addToGroup(m_Polygon);
+
+    m_NameGraphicsItem = new QGraphicsTextItem(m_Name);
+    this->addToGroup(m_NameGraphicsItem);
 
     ChoiceGraphicsItem::refreshDisplay();
 }
@@ -97,33 +107,16 @@ const QString& ChoiceGraphicsItem::getName() const
     return m_Name;
 }
 
-QPoint ChoiceGraphicsItem::getPos() const
-{
-    return m_Pos;
-}
-void ChoiceGraphicsItem::setPos(const QPoint& p_Pos)
-{
-    m_Pos = GridReferential::getPointOnGrid(p_Pos);
-    this->refreshDisplay();
-}
-void ChoiceGraphicsItem::setPos(const QPointF& p_Pos)
-{
-    QPoint l_TempPoint;
-    l_TempPoint.setX(p_Pos.x());
-    l_TempPoint.setY(p_Pos.y());
-    m_Pos = GridReferential::getPointOnGrid(l_TempPoint);
-}
-
 void ChoiceGraphicsItem::refreshDisplay()
 {
     QPolygonF l_polyDef;
-    l_polyDef << QPointF(m_Pos.x(), m_Pos.y() - m_Height/2) <<
-                 QPointF(m_Pos.x() - m_Width/2, m_Pos.y()) <<
-                 QPointF(m_Pos.x(), m_Height/2 + m_Pos.y()) <<
-                 QPointF(m_Width/2 + m_Pos.x(), m_Pos.y());
+    l_polyDef << QPointF(this->getPos().x(), this->getPos().y() - m_Height/2) <<
+                 QPointF(this->getPos().x() - m_Width/2, this->getPos().y()) <<
+                 QPointF(this->getPos().x(), m_Height/2 + this->getPos().y()) <<
+                 QPointF(m_Width/2 + this->getPos().x(), this->getPos().y());
     m_Polygon->setPolygon(l_polyDef);
 
-    m_NameGraphicsItem->setPos(m_Pos.x() - m_Width/2, m_Pos.y() - CHOICE_TEXT_LABELS_HEIGHT);
+    m_NameGraphicsItem->setPos(this->getPos().x() - m_Width/2, this->getPos().y() - CHOICE_TEXT_LABELS_HEIGHT);
     m_NameGraphicsItem->setTextWidth(m_Width);
     m_NameGraphicsItem->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
     m_NameGraphicsItem->setPlainText(m_Name);
@@ -178,7 +171,7 @@ void ChoiceGraphicsItem::resizeTo(QPoint p_Pos)
     case eConnectionDirection_Left:
     {
         // Modifies size and position
-        m_Width = 2*(m_Pos.x() - p_Pos.x());
+        m_Width = 2*(this->getPos().x() - p_Pos.x());
         if( m_Width < DEFAULT_CHOICE_WIDTH )
         {
             m_Width = DEFAULT_CHOICE_WIDTH;
@@ -187,7 +180,7 @@ void ChoiceGraphicsItem::resizeTo(QPoint p_Pos)
     }
     case eConnectionDirection_Right:
     {
-        m_Width = 2*(p_Pos.x() - m_Pos.x());
+        m_Width = 2*(p_Pos.x() - this->getPos().x());
         if( m_Width < DEFAULT_CHOICE_WIDTH )
         {
             m_Width = DEFAULT_CHOICE_WIDTH;
@@ -196,7 +189,7 @@ void ChoiceGraphicsItem::resizeTo(QPoint p_Pos)
     }
     case eConnectionDirection_Top:
     {
-        m_Height = 2*(m_Pos.y() - p_Pos.y());
+        m_Height = 2*(this->getPos().y() - p_Pos.y());
         if( m_Height < DEFALUT_CHOICE_HEIGHT )
         {
             m_Height = DEFALUT_CHOICE_HEIGHT;
@@ -205,7 +198,7 @@ void ChoiceGraphicsItem::resizeTo(QPoint p_Pos)
     }
     case eConnectionDirection_Bottom:
     {
-        m_Height = 2*(p_Pos.y() - m_Pos.y());
+        m_Height = 2*(p_Pos.y() - this->getPos().y());
         if( m_Height < DEFALUT_CHOICE_HEIGHT )
         {
             m_Height = DEFALUT_CHOICE_HEIGHT;
@@ -250,8 +243,8 @@ void ChoiceGraphicsItem::setupHandles()
     qreal l_slope = -l_dy / l_dx;
     for(unsigned short i_Handles = 1U; i_Handles < l_nbOfHandles; i_Handles++ )
     {
-        l_HandleCoordinates.setX(static_cast<int>(m_Pos.x() - l_dx + (l_XdistanceBetweenHandles * i_Handles)));
-        l_HandleCoordinates.setY(static_cast<int>(m_Pos.y() + (l_slope*l_XdistanceBetweenHandles*i_Handles)));
+        l_HandleCoordinates.setX(static_cast<int>(this->getPos().x() - l_dx + (l_XdistanceBetweenHandles * i_Handles)));
+        l_HandleCoordinates.setY(static_cast<int>(this->getPos().y() + (l_slope*l_XdistanceBetweenHandles*i_Handles)));
         m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_TopLeft));
         this->addToGroup(m_Handles.last());
     }
@@ -260,8 +253,8 @@ void ChoiceGraphicsItem::setupHandles()
     l_slope = l_dy / l_dx;
     for(unsigned short i_Handles = 1U; i_Handles < l_nbOfHandles; i_Handles++ )
     {
-        l_HandleCoordinates.setX(static_cast<int>(m_Pos.x() + (l_XdistanceBetweenHandles * i_Handles)));
-        l_HandleCoordinates.setY(static_cast<int>(m_Pos.y() - l_dy + (l_slope*l_XdistanceBetweenHandles*i_Handles)));
+        l_HandleCoordinates.setX(static_cast<int>(this->getPos().x() + (l_XdistanceBetweenHandles * i_Handles)));
+        l_HandleCoordinates.setY(static_cast<int>(this->getPos().y() - l_dy + (l_slope*l_XdistanceBetweenHandles*i_Handles)));
         m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_TopRight));
         this->addToGroup(m_Handles.last());
     }
@@ -270,8 +263,8 @@ void ChoiceGraphicsItem::setupHandles()
     l_slope = l_dy / l_dx;
     for(unsigned short i_Handles = 1U; i_Handles < l_nbOfHandles; i_Handles++ )
     {
-        l_HandleCoordinates.setX(static_cast<int>(m_Pos.x() - l_dx + (l_XdistanceBetweenHandles * i_Handles)));
-        l_HandleCoordinates.setY(static_cast<int>(m_Pos.y() + (l_slope*l_XdistanceBetweenHandles*i_Handles)));
+        l_HandleCoordinates.setX(static_cast<int>(this->getPos().x() - l_dx + (l_XdistanceBetweenHandles * i_Handles)));
+        l_HandleCoordinates.setY(static_cast<int>(this->getPos().y() + (l_slope*l_XdistanceBetweenHandles*i_Handles)));
         m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_BotLeft));
         this->addToGroup(m_Handles.last());
     }
@@ -280,33 +273,33 @@ void ChoiceGraphicsItem::setupHandles()
     l_slope = -l_dy / l_dx;
     for(unsigned short i_Handles = 1U; i_Handles < l_nbOfHandles; i_Handles++ )
     {
-        l_HandleCoordinates.setX(static_cast<int>(m_Pos.x() + (l_XdistanceBetweenHandles * i_Handles)));
-        l_HandleCoordinates.setY(static_cast<int>(m_Pos.y() + l_dy + (l_slope*l_XdistanceBetweenHandles*i_Handles)));
+        l_HandleCoordinates.setX(static_cast<int>(this->getPos().x() + (l_XdistanceBetweenHandles * i_Handles)));
+        l_HandleCoordinates.setY(static_cast<int>(this->getPos().y() + l_dy + (l_slope*l_XdistanceBetweenHandles*i_Handles)));
         m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_BotRight));
         this->addToGroup(m_Handles.last());
     }
 
     // Top handle
-    l_HandleCoordinates.setX(m_Pos.x());
-    l_HandleCoordinates.setY(m_Pos.y() - m_Height/2);
+    l_HandleCoordinates.setX(this->getPos().x());
+    l_HandleCoordinates.setY(this->getPos().y() - m_Height/2);
     m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_Top));
     this->addToGroup(m_Handles.last());
 
     // Left handle
-    l_HandleCoordinates.setX(m_Pos.x() - m_Width/2);
-    l_HandleCoordinates.setY(m_Pos.y());
+    l_HandleCoordinates.setX(this->getPos().x() - m_Width/2);
+    l_HandleCoordinates.setY(this->getPos().y());
     m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_Left));
     this->addToGroup(m_Handles.last());
 
     // Bottom handle
-    l_HandleCoordinates.setX(m_Pos.x());
-    l_HandleCoordinates.setY(m_Pos.y() + m_Height/2);
+    l_HandleCoordinates.setX(this->getPos().x());
+    l_HandleCoordinates.setY(this->getPos().y() + m_Height/2);
     m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_Bottom));
     this->addToGroup(m_Handles.last());
 
     // Right handle
-    l_HandleCoordinates.setX(m_Pos.x() + m_Width/2);
-    l_HandleCoordinates.setY(m_Pos.y());
+    l_HandleCoordinates.setX(this->getPos().x() + m_Width/2);
+    l_HandleCoordinates.setY(this->getPos().y());
     m_Handles.append(new HandleGraphicsItem(l_HandleCoordinates, eConnectionDirection_Right));
     this->addToGroup(m_Handles.last());
 }
@@ -357,33 +350,33 @@ void ChoiceGraphicsItem::select(QPoint p_Pos)
     if( false == l_found && this->m_Polygon->contains(p_Pos) )
     {
         eConnectDirection l_DirectionToSelect = eConnectionDirection_None;
-        if( (p_Pos.x() < (m_Pos.x() - m_Width/SELECTION_FIELD_DIVISOR)) &&
-                (p_Pos.y() > (m_Pos.y() - m_Height/SELECTION_FIELD_DIVISOR)) &&
-                (p_Pos.y() < (m_Pos.y() + m_Height/SELECTION_FIELD_DIVISOR)) )
+        if( (p_Pos.x() < (this->getPos().x() - m_Width/SELECTION_FIELD_DIVISOR)) &&
+                (p_Pos.y() > (this->getPos().y() - m_Height/SELECTION_FIELD_DIVISOR)) &&
+                (p_Pos.y() < (this->getPos().y() + m_Height/SELECTION_FIELD_DIVISOR)) )
         {
             // Left corner
             l_DirectionToSelect = eConnectionDirection_Left;
             m_isFullySelected = false;
         }
-        else if( (p_Pos.x() > (m_Pos.x() + m_Width/SELECTION_FIELD_DIVISOR)) &&
-                (p_Pos.y() > (m_Pos.y() - m_Height/SELECTION_FIELD_DIVISOR)) &&
-                (p_Pos.y() < (m_Pos.y() + m_Height/SELECTION_FIELD_DIVISOR)) )
+        else if( (p_Pos.x() > (this->getPos().x() + m_Width/SELECTION_FIELD_DIVISOR)) &&
+                (p_Pos.y() > (this->getPos().y() - m_Height/SELECTION_FIELD_DIVISOR)) &&
+                (p_Pos.y() < (this->getPos().y() + m_Height/SELECTION_FIELD_DIVISOR)) )
         {
             // Right corner
             l_DirectionToSelect = eConnectionDirection_Right;
             m_isFullySelected = false;
         }
-        else if( (p_Pos.y() > (m_Pos.y() + m_Height/SELECTION_FIELD_DIVISOR)) &&
-                (p_Pos.x() > (m_Pos.x() - m_Width/SELECTION_FIELD_DIVISOR)) &&
-                (p_Pos.x() < (m_Pos.x() + m_Width/SELECTION_FIELD_DIVISOR)) )
+        else if( (p_Pos.y() > (this->getPos().y() + m_Height/SELECTION_FIELD_DIVISOR)) &&
+                (p_Pos.x() > (this->getPos().x() - m_Width/SELECTION_FIELD_DIVISOR)) &&
+                (p_Pos.x() < (this->getPos().x() + m_Width/SELECTION_FIELD_DIVISOR)) )
         {
             // Bot corner
             l_DirectionToSelect = eConnectionDirection_Bottom;
             m_isFullySelected = false;
         }
-        else if( (p_Pos.y() < (m_Pos.y() - m_Height/SELECTION_FIELD_DIVISOR)) &&
-                (p_Pos.x() > (m_Pos.x() - m_Width/SELECTION_FIELD_DIVISOR)) &&
-                (p_Pos.x() < (m_Pos.x() + m_Width/SELECTION_FIELD_DIVISOR)) )
+        else if( (p_Pos.y() < (this->getPos().y() - m_Height/SELECTION_FIELD_DIVISOR)) &&
+                (p_Pos.x() > (this->getPos().x() - m_Width/SELECTION_FIELD_DIVISOR)) &&
+                (p_Pos.x() < (this->getPos().x() + m_Width/SELECTION_FIELD_DIVISOR)) )
         {
             // Top corner
             l_DirectionToSelect = eConnectionDirection_Top;
@@ -459,11 +452,15 @@ const QList<HandleGraphicsItem*>& ChoiceGraphicsItem::getConnectableHandles() co
 }
 QRect ChoiceGraphicsItem::getCollisionRectangle() const
 {
-    return QRect(m_Pos.x() - m_Width/2, m_Pos.y() - m_Height/2, m_Width, m_Height);
+    return QRect(this->getPos().x() - m_Width/2, this->getPos().y() - m_Height/2, m_Width, m_Height);
 }
 QString ChoiceGraphicsItem::getConnectableName() const
 {
     return m_Name;
+}
+bool ChoiceGraphicsItem::isSelected() const
+{
+    return (isFullySelected() || (nullptr != m_SelectedHandle));
 }
 bool ChoiceGraphicsItem::isFullySelected() const
 {
@@ -521,23 +518,26 @@ void ChoiceGraphicsItem::applyConfiguration()
     ConfigWidget::close();
 }
 
-QJsonObject ChoiceGraphicsItem::toJson()
+QJsonObject ChoiceGraphicsItem::toJson() const
 {
-    QJsonObject l_MyJson;
+    QJsonObject l_MyJson = I_Connectable::toJson();
 
-    l_MyJson.insert("PositionX", m_Pos.x());
-    l_MyJson.insert("PositionY", m_Pos.y());
     l_MyJson.insert("Width", m_Width);
     l_MyJson.insert("Height", m_Height);
     l_MyJson.insert("Name", m_Name);
-    l_MyJson.insert("ID", static_cast<qint64>(this->getID()));
 
     return l_MyJson;
 }
 
-void ChoiceGraphicsItem::fromJson(QJsonObject p_Json)
+void ChoiceGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
+    I_Connectable::fromJson(p_Json);
 
+    m_Width = p_Json.find("Width")->toInt();
+    m_Height = p_Json.find("Height")->toInt();
+    m_Name = p_Json.find("Name")->toString();
+
+    this->refreshDisplay();
 }
 
 QString ChoiceGraphicsItem::getSerializableName() const
