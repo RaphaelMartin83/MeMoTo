@@ -116,7 +116,6 @@ void I_DiagramContainer::deletePressed()
             l_hasChanged = true;
         }
     }
-    this->setCurrentSelected(nullptr);
 
     if(l_hasChanged)
     {
@@ -160,7 +159,7 @@ void I_DiagramContainer::copyPressed()
     for( unsigned int i_con = 0U; i_con < l_CurrentSelectedItems.count(); i_con++ )
     {
         I_Selectable* l_CurrentSelectable = l_CurrentSelectedItems[i_con];
-        if( nullptr != l_CurrentSelectable )
+        if( nullptr != l_CurrentSelectable && l_CurrentSelectable->isFullySelected() )
         {
             QJsonObject::iterator l_ArrayFound = l_MyJson.find(l_CurrentSelectable->getSerializableName());
             QJsonArray l_Array;
@@ -554,7 +553,6 @@ void I_DiagramContainer::focusOnItem(QString p_Type, QString p_Field,
                     if( true == p_Select )
                     {
                         this->unselectAll();
-                        this->setCurrentSelected(l_Selectables[i_selectables]);
                         l_Selectables[i_selectables]->select();
                     }
                     this->setCurrentPosition(l_Selectables[i_selectables]->getFocusPosition());

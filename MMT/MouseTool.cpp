@@ -21,7 +21,6 @@ void MouseTool::use(
             p_Target->unselectAll();
         }
         I_Selectable* l_Selected = p_Target->getSelectable(p_Pos);
-        p_Target->setCurrentSelected(l_Selected);
         if( nullptr != l_Selected )
         {
             l_Selected->select(p_Pos);
