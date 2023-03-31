@@ -32,6 +32,9 @@ private:
 
     // Text
     static QLabel* m_Text;
+
+    // Blanc space
+    static QWidget* m_BlancSpace;
 };
 
 #endif // ERRORDISPLAYER_H
