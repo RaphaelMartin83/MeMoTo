@@ -3,7 +3,6 @@
 #include <QJsonObject>
 #include <QJsonDocument>
 #include <QFile>
-#include <QScroller>
 
 #include "MainWindow.h"
 #include "DiagramGraphicsView.h"
@@ -135,8 +134,6 @@ void MainWindow::initGUI()
     m_DiagramView->setMinimumWidth(700);
     m_DiagramView->setMinimumHeight(700);
     m_DiagramView->setMouseTracking(true);
-    QScroller::grabGesture(m_DiagramView, QScroller::TouchGesture);
-    QScroller::grabGesture(m_DiagramView, QScroller::MiddleMouseButtonGesture);
 
     ConfigWidget::getInstance().setFixedWidth(200);
 
