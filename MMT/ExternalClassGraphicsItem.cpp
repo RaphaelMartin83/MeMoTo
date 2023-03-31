@@ -1,5 +1,4 @@
 #include <QProcessEnvironment>
-#include <QJsonDocument>
 #include <QJsonObject>
 #include <QJsonArray>
 #include <QDir>
@@ -8,6 +7,7 @@
 #include "ExternalClassGraphicsItem.h"
 #include "ConfigWidget.h"
 #include "ExternalClassConfiguration.h"
+#include "MeMoToLoader.h"
 
 static const char* EXTERNAL_CLASS_CONNECTABLE_NAME = "ExternalClass";
 const char* ExternalClassGraphicsItem::SERIALIZABLE_NAME = "ExternalClass";
@@ -62,16 +62,7 @@ void ExternalClassGraphicsItem::refreshDisplay()
     l_File.setFileName(l_FileString);
     if( l_File.exists() )
     {
-        l_File.open(QIODevice::ReadOnly | QIODevice::Text);
-        QByteArray l_FileContent = l_File.readAll();
-        l_File.close();
-
-        QJsonDocument l_JsonDoc;
-        QJsonParseError l_Error;
-        l_JsonDoc = QJsonDocument::fromJson(l_FileContent, &l_Error);
-
-        QJsonObject l_JsonObject;
-        l_JsonObject = l_JsonDoc.object();
+        QJsonObject l_JsonObject = MeMoToLoader::loadFromFile(l_File);
 
         // Finds myself into the json file
         // Breaks encapsulation, todo: improve

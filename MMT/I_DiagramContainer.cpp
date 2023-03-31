@@ -1,11 +1,11 @@
 #include <QApplication>
 #include <QClipboard>
-#include <QJsonDocument>
 #include <QGraphicsSceneMouseEvent>
 #include <QFile>
 
 #include "I_DiagramContainer.h"
 #include "SharingManager.h"
+#include "MeMoToLoader.h"
 
 static FindConfiguration* s_FindConfigurationContext = nullptr;
 
@@ -199,9 +199,8 @@ void I_DiagramContainer::copyPressed()
     l_JsonToCopy.insert("SelectionCoordX", l_CurrentSelectionCoord.x());
     l_JsonToCopy.insert("SelectionCoordY", l_CurrentSelectionCoord.y());
 
-    QJsonDocument l_JSonDoc;
-    l_JSonDoc.setObject(l_JsonToCopy);
-    QByteArray l_JsonText = l_JSonDoc.toJson(QJsonDocument::Indented);
+    QByteArray l_JsonText;
+    MeMoToLoader::JsonToArray(l_JsonToCopy, l_JsonText);
 
     QClipboard* l_pClipboard = QApplication::clipboard();
     l_pClipboard->clear(QClipboard::Clipboard);
@@ -210,14 +209,9 @@ void I_DiagramContainer::copyPressed()
 void I_DiagramContainer::pastePressed()
 {
     QClipboard* l_pClipboard = QApplication::clipboard();
-    QString l_currentClipboard = l_pClipboard->text();
+    QByteArray l_currentClipboard = l_pClipboard->text().toUtf8();
 
-    QJsonDocument l_JsonDoc;
-    QJsonParseError l_Error;
-    l_JsonDoc = QJsonDocument::fromJson(l_currentClipboard.toUtf8(), &l_Error);
-
-    QJsonObject l_JsonObject;
-    l_JsonObject = l_JsonDoc.object();
+    QJsonObject l_JsonObject = MeMoToLoader::loadFromArray(l_currentClipboard);
 
     QPoint l_MiddlePointToPaste;
     QJsonObject::iterator l_tmpObject;

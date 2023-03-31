@@ -1,7 +1,6 @@
 #include <QGraphicsView>
 #include <QKeyEvent>
 #include <QJsonObject>
-#include <QJsonDocument>
 #include <QFile>
 
 #include "MainWindow.h"
@@ -11,6 +10,7 @@
 #include "LoadFileConfiguration.h"
 #include "SharingManager.h"
 #include "MeMoToApplication.h"
+#include "MeMoToLoader.h"
 
 #include "SMDiagramScene.h"
 #include "ClassDiagramScene.h"
@@ -108,10 +108,13 @@ void MainWindow::setApplicationData(const QJsonObject& p_Data)
 {
     for( unsigned short i_diagrams = 0U; i_diagrams < m_Diagrams.count(); i_diagrams++ )
     {
-        m_Diagrams[i_diagrams]->clearAll();
-        m_Diagrams[i_diagrams]->fromJson(
-                    p_Data.find(m_SerializablesIndexes[i_diagrams])->toObject());
-        m_Diagrams[i_diagrams]->saveUndoState();
+        QJsonObject::const_iterator l_foundDiagramJson = p_Data.find(m_SerializablesIndexes[i_diagrams]);
+        if( p_Data.end() != l_foundDiagramJson )
+        {
+            m_Diagrams[i_diagrams]->clearAll();
+            m_Diagrams[i_diagrams]->fromJson(l_foundDiagramJson->toObject());
+            m_Diagrams[i_diagrams]->saveUndoState();
+        }
     }
 }
 
@@ -200,32 +203,15 @@ void MainWindow::saveDiagrams()
     QJsonObject l_JSonGlobal;
     this->getApplicationData(l_JSonGlobal);
 
-    QJsonDocument l_JSonDoc;
-    l_JSonDoc.setObject(l_JSonGlobal);
-    QByteArray l_JSonText = l_JSonDoc.toJson(QJsonDocument::Indented);
-    l_JSonText.replace('\n', QByteArray("\r\n"));
-
-    QFile l_File;
-    l_File.setFileName(m_FileName);
-    l_File.open(QIODevice::WriteOnly | QIODevice::Text);
-    l_File.write(l_JSonText);
-    l_File.close();
+    QFile l_File(m_FileName);
+    MeMoToLoader::saveToFile(l_File, l_JSonGlobal);
 }
 
 void MainWindow::loadDiagrams()
 {
-    QFile l_File;
-    l_File.setFileName(m_FileName);
-    l_File.open(QIODevice::ReadOnly | QIODevice::Text);
-    QByteArray l_FileContent = l_File.readAll();
-    l_File.close();
+    QFile l_File(m_FileName);
 
-    QJsonDocument l_JsonDoc;
-    QJsonParseError l_Error;
-    l_JsonDoc = QJsonDocument::fromJson(l_FileContent, &l_Error);
-
-    QJsonObject l_JsonObject;
-    l_JsonObject = l_JsonDoc.object();
+    QJsonObject l_JsonObject = MeMoToLoader::loadFromFile(l_File);
 
     MainWindow::setApplicationData(l_JsonObject);
 }

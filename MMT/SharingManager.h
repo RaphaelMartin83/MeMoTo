@@ -22,7 +22,7 @@ public:
         , m_Query(p_Database)
     {
 
-    };
+    }
 public slots:
     void retrieveData()
     {
