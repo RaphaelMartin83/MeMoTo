@@ -9,6 +9,7 @@ QPushButton* ErrorDisplayer::m_CopyButton = nullptr;
 QPushButton* ErrorDisplayer::m_OKButton = nullptr;
 QLabel* ErrorDisplayer::m_NameLabel = nullptr;
 QLabel* ErrorDisplayer::m_Text = nullptr;
+QWidget* ErrorDisplayer::m_BlancSpace = nullptr;
 
 static ErrorDisplayer* s_Me = nullptr;
 
@@ -19,6 +20,7 @@ ErrorDisplayer::ErrorDisplayer()
     m_OKButton = new QPushButton();
     m_NameLabel = new QLabel();
     m_Text = new QLabel();
+    m_BlancSpace = new QWidget();
 
     m_CopyButton->setText("Copy Error");
     m_OKButton->setText("OK");
@@ -29,8 +31,9 @@ ErrorDisplayer::ErrorDisplayer()
 
     m_Layout->addWidget(m_NameLabel, l_row++, 0, 1, 1, Qt::Alignment());
     m_Layout->addWidget(m_Text, l_row++, 0, 1, 1, Qt::Alignment());
-    m_Layout->addWidget(m_CopyButton, l_row++, 0, 1, 1, Qt::AlignBottom);
-    m_Layout->addWidget(m_OKButton, l_row++, 0, 1, 1, Qt::AlignBottom);
+    m_Layout->addWidget(m_CopyButton, l_row++, 0, 1, 1, Qt::Alignment());
+    m_Layout->addWidget(m_BlancSpace, l_row++, 0, 1, 1, Qt::Alignment());
+    m_Layout->addWidget(m_OKButton, l_row++, 0, 1, 1, Qt::Alignment());
 
     this->setLayout(m_Layout);
 
@@ -51,6 +54,8 @@ void ErrorDisplayer::displayError(const QString& p_ErrorTitle,
     m_NameLabel->setText(p_ErrorTitle);
     m_Text->setText(p_ErrorText);
     m_Text->setWordWrap(true);
+
+    m_NameLabel->setMaximumHeight(50);
 
     ConfigWidget::open(s_Me);
 }

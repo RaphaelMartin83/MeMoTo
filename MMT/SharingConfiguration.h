@@ -22,6 +22,8 @@ public:
     QString getFilePathAndName();
     void setFilePathAndName(const QString& p_File);
 
+    void setFileSharingRunning(bool p_isFileSharingRunning);
+
     void registerConfigListener(I_SharingConfigurationListener* p_Listener);
 
     // I_ConfigurationContent

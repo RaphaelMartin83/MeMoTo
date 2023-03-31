@@ -4,11 +4,11 @@
 #include <QJsonObject>
 #include <QFile>
 
-#include "ConfigWidget.h"
-
 #include "SharingManager.h"
 #include "SharingConfiguration.h"
 #include "MeMoToLoader.h"
+#include "ErrorDisplayer.h"
+#include "ConfigWidget.h"
 
 static SharingConfiguration* s_ConfigurationContext = nullptr;
 
@@ -18,19 +18,11 @@ SharingManager* SharingManager::m_Me = nullptr;
 
 SharingManager::SharingManager():
     m_DataBaseHandle(QSqlDatabase::addDatabase("QSQLITE")),
-    m_Timer(this),
+    m_FileSystemWatcher(this),
     m_isInited(false),
-    m_Manager(nullptr),
-    m_isDatatoPush(false),
-    m_DataBaseRequestsThread(),
-    m_DataBaseRequester(m_DataBaseHandle),
-    m_ApplicationData()
+    m_Manager(nullptr)
 {
-    m_DataBaseRequester.moveToThread(&m_DataBaseRequestsThread);
-    connect(&m_Timer, &QTimer::timeout, this, &SharingManager::pollEvents);
-    connect(this, &SharingManager::getData, &m_DataBaseRequester, &DataBaseRequester::retrieveData);
-    connect(&m_DataBaseRequester, &DataBaseRequester::dataRetrieved, this, &SharingManager::dataRetrieved);
-    m_DataBaseRequestsThread.start();
+    connect(&m_FileSystemWatcher, &QFileSystemWatcher::fileChanged, this, &SharingManager::fileChanged);
 }
 
 SharingManager& SharingManager::getInstance()
@@ -49,6 +41,7 @@ void SharingManager::start()
         s_ConfigurationContext = new SharingConfiguration();
         s_ConfigurationContext->registerConfigListener(m_Me);
     }
+    s_ConfigurationContext->setFileSharingRunning(m_isInited);
     ConfigWidget::open(s_ConfigurationContext);
 }
 
@@ -56,21 +49,70 @@ void SharingManager::sharingPlaceSelected(const QString& p_Place)
 {
     ConfigWidget::close();
 
-    QFile l_File(p_Place);
-    m_DataBaseHandle.setDatabaseName(p_Place);
-    if( !l_File.exists() )
+    if( m_isInited )
     {
-        this->initDB();
+        // Stop sharing
+        m_FileSystemWatcher.removePath(m_DataBaseHandle.databaseName());
+        m_isInited = false;
     }
+    else
+    {
+        QFile l_File(p_Place);
 
-    m_Manager->getApplicationData(m_ApplicationData);
-    m_isInited = true;
-
-    m_Timer.start(POLL_PERIOD);
+        if( false == l_File.open(QIODevice::ReadWrite) )
+        {
+            ErrorDisplayer::displayError("ERROR: Cannot share!",
+                                         "The given file path for sharing does not exist or doesn't have RW permissions.\n"
+                                         "Given file path: " + p_Place +"\n");
+        }
+        else
+        {
+            if( 0 == l_File.peek(1).size() )
+            {
+                l_File.close();
+                l_File.remove();
+            }
+            else
+            {
+                l_File.close();
+            }
+            m_DataBaseHandle.setDatabaseName(p_Place);
+            if( !l_File.exists() )
+            {
+                this->initDB();
+            }
+            else
+            {
+                this->fileChanged();
+            }
+            m_FileSystemWatcher.addPath(p_Place);
+            m_isInited = true;
+        }
+    }
 }
+
 void SharingManager::sharingCanceled()
 {
     ConfigWidget::close();
+}
+
+void SharingManager::fileChanged()
+{
+    QSqlQuery l_Query;
+    m_DataBaseHandle.open();
+    m_FileSystemWatcher.removePath(m_DataBaseHandle.databaseName());
+    l_Query.exec("select data from dataTable");
+    m_FileSystemWatcher.addPath(m_DataBaseHandle.databaseName());
+    m_DataBaseHandle.close();
+
+    if(l_Query.lastError().type() == QSqlError::NoError)
+    {
+        l_Query.next();
+        QByteArray l_Array = l_Query.value(0).toByteArray();
+        QJsonObject l_DataFromDB = MeMoToLoader::loadFromArray(l_Array);
+
+        m_Manager->setApplicationData(l_DataFromDB);
+    }
 }
 
 void SharingManager::initDB()
@@ -92,6 +134,8 @@ void SharingManager::setData(const QJsonObject& p_Data, bool p_first)
     MeMoToLoader::JsonToArray(p_Data, l_JSonText);
 
     m_DataBaseHandle.open();
+    // During set data, deactivate file system monitoring
+    m_FileSystemWatcher.removePath(m_DataBaseHandle.databaseName());
     QSqlQuery l_Query(m_DataBaseHandle);
     if( p_first )
     {
@@ -101,44 +145,17 @@ void SharingManager::setData(const QJsonObject& p_Data, bool p_first)
     {
         l_Query.exec("update dataTable set data = '" + l_JSonText + "'");
     }
+    m_FileSystemWatcher.addPath(m_DataBaseHandle.databaseName());
     m_DataBaseHandle.close();
-}
-
-void SharingManager::dataRetrieved(QSqlQuery& p_Query)
-{
-    if(p_Query.lastError().type() == QSqlError::NoError)
-    {
-        p_Query.next();
-        QByteArray l_Array = p_Query.value(0).toByteArray();
-        QJsonObject l_DataFromDB = MeMoToLoader::loadFromArray(l_Array);
-
-        if( l_DataFromDB != m_ApplicationData )
-        {
-            m_Manager->setApplicationData(l_DataFromDB);
-            m_ApplicationData = l_DataFromDB;
-        }
-    }
-}
-
-void SharingManager::pollEvents()
-{
-    if(m_isDatatoPush)
-    {
-        m_isDatatoPush = false;
-        m_Manager->getApplicationData(m_ApplicationData);
-        this->setData(m_ApplicationData);
-    }
-    else
-    {
-        emit getData();
-    }
 }
 
 void SharingManager::pushModifications()
 {
     if(!m_isInited) {return;}
 
-    m_isDatatoPush = true;
+    QJsonObject l_ObjectToWrite;
+    m_Manager->getApplicationData(l_ObjectToWrite);
+    this->setData(l_ObjectToWrite, false);
 }
 
 void SharingManager::registerDataManager(I_DataManager* p_Manager)

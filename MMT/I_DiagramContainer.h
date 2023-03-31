@@ -30,6 +30,10 @@ public:
     virtual QPoint getStartPosition() const = 0;
     QPoint getCurrentCursorPosition() const;
 
+    // I_Undoable
+    virtual void undo();
+    virtual void redo();
+
     // Notification that something happened
     void changed(I_GraphicsItem* p_WhoChanged);
 

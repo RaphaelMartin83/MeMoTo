@@ -17,7 +17,7 @@ public:
 
     }
 
-    void saveUndoState()
+    virtual void saveUndoState()
     {
         m_LatestChange = ++m_StackPtr;
         if( m_LatestChange >= UNDO_STACK_SIZE )
@@ -36,7 +36,7 @@ public:
         }
         m_UndoStack[m_LatestChange] = this->toJson();
     }
-    void undo()
+    virtual void undo()
     {
         if( m_StackPtr != m_OldestChange )
         {
@@ -52,7 +52,7 @@ public:
             this->fromJson(m_UndoStack[m_StackPtr]);
         }
     }
-    void redo()
+    virtual void redo()
     {
         if( m_StackPtr != m_LatestChange )
         {
