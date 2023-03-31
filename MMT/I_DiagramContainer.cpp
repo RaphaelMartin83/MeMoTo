@@ -29,6 +29,17 @@ QPoint I_DiagramContainer::getCurrentCursorPosition() const
     return GridReferential::getPointOnGrid(l_Ret);
 }
 
+void I_DiagramContainer::undo()
+{
+    I_Undoable::undo();
+    this->changed(nullptr);
+}
+void I_DiagramContainer::redo()
+{
+    I_Undoable::undo();
+    this->changed(nullptr);
+}
+
 void I_DiagramContainer::changed(I_GraphicsItem* p_WhoChanged)
 {
     this->saveUndoState();

@@ -1,16 +1,22 @@
 #include "SharingConfiguration.h"
 #include "MeMoToApplication.h"
 
+static const char* s_TitleIfNotSharing = "Enter file sharing path:";
+static const char* s_TitleIfSharing = "Sharing...";
+
+static const char* s_OkButtonIfNotSharing = "Start";
+static const char* s_OkButtonIfSharing = "Stop";
+
 SharingConfiguration::SharingConfiguration()
 {
     // Init widgets
-    m_ContextLabel = new QLabel("Enter file sharing path:");
+    m_ContextLabel = new QLabel(s_TitleIfNotSharing);
     m_ContextLabel->setFixedHeight(30);
 
     m_FileNameEdit = new ConfigLineEdit(this);
     m_FileNameEdit->setText("");
 
-    m_OKButton = new QPushButton("OK");
+    m_OKButton = new QPushButton(s_OkButtonIfNotSharing);
     m_CancelButton = new QPushButton("Cancel");
 
     m_FileNameLabel = new QLabel("NOTE: Enter the path and name of the memoto sharing file.\n"
@@ -47,6 +53,20 @@ QString SharingConfiguration::getFilePathAndName()
 void SharingConfiguration::setFilePathAndName(const QString& p_FileName)
 {
     m_FileNameEdit->setText(p_FileName);
+}
+
+void SharingConfiguration::setFileSharingRunning(bool p_isFileSharingRunning)
+{
+    if( p_isFileSharingRunning )
+    {
+        m_ContextLabel->setText(s_TitleIfSharing);
+        m_OKButton->setText(s_OkButtonIfSharing);
+    }
+    else
+    {
+        m_ContextLabel->setText(s_TitleIfNotSharing);
+        m_OKButton->setText(s_OkButtonIfNotSharing);
+    }
 }
 
 void SharingConfiguration::registerConfigListener(I_SharingConfigurationListener* p_Listener)
