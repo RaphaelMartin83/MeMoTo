@@ -40,7 +40,7 @@ public:
     // User inputs and usability
     void deletePressed();
     void escapePressed();
-    void printPressed(QString p_OutputFile);
+    int printPressed(QString p_OutputFile);
     void copyPressed();
     void pastePressed();
     void selectToolByID(unsigned short p_ID);
@@ -81,7 +81,7 @@ public:
     QStringList getAllDataOfTypeAndField(QString p_Type, QString p_Field);
     void focusOnItem(QString p_Type, QString p_Field,
                      QString p_Data, unsigned short p_findOffset,
-                     bool p_Select = false);
+                     bool p_Select = false, bool p_CaseSensitive = true);
     void findConfigurationValidated(QString p_Type,
                                     QString p_Field,
                                     QString p_Data,
