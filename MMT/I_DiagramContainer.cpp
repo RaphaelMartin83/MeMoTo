@@ -319,7 +319,11 @@ void I_DiagramContainer::setUnfocused()
 
 void I_DiagramContainer::setCurrentPosition(QPointF p_Position)
 {
-    m_View->centerOn(p_Position);
+    if( true == m_isFocused )
+    {
+        m_View->centerOn(p_Position);
+    }
+    m_CurrentPosition = p_Position;
 }
 
 void I_DiagramContainer::toolChanged()
@@ -541,12 +545,42 @@ QStringList I_DiagramContainer::getAllDataOfTypeAndField(QString p_Type, QString
 
 void I_DiagramContainer::focusOnItem(QString p_Type, QString p_Field,
          QString p_Data, unsigned short p_findOffset,
-         bool p_Select)
+         bool p_Select, bool p_CaseSensitive)
 {
     QList<I_Selectable*> l_Selectables = this->getAllSelectables(true);
 
     bool l_found = false;
 
+    // Put this out of loop for optimization
+    // If type is not specified
+    if( ("" == p_Type) || ("" == p_Field) )
+    {
+        for( unsigned int i_selectables = 0U;
+             (i_selectables < l_Selectables.count()) && (false == l_found);
+             i_selectables++ )
+        {
+            QStringList l_Fields = l_Selectables[i_selectables]->getSearchFields();
+
+            for( unsigned int i_fields = 0U; i_fields < l_Fields.count(); i_fields++ )
+            {
+                QString l_DataToFind = p_Data;
+                QString l_CurrentData = l_Selectables[i_selectables]->getDataFromField(l_Fields[i_fields]);
+                if( false == p_CaseSensitive )
+                {
+                    l_DataToFind = l_DataToFind.toLower();
+                    l_CurrentData = l_CurrentData.toLower();
+                }
+                if( l_CurrentData == l_DataToFind )
+                {
+                    this->setCurrentPosition(l_Selectables[i_selectables]->getFocusPosition());
+                    l_found = true;
+                }
+            }
+        }
+    }
+
+    // This loop is strict search, all fields are filled
+    // Case sensitivity is true
     for( unsigned int i_selectables = 0U;
          (i_selectables < l_Selectables.count()) && (false == l_found);
          i_selectables++ )
@@ -570,13 +604,8 @@ void I_DiagramContainer::focusOnItem(QString p_Type, QString p_Field,
                         this->unselectAll();
                         l_Selectables[i_selectables]->select();
                     }
-                    this->setCurrentPosition(l_Selectables[i_selectables]->getFocusPosition());
                 }
-                else
-                {
-                    // Not currently viewed, just for next loading
-                    m_CurrentPosition = l_Selectables[i_selectables]->getFocusPosition();
-                }
+                this->setCurrentPosition(l_Selectables[i_selectables]->getFocusPosition());
             }
         }
     }
