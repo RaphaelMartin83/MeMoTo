@@ -1,7 +1,6 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlResult>
 #include <QtSql/QSqlError>
-#include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
 
@@ -9,6 +8,7 @@
 
 #include "SharingManager.h"
 #include "SharingConfiguration.h"
+#include "MeMoToLoader.h"
 
 static SharingConfiguration* s_ConfigurationContext = nullptr;
 
@@ -88,12 +88,11 @@ void SharingManager::initDB()
 
 void SharingManager::setData(const QJsonObject& p_Data, bool p_first)
 {
-    QJsonDocument l_JSonDoc;
-    l_JSonDoc.setObject(p_Data);
-    QByteArray l_JSonText = l_JSonDoc.toJson(QJsonDocument::Indented);
+    QByteArray l_JSonText;
+    MeMoToLoader::JsonToArray(p_Data, l_JSonText);
 
-    QSqlQuery l_Query(m_DataBaseHandle);
     m_DataBaseHandle.open();
+    QSqlQuery l_Query(m_DataBaseHandle);
     if( p_first )
     {
         l_Query.exec("insert into dataTable (data) values ('" + l_JSonText + "')");
@@ -110,11 +109,8 @@ void SharingManager::dataRetrieved(QSqlQuery& p_Query)
     if(p_Query.lastError().type() == QSqlError::NoError)
     {
         p_Query.next();
-        QJsonDocument l_JsonDoc;
-        QJsonParseError l_Error;
-        l_JsonDoc = QJsonDocument::fromJson(p_Query.value(0).toByteArray(), &l_Error);
-
-        QJsonObject l_DataFromDB = l_JsonDoc.object();
+        QByteArray l_Array = p_Query.value(0).toByteArray();
+        QJsonObject l_DataFromDB = MeMoToLoader::loadFromArray(l_Array);
 
         if( l_DataFromDB != m_ApplicationData )
         {
@@ -140,7 +136,7 @@ void SharingManager::pollEvents()
 
 void SharingManager::pushModifications()
 {
-    if(!m_isInited) {return;};
+    if(!m_isInited) {return;}
 
     m_isDatatoPush = true;
 }
