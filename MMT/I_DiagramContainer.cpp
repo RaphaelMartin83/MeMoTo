@@ -134,13 +134,16 @@ void I_DiagramContainer::escapePressed()
     }
     ConfigWidget::close();
 }
-void I_DiagramContainer::printPressed(QString p_OutputFile)
+int I_DiagramContainer::printPressed(QString p_OutputFile)
 {
     QFile l_FileOutput(p_OutputFile);
-    if( ("" != p_OutputFile) && (false == l_FileOutput.isWritable()) )
+    bool l_isFileWritable = l_FileOutput.open(QIODevice::WriteOnly);
+    l_FileOutput.close();
+    if( ("" != p_OutputFile) && (!l_isFileWritable) )
     {
-        // Do not go default and polute user machine
-        return;
+        // Do not go default and avoid poluting user machine
+        qDebug() << "Output file could not be written";
+        return -1;
     }
 
     // Get a bigger ROI
@@ -164,6 +167,8 @@ void I_DiagramContainer::printPressed(QString p_OutputFile)
     this->setSceneRect(QRect(0, 0,
                              this->getDiagramMaxWidth(),
                              this->getDiagramMaxHeight()));
+
+    return 0;
 }
 void I_DiagramContainer::copyPressed()
 {

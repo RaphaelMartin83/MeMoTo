@@ -5,6 +5,9 @@
 QString MeMoToApplication::sm_DefaultDiagram("");
 QString MeMoToApplication::sm_OutputString("");
 QString MeMoToApplication::sm_FileToOpen("");
+QString MeMoToApplication::sm_FocusOn("");
+
+MainWindow* MeMoToApplication::sm_MW = nullptr;
 
 MeMoToApplication::MeMoToApplication(int& argc, char** argv):
     QApplication(argc, argv)
@@ -33,11 +36,18 @@ MeMoToApplication::MeMoToApplication(int& argc, char** argv):
                                         "ClassDiagram");
     l_Parser.addOption(l_DefaultDiagram);
 
+    QCommandLineOption l_FocusOption("focus-on",
+                                     "MeMoTo will open the application on the first occurence of given value in default diagram displayed (see default-diagram option)",
+                                     "Focus on item",
+                                     "");
+    l_Parser.addOption(l_FocusOption);
+
     l_Parser.process(*this);
 
     // Retrieve value arguments
     sm_OutputString = l_Parser.value(l_PngOutputOption);
     sm_DefaultDiagram = l_Parser.value(l_DefaultDiagram);
+    sm_FocusOn = l_Parser.value(l_FocusOption);
 
     // Retrieve positionnal arguments
     QStringList l_PositionalArguments = l_Parser.positionalArguments();
@@ -45,6 +55,32 @@ MeMoToApplication::MeMoToApplication(int& argc, char** argv):
     {
         sm_FileToOpen = l_PositionalArguments[0];
     }
+}
+
+int MeMoToApplication::exec()
+{
+    int l_Ret = -1;
+
+    if( false == MeMoToApplication::isHeadless())
+    {
+        // Regular run
+        sm_MW->show();
+        if( "" != sm_FocusOn )
+        {
+            sm_MW->getCurrentDiagram()->focusOnItem("", "", sm_FocusOn, 0U, false, true);
+        }
+        l_Ret = QApplication::exec();
+    }
+    else
+    {
+        // Headless run
+        if( "" != MeMoToApplication::getPNGToCreate() )
+        {
+            // Need to generate PNG file
+            l_Ret = sm_MW->getCurrentDiagram()->printPressed(MeMoToApplication::getPNGToCreate());
+        }
+    }
+    return l_Ret;
 }
 
 QString MeMoToApplication::FileExtension()
@@ -81,4 +117,9 @@ const QString& MeMoToApplication::getFileToOpen()
 const QString& MeMoToApplication::getPNGToCreate()
 {
     return sm_OutputString;
+}
+
+void MeMoToApplication::registerMainWindow(MainWindow* p_MW)
+{
+    sm_MW = p_MW;
 }

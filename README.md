@@ -20,7 +20,7 @@ Let's assume you are developing a critical/complex system and need code to be ge
 
 ## How to use it
 
-Simple GUI comes with a few shortcuts to know:
+### Simple GUI comes with a few shortcuts to know:
 
 - left click to select, right click to perform action
 - Switch between diagrams with alt+1, alt+2 etc...
@@ -34,6 +34,14 @@ Simple GUI comes with a few shortcuts to know:
 - share with ctrl+space
 - find into diagram with ctrl+f
 - print to png with ctrl+p
+
+### MeMoTo can also be run with commands
+
+- --help
+- --version
+- --output-png (headless print png from diagram and close)
+- --default-diagram (since a class can have multiple diagram types, opens MeMoTo on the desired diagram)
+- --focus-on (searchs for the first occurence of the given value and opens MeMoTo to quickly find something)
 
 Note: The sharing feature is a bit wierd. It relies on a common network repository and uses a sqlite file. Choose a network volume to put the sharing file on it and give the full network path to your coworkers.
 

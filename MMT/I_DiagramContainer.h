@@ -40,7 +40,7 @@ public:
     // User inputs and usability
     void deletePressed();
     void escapePressed();
-    void printPressed(QString p_OutputFile);
+    int printPressed(QString p_OutputFile);
     void copyPressed();
     void pastePressed();
     void selectToolByID(unsigned short p_ID);

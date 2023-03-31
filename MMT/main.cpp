@@ -11,6 +11,7 @@ int main(int argc, char** argv)
 {
     MeMoToApplication l_Application(argc, argv);
 
+    // Note: Translator is not used yet
     QTranslator translator;
     const QStringList uiLanguages = QLocale::system().uiLanguages();
     for (const QString &locale : uiLanguages) {
@@ -21,21 +22,8 @@ int main(int argc, char** argv)
         }
     }
 
-    bool l_isHeadless = l_Application.isHeadless();
-
     MainWindow* l_MainWindow = new MainWindow();
+    MeMoToApplication::registerMainWindow(l_MainWindow);
 
-    if( false == l_isHeadless )
-    {
-        l_MainWindow->show();
-        return l_Application.exec();
-    }
-    else
-    {
-        if( "" != MeMoToApplication::getPNGToCreate() )
-        {
-            // Need to generate PNG file
-            l_MainWindow->getCurrentDiagram()->printPressed(MeMoToApplication::getPNGToCreate());
-        }
-    }
+    return MeMoToApplication::exec();
 }
