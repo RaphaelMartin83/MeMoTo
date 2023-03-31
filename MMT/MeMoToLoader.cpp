@@ -1,6 +1,7 @@
 #include <QJsonParseError>
 
 #include "MeMoToLoader.h"
+#include "ErrorDisplayer.h"
 
 QJsonObject MeMoToLoader::loadFromFile(QFile& p_File)
 {

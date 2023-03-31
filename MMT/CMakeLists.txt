@@ -25,6 +25,7 @@ set(PROJECT_SOURCES
         SharingManager.h SharingManager.cpp
         SharingConfiguration.h SharingConfiguration.cpp I_SharingConfigurationListener.h
         MeMoToLoader.h MeMoToLoader.cpp
+        ErrorDisplayer.h ErrorDisplayer.cpp
         InstanceLauncher.h InstanceLauncher.cpp
         DiagramGraphicsView.h DiagramGraphicsView.cpp
         GridReferential.h GridReferential.cpp
