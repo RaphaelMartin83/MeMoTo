@@ -108,10 +108,13 @@ void MainWindow::setApplicationData(const QJsonObject& p_Data)
 {
     for( unsigned short i_diagrams = 0U; i_diagrams < m_Diagrams.count(); i_diagrams++ )
     {
-        m_Diagrams[i_diagrams]->clearAll();
-        m_Diagrams[i_diagrams]->fromJson(
-                    p_Data.find(m_SerializablesIndexes[i_diagrams])->toObject());
-        m_Diagrams[i_diagrams]->saveUndoState();
+        QJsonObject::const_iterator l_foundDiagramJson = p_Data.find(m_SerializablesIndexes[i_diagrams]);
+        if( p_Data.end() != l_foundDiagramJson )
+        {
+            m_Diagrams[i_diagrams]->clearAll();
+            m_Diagrams[i_diagrams]->fromJson(l_foundDiagramJson->toObject());
+            m_Diagrams[i_diagrams]->saveUndoState();
+        }
     }
 }
 
