@@ -58,6 +58,6 @@ Note: The sharing feature is a bit wierd. It relies on a common network reposito
 
 # What is planed
 
-- Usability: Hide class content, png generation path asking
+- Usability: png generation path asking
 - Aesthetic: curved connections, rounded items
 
