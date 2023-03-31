@@ -54,7 +54,6 @@ void ErrorDisplayer::displayError(const QString& p_ErrorTitle,
     m_NameLabel->setText(p_ErrorTitle);
     m_Text->setText(p_ErrorText);
     m_Text->setWordWrap(true);
-    //m_Text->setMaximumHeight(m_Text->minimumSizeHint().height());
 
     m_NameLabel->setMaximumHeight(50);
 
