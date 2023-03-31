@@ -26,6 +26,9 @@ ExternalClassConfiguration::ExternalClassConfiguration()
     m_ColorSelection = new QComboBox();
     m_ColorSelection->addItems(QColor::colorNames());
 
+    m_HideContent = new QLabel("Hide content");
+    m_HideContentCheckBox = new QCheckBox();
+
     m_OpenButton = new QPushButton("Open");
 
     m_OKButton = new QPushButton("OK");
@@ -47,6 +50,9 @@ ExternalClassConfiguration::ExternalClassConfiguration()
     m_Layout->addWidget(m_PathEdit, l_row++, 0, 1, -1, Qt::Alignment());
 
     m_Layout->addWidget(m_ColorSelection, l_row++, 0, 1, -1, Qt::Alignment());
+
+    m_Layout->addWidget(m_HideContent, l_row, 0, 1, -1, Qt::AlignLeft);
+    m_Layout->addWidget(m_HideContentCheckBox, l_row++, 1, 1, -1, Qt::Alignment());
 
     m_Layout->addWidget(m_OpenButton, l_row++, 0, 1, -1, Qt::Alignment());
 
@@ -106,6 +112,15 @@ QColor ExternalClassConfiguration::getColor() const
 void ExternalClassConfiguration::setColor(QString p_Color)
 {
     m_ColorSelection->setCurrentText(p_Color);
+}
+
+bool ExternalClassConfiguration::isContentToHide() const
+{
+    return m_HideContentCheckBox->isChecked();
+}
+void ExternalClassConfiguration::setContentToHide(bool p_isContentToHide)
+{
+    m_HideContentCheckBox->setChecked(p_isContentToHide);
 }
 
 QString ExternalClassConfiguration::getResolvedPath(QString p_Root, QString p_Path, QString p_Name)

@@ -152,6 +152,7 @@ void ExternalClassGraphicsItem::openConfiguration()
     s_ConfigurationContext->setListener(this->getSelectableType(), this->getID());
 
     // initializes module with parameters
+    s_ConfigurationContext->setContentToHide(this->isContentToHide());
     s_ConfigurationContext->setName(this->getName());
     s_ConfigurationContext->setRoot(this->getRoot());
     s_ConfigurationContext->setPath(this->getPath());
@@ -166,6 +167,7 @@ void ExternalClassGraphicsItem::closeConfiguration()
 }
 void ExternalClassGraphicsItem::applyConfiguration()
 {
+    this->setContentToHide(s_ConfigurationContext->isContentToHide());
     this->setName(s_ConfigurationContext->getName());
     this->setRootAndPath(s_ConfigurationContext->getRoot(),
                          s_ConfigurationContext->getPath());
@@ -188,6 +190,7 @@ QJsonObject ExternalClassGraphicsItem::toJson() const
     // Call 2nd parent toJson only to bypass serialization of methods and attributes
     QJsonObject l_MyJson = I_SquarishGraphicsItem::toJson();
 
+    l_MyJson.insert("HideContent", this->isContentToHide()?"true":"false");
     l_MyJson.insert("Root", m_Root);
     l_MyJson.insert("Path", m_Path);
 
@@ -195,7 +198,7 @@ QJsonObject ExternalClassGraphicsItem::toJson() const
 }
 void ExternalClassGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
-    I_SquarishGraphicsItem::fromJson(p_Json);
+    I_ClassGraphicsItem::fromJson(p_Json);
 
     m_Root = "";
     QJsonObject::const_iterator l_FoundRoot = p_Json.find("Root");

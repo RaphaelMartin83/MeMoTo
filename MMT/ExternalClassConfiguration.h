@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QLabel>
 #include <QComboBox>
+#include <QCheckBox>
 
 #include "I_ConfigurationContent.h"
 #include "I_ConfigLineEditListener.h"
@@ -30,6 +31,9 @@ public:
 
     QColor getColor() const;
     void setColor(QString p_Color);
+
+    bool isContentToHide() const;
+    void setContentToHide(bool p_isContentToHide);
 
     static QString getResolvedPath(QString p_Root, QString p_Path, QString p_Name);
 
@@ -63,6 +67,9 @@ private:
 
     // Color
     QComboBox* m_ColorSelection;
+
+    QLabel* m_HideContent;
+    QCheckBox* m_HideContentCheckBox;
 
     QPushButton* m_OpenButton;
 
