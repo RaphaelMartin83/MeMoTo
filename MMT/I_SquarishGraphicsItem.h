@@ -3,7 +3,6 @@
 
 #include <QGraphicsItem>
 #include <QGraphicsItemGroup>
-#include <QGraphicsRectItem>
 #include <QGraphicsTextItem>
 #include <QGraphicsLineItem>
 #include <QPoint>
@@ -12,6 +11,7 @@
 
 #include "HandleGraphicsItem.h"
 #include "DoubleArrowGraphicsItem.h"
+#include "GraphicsRoundedRectItem.h"
 
 #include "ConnectionDefinitions.h"
 #include "GridReferential.h"
@@ -89,7 +89,7 @@ private:
     unsigned short m_Height;
 
     // Basic graphics
-    QGraphicsRectItem* m_Rect;
+    GraphicsRoundedRectItem* m_Rect;
     QGraphicsTextItem* m_NameGraphicsItem;
     QGraphicsLineItem* m_LineUnderTitle;
     QList<HandleGraphicsItem*> m_Handles;
