@@ -13,7 +13,7 @@ QPainterPath GraphicsRoundedRectItem::shape() const
     QPainterPath l_Ret;
 
     l_Ret.moveTo(this->rect().topLeft());
-    l_Ret.addRoundedRect(this->rect(), 10, 10, Qt::RelativeSize);
+    l_Ret.addRoundedRect(this->rect(), 10, 10, Qt::AbsoluteSize);
 
     return l_Ret;
 }
