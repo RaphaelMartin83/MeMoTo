@@ -341,54 +341,6 @@
             {
                 "Attributes": [
                 ],
-                "Color": "greenyellow",
-                "Contained": {
-                },
-                "Height": 190,
-                "HideContent": "false",
-                "ID": "{f0a33b18-5505-4a70-9357-ee72c38e8471}",
-                "Methods": [
-                ],
-                "Name": "QThread",
-                "PositionX": 51320,
-                "PositionY": 52540,
-                "Width": 204
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "blanchedalmond",
-                "Contained": {
-                },
-                "Height": 300,
-                "HideContent": "false",
-                "ID": "{ae330a0b-561b-49d6-a05f-a5dac3a333c9}",
-                "Methods": [
-                ],
-                "Name": "DataBaseRequester",
-                "PositionX": 51800,
-                "PositionY": 52880,
-                "Width": 250
-            },
-            {
-                "Attributes": [
-                ],
-                "Color": "greenyellow",
-                "Contained": {
-                },
-                "Height": 300,
-                "HideContent": "false",
-                "ID": "{bd236713-7208-44c6-a383-a3f2190c6b91}",
-                "Methods": [
-                ],
-                "Name": "QSqlite",
-                "PositionX": 52280,
-                "PositionY": 52880,
-                "Width": 250
-            },
-            {
-                "Attributes": [
-                ],
                 "Color": "blanchedalmond",
                 "Contained": {
                 },
@@ -501,6 +453,38 @@
                 "PositionX": 48900,
                 "PositionY": 52520,
                 "Width": 250
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "greenyellow",
+                "Contained": {
+                },
+                "Height": 100,
+                "HideContent": "false",
+                "ID": "{685da3ed-0a9c-46ca-90fe-6260dfb37849}",
+                "Methods": [
+                ],
+                "Name": "QFileSystemWatcher",
+                "PositionX": 51700,
+                "PositionY": 52800,
+                "Width": 144
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "greenyellow",
+                "Contained": {
+                },
+                "Height": 100,
+                "HideContent": "false",
+                "ID": "{a8dabd6b-69dd-42be-ab7a-d077ad2f8211}",
+                "Methods": [
+                ],
+                "Name": "QSqlite",
+                "PositionX": 51700,
+                "PositionY": 52960,
+                "Width": 144
             }
         ],
         "Compositions": [
@@ -537,51 +521,6 @@
             {
                 "AttributesNames": [
                 ],
-                "ConnectFromDirection": 4,
-                "ConnectFromID": "{f0a33b18-5505-4a70-9357-ee72c38e8471}",
-                "ConnectFromNumber": 9,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 3,
-                "ConnectToID": "{26532e5a-530f-4668-b193-34612a736fba}",
-                "ConnectToNumber": 5,
-                "ConnectToType": "Class",
-                "ID": "{325483e4-e868-4675-8be3-50633b38165c}",
-                "PositionX": 51296,
-                "PositionY": 52682
-            },
-            {
-                "AttributesNames": [
-                ],
-                "ConnectFromDirection": 1,
-                "ConnectFromID": "{ae330a0b-561b-49d6-a05f-a5dac3a333c9}",
-                "ConnectFromNumber": 14,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 2,
-                "ConnectToID": "{26532e5a-530f-4668-b193-34612a736fba}",
-                "ConnectToNumber": 14,
-                "ConnectToType": "Class",
-                "ID": "{b26c1ec4-8ee8-40e0-942b-f4732ed6b8e2}",
-                "PositionX": 51570,
-                "PositionY": 52880
-            },
-            {
-                "AttributesNames": [
-                ],
-                "ConnectFromDirection": 1,
-                "ConnectFromID": "{bd236713-7208-44c6-a383-a3f2190c6b91}",
-                "ConnectFromNumber": 14,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 2,
-                "ConnectToID": "{ae330a0b-561b-49d6-a05f-a5dac3a333c9}",
-                "ConnectToNumber": 14,
-                "ConnectToType": "Class",
-                "ID": "{556389e7-cf0f-486e-82e0-d4b3cce956a9}",
-                "PositionX": 52040,
-                "PositionY": 52880
-            },
-            {
-                "AttributesNames": [
-                ],
                 "ConnectFromDirection": 1,
                 "ConnectFromID": "{26532e5a-530f-4668-b193-34612a736fba}",
                 "ConnectFromNumber": 20,
@@ -608,6 +547,36 @@
                 "ID": "{bd844582-23c9-4cd7-b98e-765541e20eb0}",
                 "PositionX": 50218,
                 "PositionY": 51980
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{685da3ed-0a9c-46ca-90fe-6260dfb37849}",
+                "ConnectFromNumber": 5,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": "{26532e5a-530f-4668-b193-34612a736fba}",
+                "ConnectToNumber": 7,
+                "ConnectToType": "Class",
+                "ID": "{26b48e41-f502-4d22-ab59-e13ae11d6af0}",
+                "PositionX": 51546,
+                "PositionY": 52810
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{a8dabd6b-69dd-42be-ab7a-d077ad2f8211}",
+                "ConnectFromNumber": 4,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": "{26532e5a-530f-4668-b193-34612a736fba}",
+                "ConnectToNumber": 22,
+                "ConnectToType": "Class",
+                "ID": "{a7f5c085-2111-42e6-aa7f-90e5210b0f61}",
+                "PositionX": 51546,
+                "PositionY": 52960
             }
         ],
         "Generalizations": [
