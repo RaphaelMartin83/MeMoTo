@@ -6,6 +6,7 @@
 #include "I_ConnectableContainer.h"
 
 static const unsigned short GRAPHIC_CONNECTOR_THICKNESS = 4U;
+static const unsigned short GRAPHIC_CONNECTOR_SELECTION_THICKNESS = 16U;
 static const Qt::GlobalColor GRAPHIC_CONNECTOR_COLOR = Qt::black;
 
 GraphicConnector::GraphicConnector(
@@ -193,11 +194,17 @@ void GraphicConnector::select(QPoint p_Pos)
         }
     }
 
+    QGraphicsLineItem l_tmpThickLine;
+    QLineF l_tmpLine;
     for(unsigned short i_lines = 0U;
         (i_lines < m_Lines.count()) && (false == l_isFound);
         i_lines++)
     {
-        if( true == m_Lines[i_lines]->contains(p_Pos) )
+        // Uses a fake line to avoid computing
+        l_tmpLine = m_Lines[i_lines]->line();
+        l_tmpThickLine.setLine(l_tmpLine);
+        l_tmpThickLine.setPen(QPen(GRAPHIC_CONNECTOR_COLOR, GRAPHIC_CONNECTOR_SELECTION_THICKNESS));
+        if( true == l_tmpThickLine.contains(p_Pos) )
         {
             l_isFound = true;
             this->select();
@@ -284,10 +291,16 @@ bool GraphicConnector::isItYou(QPoint p_Pos) const
         l_ret = m_Handles[i_handles]->isItYou(p_Pos);
     }
 
+    QGraphicsLineItem l_tmpThickLine;
+    QLineF l_tmpLine;
     for( unsigned short i_lines = 0U;
          (i_lines < m_Lines.count()) && (false == l_ret); i_lines++ )
     {
-        l_ret = m_Lines[i_lines]->contains(p_Pos);
+        // Uses a fake line to avoid computing
+        l_tmpLine = m_Lines[i_lines]->line();
+        l_tmpThickLine.setLine(l_tmpLine);
+        l_tmpThickLine.setPen(QPen(GRAPHIC_CONNECTOR_COLOR, GRAPHIC_CONNECTOR_SELECTION_THICKNESS));
+        l_ret = l_tmpThickLine.contains(p_Pos);
     }
 
     return l_ret;
