@@ -28,6 +28,7 @@ void GraphicsRoundedRectItem::paint(QPainter* painter,
     QPen l_Pen(Qt::black);
     l_Pen.setWidth(1.0);
 
+    painter->setRenderHint(QPainter::Antialiasing);
     painter->setPen(l_Pen);
     painter->setBrush(this->brush());
     painter->drawPath(this->shape());
