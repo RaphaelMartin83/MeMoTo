@@ -6,6 +6,7 @@
 #include <QGraphicsRectItem>
 #include <QGridLayout>
 #include <QPushButton>
+#include <QMenuBar>
 
 #include "I_DiagramContainer.h"
 #include "DiagramGraphicsView.h"
@@ -45,6 +46,19 @@ private slots:
     void NextButtonPressed();
     void PrevButtonPressed();
 
+    void openMenuClicked();
+    void openNewMenuClicked();
+    void saveMenuClicked();
+    void saveAsMenuClicked();
+
+    void undoMenuClicked();
+    void redoMenuClicked();
+    void copyMenuClicked();
+    void pasteMenuClicked();
+    void shareMenuClicked();
+    void findMenuClicked();
+    void printMenuClicked();
+
 private:
     void initGUI();
     void initDiagrams();
@@ -57,6 +71,10 @@ private:
     void savePressed(bool p_alwaysOpen=false);
     void loadPressed(bool p_alwaysOpen=false);
     void switchToContext(unsigned short p_ContextID, bool p_Force = false);
+
+    QMenuBar* m_MenuBar;
+    QMenu* m_FileMenu;
+    QMenu* m_EditMenu;
 
     QGridLayout* m_mainLayout;
     QWidget* m_centralWidget;

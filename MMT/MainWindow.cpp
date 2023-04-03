@@ -144,6 +144,52 @@ void MainWindow::PrevButtonPressed()
     }
     this->switchToContext(l_DiagramToDisplay);
 }
+void MainWindow::openMenuClicked()
+{
+    this->loadPressed();
+}
+void MainWindow::openNewMenuClicked()
+{
+    this->loadPressed(true);
+}
+void MainWindow::saveMenuClicked()
+{
+    this->savePressed();
+}
+void MainWindow::saveAsMenuClicked()
+{
+    this->savePressed(true);
+}
+void MainWindow::undoMenuClicked()
+{
+    m_Diagrams[m_CurrentDiagramID]->clearAll();
+    m_Diagrams[m_CurrentDiagramID]->undo();
+}
+void MainWindow::redoMenuClicked()
+{
+    m_Diagrams[m_CurrentDiagramID]->clearAll();
+    m_Diagrams[m_CurrentDiagramID]->redo();
+}
+void MainWindow::copyMenuClicked()
+{
+    m_Diagrams[m_CurrentDiagramID]->copyPressed();
+}
+void MainWindow::pasteMenuClicked()
+{
+    m_Diagrams[m_CurrentDiagramID]->pastePressed();
+}
+void MainWindow::shareMenuClicked()
+{
+    this->startSharing();
+}
+void MainWindow::findMenuClicked()
+{
+    m_Diagrams[m_CurrentDiagramID]->find();
+}
+void MainWindow::printMenuClicked()
+{
+    m_Diagrams[m_CurrentDiagramID]->printPressed("");
+}
 
 void MainWindow::initGUI()
 {
@@ -170,7 +216,7 @@ void MainWindow::initGUI()
     m_mainLayout->addWidget(m_PrevDiagButton, 1, 0, 1, 1, Qt::Alignment());
     m_mainLayout->addWidget(m_NextDiagButton, 1, 1, 1, 1, Qt::Alignment());
     m_mainLayout->addWidget(m_DiagramView, 0, 2, -1, 1, Qt::Alignment());
-    m_mainLayout->addWidget(&ConfigWidget::getInstance(), 0, 2, 1, 1, Qt::Alignment());
+    m_mainLayout->addWidget(&ConfigWidget::getInstance(), 0, 3, -1, 1, Qt::Alignment());
 
     m_centralWidget = new QWidget();
     m_centralWidget->setLayout(m_mainLayout);
@@ -179,8 +225,42 @@ void MainWindow::initGUI()
     this->setWindowTitle(s_ProgramName);
     this->move(300, 150);
 
+    m_MenuBar = this->menuBar();
+    m_FileMenu = new QMenu("File");
+    QList<QAction*> l_ActionsListFile;
+    l_ActionsListFile.append(new QAction("Open"));
+    l_ActionsListFile.append(new QAction("Open new"));
+    l_ActionsListFile.append(new QAction("Save"));
+    l_ActionsListFile.append(new QAction("Save as"));
+    m_FileMenu->addActions(l_ActionsListFile);
+    m_EditMenu = new QMenu("Edit");
+    QList<QAction*> l_ActionsListEdit;
+    l_ActionsListEdit.append(new QAction("Undo"));
+    l_ActionsListEdit.append(new QAction("Redo"));
+    l_ActionsListEdit.append(new QAction("Copy"));
+    l_ActionsListEdit.append(new QAction("Paste"));
+    l_ActionsListEdit.append(new QAction("Share"));
+    l_ActionsListEdit.append(new QAction("Find"));
+    l_ActionsListEdit.append(new QAction("Print"));;
+    m_EditMenu->addActions(l_ActionsListEdit);
+    m_MenuBar->addMenu(m_FileMenu);
+    m_MenuBar->addMenu(m_EditMenu);
+
     connect(m_PrevDiagButton, &QPushButton::pressed, this, &MainWindow::PrevButtonPressed);
     connect(m_NextDiagButton, &QPushButton::pressed, this, &MainWindow::NextButtonPressed);
+
+    connect(m_FileMenu->actions().at(0), &QAction::triggered, this, &MainWindow::openMenuClicked);
+    connect(m_FileMenu->actions().at(1), &QAction::triggered, this, &MainWindow::openNewMenuClicked);
+    connect(m_FileMenu->actions().at(2), &QAction::triggered, this, &MainWindow::saveMenuClicked);
+    connect(m_FileMenu->actions().at(3), &QAction::triggered, this, &MainWindow::saveAsMenuClicked);
+
+    connect(m_EditMenu->actions().at(0), &QAction::triggered, this, &MainWindow::undoMenuClicked);
+    connect(m_EditMenu->actions().at(1), &QAction::triggered, this, &MainWindow::redoMenuClicked);
+    connect(m_EditMenu->actions().at(2), &QAction::triggered, this, &MainWindow::copyMenuClicked);
+    connect(m_EditMenu->actions().at(3), &QAction::triggered, this, &MainWindow::pasteMenuClicked);
+    connect(m_EditMenu->actions().at(4), &QAction::triggered, this, &MainWindow::shareMenuClicked);
+    connect(m_EditMenu->actions().at(5), &QAction::triggered, this, &MainWindow::findMenuClicked);
+    connect(m_EditMenu->actions().at(6), &QAction::triggered, this, &MainWindow::printMenuClicked);
 }
 void MainWindow::updateTitle()
 {
