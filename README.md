@@ -23,8 +23,8 @@ Let's assume you are developing a critical/complex system and need code to be ge
 ### Simple GUI comes with a few shortcuts to know:
 
 - left click to select, right click to perform action
-- Switch between diagrams with alt+1, alt+2 etc...
-- Switch between tools with 1, 2 etc...
+- Switch between diagrams with ctrl+tab
+- Switch between tools with F1, F2 etc...
 - Save with ctrl+s
 - Save as with ctrl+shift+s
 - load with ctrl+o
