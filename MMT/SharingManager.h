@@ -3,7 +3,8 @@
 
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
-#include <QFileSystemWatcher>
+#include <QDateTime>
+#include <QTimer>
 
 #include "I_DiagramContainer.h"
 #include "I_DataManager.h"
@@ -29,16 +30,19 @@ public:
     // I_SharingConfigurationListener
     void sharingPlaceSelected(const QString& p_Place);
     void sharingCanceled();
+    void fileChanged();
 
 public slots:
-    void fileChanged();
+    void checkFileModification();
 
 private:
     void initDB();
     void setData(const QJsonObject& p_Data, bool p_first = false);
+    QDateTime getFileDate() const;
 
     QSqlDatabase m_DataBaseHandle;
-    QFileSystemWatcher m_FileSystemWatcher;
+    QTimer m_Timer;
+    QDateTime m_LastFileTime;
 
     static SharingManager* m_Me;
     bool m_isInited;

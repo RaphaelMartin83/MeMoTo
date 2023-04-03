@@ -3,6 +3,8 @@
 #include <QtSql/QSqlError>
 #include <QJsonObject>
 #include <QFile>
+#include <QFileInfo>
+#include <QTimer>
 
 #include "SharingManager.h"
 #include "SharingConfiguration.h"
@@ -12,17 +14,18 @@
 
 static SharingConfiguration* s_ConfigurationContext = nullptr;
 
-static const int POLL_PERIOD = 500;
+static const int POLL_PERIOD = 100;
 
 SharingManager* SharingManager::m_Me = nullptr;
 
 SharingManager::SharingManager():
     m_DataBaseHandle(QSqlDatabase::addDatabase("QSQLITE")),
-    m_FileSystemWatcher(this),
+    m_Timer(this),
     m_isInited(false),
-    m_Manager(nullptr)
+    m_Manager(nullptr),
+    m_LastFileTime()
 {
-    connect(&m_FileSystemWatcher, &QFileSystemWatcher::fileChanged, this, &SharingManager::fileChanged);
+    connect(&m_Timer, &QTimer::timeout, this, &SharingManager::checkFileModification);
 }
 
 SharingManager& SharingManager::getInstance()
@@ -52,7 +55,7 @@ void SharingManager::sharingPlaceSelected(const QString& p_Place)
     if( m_isInited )
     {
         // Stop sharing
-        m_FileSystemWatcher.removePath(m_DataBaseHandle.databaseName());
+        m_Timer.stop();
         m_isInited = false;
     }
     else
@@ -85,7 +88,8 @@ void SharingManager::sharingPlaceSelected(const QString& p_Place)
             {
                 this->fileChanged();
             }
-            m_FileSystemWatcher.addPath(p_Place);
+            m_LastFileTime = this->getFileDate();
+            m_Timer.start(POLL_PERIOD);
             m_isInited = true;
         }
     }
@@ -100,9 +104,7 @@ void SharingManager::fileChanged()
 {
     QSqlQuery l_Query;
     m_DataBaseHandle.open();
-    m_FileSystemWatcher.removePath(m_DataBaseHandle.databaseName());
     l_Query.exec("select data from dataTable");
-    m_FileSystemWatcher.addPath(m_DataBaseHandle.databaseName());
     m_DataBaseHandle.close();
 
     if(l_Query.lastError().type() == QSqlError::NoError)
@@ -112,6 +114,17 @@ void SharingManager::fileChanged()
         QJsonObject l_DataFromDB = MeMoToLoader::loadFromArray(l_Array);
 
         m_Manager->setApplicationData(l_DataFromDB);
+    }
+}
+
+void SharingManager::checkFileModification()
+{
+    QDateTime l_LastModified = this->getFileDate();
+
+    if( m_LastFileTime < l_LastModified )
+    {
+        m_LastFileTime = l_LastModified;
+        this->fileChanged();
     }
 }
 
@@ -135,7 +148,6 @@ void SharingManager::setData(const QJsonObject& p_Data, bool p_first)
 
     m_DataBaseHandle.open();
     // During set data, deactivate file system monitoring
-    m_FileSystemWatcher.removePath(m_DataBaseHandle.databaseName());
     QSqlQuery l_Query(m_DataBaseHandle);
     if( p_first )
     {
@@ -145,8 +157,14 @@ void SharingManager::setData(const QJsonObject& p_Data, bool p_first)
     {
         l_Query.exec("update dataTable set data = '" + l_JSonText + "'");
     }
-    m_FileSystemWatcher.addPath(m_DataBaseHandle.databaseName());
     m_DataBaseHandle.close();
+}
+
+QDateTime SharingManager::getFileDate() const
+{
+    QFileInfo l_FileInfo(m_DataBaseHandle.databaseName());
+
+    return l_FileInfo.lastModified();
 }
 
 void SharingManager::pushModifications()
@@ -156,6 +174,7 @@ void SharingManager::pushModifications()
     QJsonObject l_ObjectToWrite;
     m_Manager->getApplicationData(l_ObjectToWrite);
     this->setData(l_ObjectToWrite, false);
+    m_LastFileTime = this->getFileDate();
 }
 
 void SharingManager::registerDataManager(I_DataManager* p_Manager)
