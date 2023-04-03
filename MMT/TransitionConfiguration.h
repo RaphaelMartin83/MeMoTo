@@ -38,6 +38,9 @@ public:
     void setFromInfo(QString p_FromType, QString p_FromName);
     void setToInfo(QString p_ToType, QString p_ToName);
 
+    void setCurvedInfo(bool p_Curved);
+    bool getCurvedInfo() const;
+
     // I_ConfigurationContent
     void setFocusOnFirstZone();
 
@@ -72,6 +75,10 @@ private:
     // Route
     QLabel* m_AutoRouteLabel;
     QCheckBox* m_AutoRouteCheckBox;
+
+    // Curved?
+    QLabel* m_CurvedLabel;
+    QCheckBox* m_CurvedCheckBox;
 
     // Infos
     QLabel* m_ConnectFromLabel;

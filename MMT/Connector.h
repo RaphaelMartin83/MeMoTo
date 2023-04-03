@@ -30,6 +30,8 @@ public:
 
     virtual void reroute();
 
+    int getClearanceFromConnectables() const;
+    void setClearanceFromConnectables(int p_Clearance);
     const QList<QPoint>& getPath() const;
     void setPath(unsigned short p_index, QPoint p_Point);
     void setPath(const QList<QPoint>& p_Points);
@@ -74,6 +76,7 @@ private:
     const I_Connectable* m_ConnectTo;
     QList<QPoint> m_Path;
     bool m_PathIsForced;
+    int m_ClearanceFromConnectables;
 
     // The direction
     eConnectDirection m_ConnectionFromDirection;

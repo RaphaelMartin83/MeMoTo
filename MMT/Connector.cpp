@@ -14,6 +14,7 @@ Connector::Connector(const I_Connectable* p_ConnectFrom,
     m_Path()
   , m_PathIsForced(false)
   , m_Container(p_Container)
+  , m_ClearanceFromConnectables(CLEARANCE_FROM_CONNECTABLE)
 {
     m_ConnectFrom = p_ConnectFrom;
     m_ConnectTo = p_ConnectTo;
@@ -36,6 +37,7 @@ Connector::Connector(const I_Connectable* p_ConnectFrom,
     m_Path()
   , m_PathIsForced(true)
   , m_Container(p_Container)
+  , m_ClearanceFromConnectables(CLEARANCE_FROM_CONNECTABLE)
 {
     m_ConnectFrom = p_ConnectFrom;
     m_ConnectTo = p_ConnectTo;
@@ -57,8 +59,18 @@ Connector::Connector(const QJsonObject& p_JsonObject,
   , m_Path()
   , m_PathIsForced(false)
   , m_Container(p_Container)
+  , m_ClearanceFromConnectables(CLEARANCE_FROM_CONNECTABLE)
 {
     Connector::fromJson(p_JsonObject);
+}
+
+int Connector::getClearanceFromConnectables() const
+{
+    return m_ClearanceFromConnectables;
+}
+void Connector::setClearanceFromConnectables(int p_Clearance)
+{
+    m_ClearanceFromConnectables = p_Clearance;
 }
 
 // I_Serializable
@@ -253,7 +265,7 @@ void Connector::route(const QPoint& p_fromPoint, const QPoint& p_toPoint)
     // First rough sorting of routing cases to divide algorithm
     if( (eConnectionDirection_Bottom == m_ConnectionFromDirection) && (eConnectionDirection_Top == m_ConnectionToDirection) )
     {
-        if( (p_toPoint.y() - p_fromPoint.y()) > CLEARANCE_FROM_CONNECTABLE )
+        if( (p_toPoint.y() - p_fromPoint.y()) > this->getClearanceFromConnectables() )
         {
             // They are foce to face
             this->routeFaceToFace(p_fromPoint, p_toPoint);
@@ -266,7 +278,7 @@ void Connector::route(const QPoint& p_fromPoint, const QPoint& p_toPoint)
     }
     else if( (eConnectionDirection_Top == m_ConnectionFromDirection) && (eConnectionDirection_Bottom == m_ConnectionToDirection) )
     {
-        if( (p_fromPoint.y() - p_toPoint.y()) > CLEARANCE_FROM_CONNECTABLE )
+        if( (p_fromPoint.y() - p_toPoint.y()) > this->getClearanceFromConnectables() )
         {
             this->routeFaceToFace(p_fromPoint, p_toPoint);
         }
@@ -277,7 +289,7 @@ void Connector::route(const QPoint& p_fromPoint, const QPoint& p_toPoint)
     }
     else if( (eConnectionDirection_Right == m_ConnectionFromDirection) && (eConnectionDirection_Left == m_ConnectionToDirection) )
     {
-        if( (p_toPoint.x() - p_fromPoint.x()) > CLEARANCE_FROM_CONNECTABLE )
+        if( (p_toPoint.x() - p_fromPoint.x()) > this->getClearanceFromConnectables() )
         {
             this->routeFaceToFace(p_fromPoint, p_toPoint);
         }
@@ -288,7 +300,7 @@ void Connector::route(const QPoint& p_fromPoint, const QPoint& p_toPoint)
     }
     else if( (eConnectionDirection_Left == m_ConnectionFromDirection) && (eConnectionDirection_Right == m_ConnectionToDirection) )
     {
-        if( (p_fromPoint.x() - p_toPoint.x()) > CLEARANCE_FROM_CONNECTABLE )
+        if( (p_fromPoint.x() - p_toPoint.x()) > this->getClearanceFromConnectables() )
         {
             this->routeFaceToFace(p_fromPoint, p_toPoint);
         }
@@ -305,7 +317,7 @@ void Connector::route(const QPoint& p_fromPoint, const QPoint& p_toPoint)
         }
         else
         {
-            if( (p_toPoint.y() - p_fromPoint.y()) > CLEARANCE_FROM_CONNECTABLE )
+            if( (p_toPoint.y() - p_fromPoint.y()) > this->getClearanceFromConnectables() )
             {
                 this->routeFaceToBack(p_fromPoint, p_toPoint);
             }
@@ -323,7 +335,7 @@ void Connector::route(const QPoint& p_fromPoint, const QPoint& p_toPoint)
         }
         else
         {
-            if( (p_toPoint.y() - p_fromPoint.y()) > CLEARANCE_FROM_CONNECTABLE )
+            if( (p_toPoint.y() - p_fromPoint.y()) > this->getClearanceFromConnectables() )
             {
                 this->routeBackToFace(p_fromPoint, p_toPoint);
             }
@@ -341,7 +353,7 @@ void Connector::route(const QPoint& p_fromPoint, const QPoint& p_toPoint)
         }
         else
         {
-            if( (p_toPoint.x() - p_fromPoint.x()) > CLEARANCE_FROM_CONNECTABLE )
+            if( (p_toPoint.x() - p_fromPoint.x()) > this->getClearanceFromConnectables() )
             {
                 this->routeFaceToBack(p_fromPoint, p_toPoint);
             }
@@ -359,7 +371,7 @@ void Connector::route(const QPoint& p_fromPoint, const QPoint& p_toPoint)
         }
         else
         {
-            if( (p_toPoint.x() - p_fromPoint.x()) > CLEARANCE_FROM_CONNECTABLE )
+            if( (p_toPoint.x() - p_fromPoint.x()) > this->getClearanceFromConnectables() )
             {
                 this->routeBackToFace(p_fromPoint, p_toPoint);
             }
@@ -372,7 +384,7 @@ void Connector::route(const QPoint& p_fromPoint, const QPoint& p_toPoint)
     else if( (eConnectionDirection_Bottom == m_ConnectionFromDirection) && (eConnectionDirection_Right == m_ConnectionToDirection ||
                                                                                  eConnectionDirection_Left == m_ConnectionToDirection ))
     {
-        if( (p_toPoint.y() - p_fromPoint.y()) > CLEARANCE_FROM_CONNECTABLE )
+        if( (p_toPoint.y() - p_fromPoint.y()) > this->getClearanceFromConnectables() )
         {
             this->routeFaceToSide(p_fromPoint, p_toPoint);
         }
@@ -384,7 +396,7 @@ void Connector::route(const QPoint& p_fromPoint, const QPoint& p_toPoint)
     else if( (eConnectionDirection_Top == m_ConnectionFromDirection) && (eConnectionDirection_Right == m_ConnectionToDirection ||
                                                                               eConnectionDirection_Left == m_ConnectionToDirection ))
     {
-        if( (p_fromPoint.y() - p_toPoint.y()) > CLEARANCE_FROM_CONNECTABLE )
+        if( (p_fromPoint.y() - p_toPoint.y()) > this->getClearanceFromConnectables() )
         {
             this->routeFaceToSide(p_fromPoint, p_toPoint);
         }
@@ -396,7 +408,7 @@ void Connector::route(const QPoint& p_fromPoint, const QPoint& p_toPoint)
     else if( (eConnectionDirection_Right == m_ConnectionFromDirection) && (eConnectionDirection_Top == m_ConnectionToDirection ||
                                                                                 eConnectionDirection_Bottom == m_ConnectionToDirection ))
     {
-        if( (p_toPoint.x() - p_fromPoint.x()) > CLEARANCE_FROM_CONNECTABLE )
+        if( (p_toPoint.x() - p_fromPoint.x()) > this->getClearanceFromConnectables() )
         {
             this->routeFaceToSide(p_fromPoint, p_toPoint);
         }
@@ -408,7 +420,7 @@ void Connector::route(const QPoint& p_fromPoint, const QPoint& p_toPoint)
     else if( (eConnectionDirection_Left == m_ConnectionFromDirection) && (eConnectionDirection_Top == m_ConnectionToDirection ||
                                                                                 eConnectionDirection_Bottom == m_ConnectionToDirection ))
     {
-        if( (p_fromPoint.x() - p_toPoint.x()) > CLEARANCE_FROM_CONNECTABLE )
+        if( (p_fromPoint.x() - p_toPoint.x()) > this->getClearanceFromConnectables() )
         {
             this->routeFaceToSide(p_fromPoint, p_toPoint);
         }
@@ -534,18 +546,18 @@ void Connector::routeBackToBack(const QPoint& p_fromPoint, const QPoint& p_toPoi
         // Point 2 shall handle clearance from point 1
         if( eConnectionDirection_Left == m_ConnectionFromDirection )
         {
-            l_Point2.setX(p_fromPoint.x() - CLEARANCE_FROM_CONNECTABLE );
+            l_Point2.setX(p_fromPoint.x() - this->getClearanceFromConnectables() );
             l_Point2.setY(p_fromPoint.y());
 
-            l_Point5.setX(p_toPoint.x() + CLEARANCE_FROM_CONNECTABLE );
+            l_Point5.setX(p_toPoint.x() + this->getClearanceFromConnectables() );
             l_Point5.setY(p_toPoint.y());
         }
         else // Right
         {
-            l_Point2.setX(p_fromPoint.x() + CLEARANCE_FROM_CONNECTABLE );
+            l_Point2.setX(p_fromPoint.x() + this->getClearanceFromConnectables() );
             l_Point2.setY(p_fromPoint.y());
 
-            l_Point5.setX(p_toPoint.x() - CLEARANCE_FROM_CONNECTABLE );
+            l_Point5.setX(p_toPoint.x() - this->getClearanceFromConnectables() );
             l_Point5.setY(p_toPoint.y());
         }
 
@@ -554,11 +566,11 @@ void Connector::routeBackToBack(const QPoint& p_fromPoint, const QPoint& p_toPoi
         int l_targetY;
         if( l_fromCollisionRect.y() < l_toCollisionRect.y() )
         {
-            l_targetY = l_fromCollisionRect.y() - CLEARANCE_FROM_CONNECTABLE;
+            l_targetY = l_fromCollisionRect.y() - this->getClearanceFromConnectables();
         }
         else
         {
-            l_targetY = l_toCollisionRect.y() - CLEARANCE_FROM_CONNECTABLE;
+            l_targetY = l_toCollisionRect.y() - this->getClearanceFromConnectables();
         }
 
         l_Point3.setX(l_Point2.x());
@@ -574,18 +586,18 @@ void Connector::routeBackToBack(const QPoint& p_fromPoint, const QPoint& p_toPoi
         if( eConnectionDirection_Bottom == m_ConnectionFromDirection )
         {
             l_Point2.setX(p_fromPoint.x());
-            l_Point2.setY(p_fromPoint.y() + CLEARANCE_FROM_CONNECTABLE );
+            l_Point2.setY(p_fromPoint.y() + this->getClearanceFromConnectables() );
 
             l_Point5.setX(p_toPoint.x());
-            l_Point5.setY(p_toPoint.y() - CLEARANCE_FROM_CONNECTABLE );
+            l_Point5.setY(p_toPoint.y() - this->getClearanceFromConnectables() );
         }
         else // Top
         {
             l_Point2.setX(p_fromPoint.x());
-            l_Point2.setY(p_fromPoint.y() - CLEARANCE_FROM_CONNECTABLE );
+            l_Point2.setY(p_fromPoint.y() - this->getClearanceFromConnectables() );
 
             l_Point5.setX(p_toPoint.x());
-            l_Point5.setY(p_toPoint.y() + CLEARANCE_FROM_CONNECTABLE );
+            l_Point5.setY(p_toPoint.y() + this->getClearanceFromConnectables() );
         }
 
         // For algo simplicity, always go around from left
@@ -593,11 +605,11 @@ void Connector::routeBackToBack(const QPoint& p_fromPoint, const QPoint& p_toPoi
         int l_targetX;
         if( l_fromCollisionRect.x() < l_toCollisionRect.x() )
         {
-            l_targetX = l_fromCollisionRect.x() - CLEARANCE_FROM_CONNECTABLE;
+            l_targetX = l_fromCollisionRect.x() - this->getClearanceFromConnectables();
         }
         else
         {
-            l_targetX = l_toCollisionRect.x() - CLEARANCE_FROM_CONNECTABLE;
+            l_targetX = l_toCollisionRect.x() - this->getClearanceFromConnectables();
         }
 
         l_Point3.setX(l_targetX);
@@ -634,13 +646,13 @@ void Connector::routeFaceToBack(const QPoint& p_fromPoint, const QPoint& p_toPoi
         if( (p_fromPoint.y() < l_toCollisionRect.top()) || (p_fromPoint.y() > l_toCollisionRect.bottom()) )
         {
             // No need to go all the way around
-            l_Point2.setX(l_toCollisionRect.x() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point2.setX(l_toCollisionRect.x() - this->getClearanceFromConnectables());
             l_Point2.setY(p_fromPoint.y());
             m_Path.append(l_Point2);
         }
         else
         {
-            l_Point2.setX(p_fromPoint.x() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point2.setX(p_fromPoint.x() - this->getClearanceFromConnectables());
             l_Point2.setY(p_fromPoint.y());
             m_Path.append(l_Point2);
 
@@ -649,20 +661,20 @@ void Connector::routeFaceToBack(const QPoint& p_fromPoint, const QPoint& p_toPoi
             if( abs(p_fromPoint.y() - l_toCollisionRect.top()) < abs(p_fromPoint.y() - l_toCollisionRect.bottom()) )
             {
                 // Top is shorter
-                l_Point3.setY(l_toCollisionRect.top() - CLEARANCE_FROM_CONNECTABLE );
+                l_Point3.setY(l_toCollisionRect.top() - this->getClearanceFromConnectables() );
             }
             else
             {
-                l_Point3.setY(l_toCollisionRect.bottom() + CLEARANCE_FROM_CONNECTABLE );
+                l_Point3.setY(l_toCollisionRect.bottom() + this->getClearanceFromConnectables() );
             }
             m_Path.append(l_Point3);
 
-            l_Point4.setX(p_toPoint.x() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point4.setX(p_toPoint.x() - this->getClearanceFromConnectables());
             l_Point4.setY(l_Point3.y());
             m_Path.append(l_Point4);
         }
 
-        l_Point5.setX(p_toPoint.x() - CLEARANCE_FROM_CONNECTABLE);
+        l_Point5.setX(p_toPoint.x() - this->getClearanceFromConnectables());
         l_Point5.setY(p_toPoint.y());
         m_Path.append(l_Point5);
         break;
@@ -670,13 +682,13 @@ void Connector::routeFaceToBack(const QPoint& p_fromPoint, const QPoint& p_toPoi
         if( (p_fromPoint.y() < l_toCollisionRect.top()) || (p_fromPoint.y() > l_toCollisionRect.bottom()) )
         {
             // No need to go all the way around
-            l_Point2.setX(l_toCollisionRect.right() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point2.setX(l_toCollisionRect.right() + this->getClearanceFromConnectables());
             l_Point2.setY(p_fromPoint.y());
             m_Path.append(l_Point2);
         }
         else
         {
-            l_Point2.setX(p_fromPoint.x() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point2.setX(p_fromPoint.x() + this->getClearanceFromConnectables());
             l_Point2.setY(p_fromPoint.y());
             m_Path.append(l_Point2);
 
@@ -685,20 +697,20 @@ void Connector::routeFaceToBack(const QPoint& p_fromPoint, const QPoint& p_toPoi
             if( abs(p_fromPoint.y() - l_toCollisionRect.top()) < abs(p_fromPoint.y() - l_toCollisionRect.bottom()) )
             {
                 // Top is shorter
-                l_Point3.setY(l_toCollisionRect.top() - CLEARANCE_FROM_CONNECTABLE );
+                l_Point3.setY(l_toCollisionRect.top() - this->getClearanceFromConnectables() );
             }
             else
             {
-                l_Point3.setY(l_toCollisionRect.bottom() + CLEARANCE_FROM_CONNECTABLE );
+                l_Point3.setY(l_toCollisionRect.bottom() + this->getClearanceFromConnectables() );
             }
             m_Path.append(l_Point3);
 
-            l_Point4.setX(p_toPoint.x() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point4.setX(p_toPoint.x() + this->getClearanceFromConnectables());
             l_Point4.setY(l_Point3.y());
             m_Path.append(l_Point4);
         }
 
-        l_Point5.setX(p_toPoint.x() + CLEARANCE_FROM_CONNECTABLE);
+        l_Point5.setX(p_toPoint.x() + this->getClearanceFromConnectables());
         l_Point5.setY(p_toPoint.y());
         m_Path.append(l_Point5);
         break;
@@ -707,35 +719,35 @@ void Connector::routeFaceToBack(const QPoint& p_fromPoint, const QPoint& p_toPoi
         {
             // No need to go all the way around
             l_Point2.setX(p_fromPoint.x());
-            l_Point2.setY(l_toCollisionRect.top() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point2.setY(l_toCollisionRect.top() - this->getClearanceFromConnectables());
             m_Path.append(l_Point2);
         }
         else
         {
             l_Point2.setX(p_fromPoint.x());
-            l_Point2.setY(p_fromPoint.y() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point2.setY(p_fromPoint.y() - this->getClearanceFromConnectables());
             m_Path.append(l_Point2);
 
             // Find shortest way (left or right)
             if( abs(p_fromPoint.x() - l_toCollisionRect.left()) < abs(p_fromPoint.x() - l_toCollisionRect.right()) )
             {
                 // Left is shorter
-                l_Point3.setX(l_toCollisionRect.left() - CLEARANCE_FROM_CONNECTABLE);
+                l_Point3.setX(l_toCollisionRect.left() - this->getClearanceFromConnectables());
             }
             else
             {
-                l_Point3.setX(l_toCollisionRect.right() + CLEARANCE_FROM_CONNECTABLE);
+                l_Point3.setX(l_toCollisionRect.right() + this->getClearanceFromConnectables());
             }
             l_Point3.setY(l_Point2.y());
             m_Path.append(l_Point3);
 
             l_Point4.setX(l_Point3.x());
-            l_Point4.setY(p_toPoint.y() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point4.setY(p_toPoint.y() - this->getClearanceFromConnectables());
             m_Path.append(l_Point4);
         }
 
         l_Point5.setX(p_toPoint.x());
-        l_Point5.setY(p_toPoint.y() - CLEARANCE_FROM_CONNECTABLE);
+        l_Point5.setY(p_toPoint.y() - this->getClearanceFromConnectables());
         m_Path.append(l_Point5);
         break;
     case eConnectionDirection_Bottom:
@@ -743,35 +755,35 @@ void Connector::routeFaceToBack(const QPoint& p_fromPoint, const QPoint& p_toPoi
         {
             // No need to go all the way around
             l_Point2.setX(p_fromPoint.x());
-            l_Point2.setY(l_toCollisionRect.bottom() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point2.setY(l_toCollisionRect.bottom() + this->getClearanceFromConnectables());
             m_Path.append(l_Point2);
         }
         else
         {
             l_Point2.setX(p_fromPoint.x());
-            l_Point2.setY(p_fromPoint.y() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point2.setY(p_fromPoint.y() + this->getClearanceFromConnectables());
             m_Path.append(l_Point2);
 
             // Find shortest way (left or right)
             if( abs(p_fromPoint.x() - l_toCollisionRect.left()) < abs(p_fromPoint.x() - l_toCollisionRect.right()) )
             {
                 // Left is shorter
-                l_Point3.setX(l_toCollisionRect.left() - CLEARANCE_FROM_CONNECTABLE);
+                l_Point3.setX(l_toCollisionRect.left() - this->getClearanceFromConnectables());
             }
             else
             {
-                l_Point3.setX(l_toCollisionRect.right() + CLEARANCE_FROM_CONNECTABLE);
+                l_Point3.setX(l_toCollisionRect.right() + this->getClearanceFromConnectables());
             }
             l_Point3.setY(l_Point2.y());
             m_Path.append(l_Point3);
 
             l_Point4.setX(l_Point3.x());
-            l_Point4.setY(p_toPoint.y() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point4.setY(p_toPoint.y() + this->getClearanceFromConnectables());
             m_Path.append(l_Point4);
         }
 
         l_Point5.setX(p_toPoint.x());
-        l_Point5.setY(p_toPoint.y() + CLEARANCE_FROM_CONNECTABLE);
+        l_Point5.setY(p_toPoint.y() + this->getClearanceFromConnectables());
         m_Path.append(l_Point5);
         break;
     default:
@@ -797,17 +809,17 @@ void Connector::routeBackToFace(const QPoint& p_fromPoint, const QPoint& p_toPoi
     switch (m_ConnectionFromDirection)
     {
     case eConnectionDirection_Left:
-        l_Point2.setX(p_fromPoint.x() - CLEARANCE_FROM_CONNECTABLE);
+        l_Point2.setX(p_fromPoint.x() - this->getClearanceFromConnectables());
         l_Point2.setY(p_fromPoint.y());
         m_Path.append(l_Point2);
 
         l_Point3.setX(l_Point2.x());
         if( (p_toPoint.y() < l_fromCollisionRect.top()) || (p_toPoint.y() > l_fromCollisionRect.bottom()) )
         {
-            if( (p_toPoint.x() - CLEARANCE_FROM_CONNECTABLE) < l_Point2.x() )
+            if( (p_toPoint.x() - this->getClearanceFromConnectables()) < l_Point2.x() )
             {
                 // In this case, the shortcut needs space with to target element
-                l_Point2.setX(p_toPoint.x() - CLEARANCE_FROM_CONNECTABLE);
+                l_Point2.setX(p_toPoint.x() - this->getClearanceFromConnectables());
                 m_Path.last() = l_Point2;
             }
             // Means we can go straight at the last Y
@@ -817,10 +829,10 @@ void Connector::routeBackToFace(const QPoint& p_fromPoint, const QPoint& p_toPoi
         else if( abs(p_fromPoint.y() - l_fromCollisionRect.top()) < abs(p_fromPoint.y() - l_fromCollisionRect.bottom()) )
         {
             // Top seems to be the shortest
-            l_Point3.setY(l_fromCollisionRect.top() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setY(l_fromCollisionRect.top() - this->getClearanceFromConnectables());
             m_Path.append(l_Point3);
 
-            l_Point4.setX(p_toPoint.x() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point4.setX(p_toPoint.x() - this->getClearanceFromConnectables());
             l_Point4.setY(l_Point3.y());
             m_Path.append(l_Point4);
 
@@ -830,10 +842,10 @@ void Connector::routeBackToFace(const QPoint& p_fromPoint, const QPoint& p_toPoi
         }
         else
         {
-            l_Point3.setY(l_fromCollisionRect.bottom() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setY(l_fromCollisionRect.bottom() + this->getClearanceFromConnectables());
             m_Path.append(l_Point3);
 
-            l_Point4.setX(p_toPoint.x() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point4.setX(p_toPoint.x() - this->getClearanceFromConnectables());
             l_Point4.setY(l_Point3.y());
             m_Path.append(l_Point4);
 
@@ -844,17 +856,17 @@ void Connector::routeBackToFace(const QPoint& p_fromPoint, const QPoint& p_toPoi
 
         break;
     case eConnectionDirection_Right:
-        l_Point2.setX(p_fromPoint.x() + CLEARANCE_FROM_CONNECTABLE);
+        l_Point2.setX(p_fromPoint.x() + this->getClearanceFromConnectables());
         l_Point2.setY(p_fromPoint.y());
         m_Path.append(l_Point2);
 
         l_Point3.setX(l_Point2.x());
         if( (p_toPoint.y() < l_fromCollisionRect.top()) || (p_toPoint.y() > l_fromCollisionRect.bottom()) )
         {
-            if( (p_toPoint.x() + CLEARANCE_FROM_CONNECTABLE) > l_Point2.x() )
+            if( (p_toPoint.x() + this->getClearanceFromConnectables()) > l_Point2.x() )
             {
                 // In this case, the shortcut needs space with to target element
-                l_Point2.setX(p_toPoint.x() + CLEARANCE_FROM_CONNECTABLE);
+                l_Point2.setX(p_toPoint.x() + this->getClearanceFromConnectables());
                 m_Path.last() = l_Point2;
             }
             // Means we can go straight at the last Y
@@ -864,10 +876,10 @@ void Connector::routeBackToFace(const QPoint& p_fromPoint, const QPoint& p_toPoi
         else if( abs(p_fromPoint.y() - l_fromCollisionRect.top()) < abs(p_fromPoint.y() - l_fromCollisionRect.bottom()) )
         {
             // Top seems to be the shortest
-            l_Point3.setY(l_fromCollisionRect.top() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setY(l_fromCollisionRect.top() - this->getClearanceFromConnectables());
             m_Path.append(l_Point3);
 
-            l_Point4.setX(p_toPoint.x() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point4.setX(p_toPoint.x() + this->getClearanceFromConnectables());
             l_Point4.setY(l_Point3.y());
             m_Path.append(l_Point4);
 
@@ -877,10 +889,10 @@ void Connector::routeBackToFace(const QPoint& p_fromPoint, const QPoint& p_toPoi
         }
         else
         {
-            l_Point3.setY(l_fromCollisionRect.bottom() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setY(l_fromCollisionRect.bottom() + this->getClearanceFromConnectables());
             m_Path.append(l_Point3);
 
-            l_Point4.setX(p_toPoint.x() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point4.setX(p_toPoint.x() + this->getClearanceFromConnectables());
             l_Point4.setY(l_Point3.y());
             m_Path.append(l_Point4);
 
@@ -892,16 +904,16 @@ void Connector::routeBackToFace(const QPoint& p_fromPoint, const QPoint& p_toPoi
         break;
     case eConnectionDirection_Top:
         l_Point2.setX(p_fromPoint.x());
-        l_Point2.setY(p_fromPoint.y() - CLEARANCE_FROM_CONNECTABLE);
+        l_Point2.setY(p_fromPoint.y() - this->getClearanceFromConnectables());
         m_Path.append(l_Point2);
 
         if( (p_toPoint.x() < l_fromCollisionRect.left()) || (p_toPoint.x() > l_fromCollisionRect.right()) )
         {
             // Means we can go straight at the last Y
-            if( (p_toPoint.y() - CLEARANCE_FROM_CONNECTABLE) < l_Point2.y() )
+            if( (p_toPoint.y() - this->getClearanceFromConnectables()) < l_Point2.y() )
             {
                 // In this case, the shortcut needs space with to target element
-                l_Point2.setY(p_toPoint.y() - CLEARANCE_FROM_CONNECTABLE);
+                l_Point2.setY(p_toPoint.y() - this->getClearanceFromConnectables());
                 m_Path.last() = l_Point2;
             }
             // Means we can go straight at the last Y
@@ -912,12 +924,12 @@ void Connector::routeBackToFace(const QPoint& p_fromPoint, const QPoint& p_toPoi
         else if( abs(p_fromPoint.y() - l_fromCollisionRect.left()) < abs(p_fromPoint.y() - l_fromCollisionRect.right()) )
         {
             // Left seems to be the shortest
-            l_Point3.setX(l_fromCollisionRect.left() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setX(l_fromCollisionRect.left() - this->getClearanceFromConnectables());
             l_Point3.setY(l_Point2.y());
             m_Path.append(l_Point3);
 
             l_Point4.setX(l_Point3.x());
-            l_Point4.setY(p_toPoint.y() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point4.setY(p_toPoint.y() - this->getClearanceFromConnectables());
             m_Path.append(l_Point4);
 
             l_Point5.setX(p_toPoint.x());
@@ -926,12 +938,12 @@ void Connector::routeBackToFace(const QPoint& p_fromPoint, const QPoint& p_toPoi
         }
         else
         {
-            l_Point3.setX(l_fromCollisionRect.right() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setX(l_fromCollisionRect.right() + this->getClearanceFromConnectables());
             l_Point3.setY(l_Point2.y());
             m_Path.append(l_Point3);
 
             l_Point4.setX(l_Point3.x());
-            l_Point4.setY(p_toPoint.y() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point4.setY(p_toPoint.y() - this->getClearanceFromConnectables());
             m_Path.append(l_Point4);
 
             l_Point5.setX(p_toPoint.x());
@@ -942,16 +954,16 @@ void Connector::routeBackToFace(const QPoint& p_fromPoint, const QPoint& p_toPoi
         break;
     case eConnectionDirection_Bottom:
         l_Point2.setX(p_fromPoint.x());
-        l_Point2.setY(p_fromPoint.y() + CLEARANCE_FROM_CONNECTABLE);
+        l_Point2.setY(p_fromPoint.y() + this->getClearanceFromConnectables());
         m_Path.append(l_Point2);
 
         if( (p_toPoint.x() < l_fromCollisionRect.left()) || (p_toPoint.x() > l_fromCollisionRect.right()) )
         {
             // Means we can go straight at the last Y
-            if( (p_toPoint.y() + CLEARANCE_FROM_CONNECTABLE) > l_Point2.y() )
+            if( (p_toPoint.y() + this->getClearanceFromConnectables()) > l_Point2.y() )
             {
                 // In this case, the shortcut needs space with to target element
-                l_Point2.setY(p_toPoint.y() + CLEARANCE_FROM_CONNECTABLE);
+                l_Point2.setY(p_toPoint.y() + this->getClearanceFromConnectables());
                 m_Path.last() = l_Point2;
             }
             l_Point3.setX(p_toPoint.x());
@@ -961,12 +973,12 @@ void Connector::routeBackToFace(const QPoint& p_fromPoint, const QPoint& p_toPoi
         else if( abs(p_fromPoint.y() - l_fromCollisionRect.left()) < abs(p_fromPoint.y() - l_fromCollisionRect.right()) )
         {
             // Left seems to be the shortest
-            l_Point3.setX(l_fromCollisionRect.left() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setX(l_fromCollisionRect.left() - this->getClearanceFromConnectables());
             l_Point3.setY(l_Point2.y());
             m_Path.append(l_Point3);
 
             l_Point4.setX(l_Point3.x());
-            l_Point4.setY(p_toPoint.y() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point4.setY(p_toPoint.y() + this->getClearanceFromConnectables());
             m_Path.append(l_Point4);
 
             l_Point5.setX(p_toPoint.x());
@@ -975,12 +987,12 @@ void Connector::routeBackToFace(const QPoint& p_fromPoint, const QPoint& p_toPoi
         }
         else
         {
-            l_Point3.setX(l_fromCollisionRect.right() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setX(l_fromCollisionRect.right() + this->getClearanceFromConnectables());
             l_Point3.setY(l_Point2.y());
             m_Path.append(l_Point3);
 
             l_Point4.setX(l_Point3.x());
-            l_Point4.setY(p_toPoint.y() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point4.setY(p_toPoint.y() + this->getClearanceFromConnectables());
             m_Path.append(l_Point4);
 
             l_Point5.setX(p_toPoint.x());
@@ -1008,10 +1020,10 @@ void Connector::routeFaceToSide(const QPoint& p_fromPoint, const QPoint& p_toPoi
 
     m_Path.append(p_fromPoint);
 
-    if( ((m_ConnectionToDirection == eConnectionDirection_Left) && (p_fromPoint.x() < (p_toPoint.x() - CLEARANCE_FROM_CONNECTABLE))) ||
-            ((m_ConnectionToDirection == eConnectionDirection_Right) && (p_fromPoint.x() > (p_toPoint.x() + CLEARANCE_FROM_CONNECTABLE))) ||
-            ((m_ConnectionToDirection == eConnectionDirection_Top) && (p_fromPoint.y() < (p_toPoint.y() - CLEARANCE_FROM_CONNECTABLE))) ||
-            ((m_ConnectionToDirection == eConnectionDirection_Bottom) && (p_fromPoint.y() > (p_toPoint.y() + CLEARANCE_FROM_CONNECTABLE))) )
+    if( ((m_ConnectionToDirection == eConnectionDirection_Left) && (p_fromPoint.x() < (p_toPoint.x() - this->getClearanceFromConnectables()))) ||
+            ((m_ConnectionToDirection == eConnectionDirection_Right) && (p_fromPoint.x() > (p_toPoint.x() + this->getClearanceFromConnectables()))) ||
+            ((m_ConnectionToDirection == eConnectionDirection_Top) && (p_fromPoint.y() < (p_toPoint.y() - this->getClearanceFromConnectables()))) ||
+            ((m_ConnectionToDirection == eConnectionDirection_Bottom) && (p_fromPoint.y() > (p_toPoint.y() + this->getClearanceFromConnectables()))) )
     {
         // Path is direct, only one intermediate
         if( (m_ConnectionFromDirection == eConnectionDirection_Left) ||
@@ -1034,20 +1046,20 @@ void Connector::routeFaceToSide(const QPoint& p_fromPoint, const QPoint& p_toPoi
         switch(m_ConnectionFromDirection)
         {
         case eConnectionDirection_Left:
-            l_Point2.setX(p_fromPoint.x() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point2.setX(p_fromPoint.x() - this->getClearanceFromConnectables());
             l_Point2.setY(p_fromPoint.y());
             break;
         case eConnectionDirection_Right:
-            l_Point2.setX(p_fromPoint.x() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point2.setX(p_fromPoint.x() + this->getClearanceFromConnectables());
             l_Point2.setY(p_fromPoint.y());
             break;
         case eConnectionDirection_Top:
             l_Point2.setX(p_fromPoint.x());
-            l_Point2.setY(p_fromPoint.y() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point2.setY(p_fromPoint.y() - this->getClearanceFromConnectables());
             break;
         case eConnectionDirection_Bottom:
             l_Point2.setX(p_fromPoint.x());
-            l_Point2.setY(p_fromPoint.y() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point2.setY(p_fromPoint.y() + this->getClearanceFromConnectables());
             break;
         default:
             break;
@@ -1056,20 +1068,20 @@ void Connector::routeFaceToSide(const QPoint& p_fromPoint, const QPoint& p_toPoi
         switch(m_ConnectionToDirection)
         {
         case eConnectionDirection_Left:
-            l_Point5.setX(p_toPoint.x() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point5.setX(p_toPoint.x() - this->getClearanceFromConnectables());
             l_Point5.setY(p_toPoint.y());
             break;
         case eConnectionDirection_Right:
-            l_Point5.setX(p_toPoint.x() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point5.setX(p_toPoint.x() + this->getClearanceFromConnectables());
             l_Point5.setY(p_toPoint.y());
             break;
         case eConnectionDirection_Top:
             l_Point5.setX(p_toPoint.x());
-            l_Point5.setY(p_toPoint.y() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point5.setY(p_toPoint.y() - this->getClearanceFromConnectables());
             break;
         case eConnectionDirection_Bottom:
             l_Point5.setX(p_toPoint.x());
-            l_Point5.setY(p_toPoint.y() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point5.setY(p_toPoint.y() + this->getClearanceFromConnectables());
             break;
         default:
             break;
@@ -1128,7 +1140,7 @@ void Connector::routeBackToSide(const QPoint& p_fromPoint, const QPoint& p_toPoi
     switch(m_ConnectionFromDirection)
     {
     case eConnectionDirection_Left:
-        l_Point2.setX(p_fromPoint.x() - CLEARANCE_FROM_CONNECTABLE);
+        l_Point2.setX(p_fromPoint.x() - this->getClearanceFromConnectables());
         l_Point2.setY(p_fromPoint.y());
         m_Path.append(l_Point2);
 
@@ -1137,19 +1149,19 @@ void Connector::routeBackToSide(const QPoint& p_fromPoint, const QPoint& p_toPoi
         if( p_toPoint.y() > p_fromPoint.y() )
         {
             // Bottom
-            l_Point3.setY(l_fromCollisionRect.bottom() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setY(l_fromCollisionRect.bottom() + this->getClearanceFromConnectables());
             m_Path.append(l_Point3);
         }
         else
         {
             // Top
-            l_Point3.setY(l_fromCollisionRect.top() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setY(l_fromCollisionRect.top() - this->getClearanceFromConnectables());
         }
         m_Path.append(l_Point3);
 
         // Check if end of path is direct
-        if( (l_Point3.y() > (l_toCollisionRect.bottom() + CLEARANCE_FROM_CONNECTABLE)) ||
-                (l_Point3.y() < (l_toCollisionRect.top() - CLEARANCE_FROM_CONNECTABLE)) )
+        if( (l_Point3.y() > (l_toCollisionRect.bottom() + this->getClearanceFromConnectables())) ||
+                (l_Point3.y() < (l_toCollisionRect.top() - this->getClearanceFromConnectables())) )
         {
             l_Point4.setX(p_toPoint.x());
             l_Point4.setY(l_Point3.y());
@@ -1164,11 +1176,11 @@ void Connector::routeBackToSide(const QPoint& p_fromPoint, const QPoint& p_toPoi
             l_Point5.setX(l_Point4.x());
             if( m_ConnectionToDirection == eConnectionDirection_Bottom )
             {
-                l_Point5.setY(p_toPoint.y() + CLEARANCE_FROM_CONNECTABLE);
+                l_Point5.setY(p_toPoint.y() + this->getClearanceFromConnectables());
             }
             else
             {
-                l_Point5.setY(p_toPoint.y() - CLEARANCE_FROM_CONNECTABLE);
+                l_Point5.setY(p_toPoint.y() - this->getClearanceFromConnectables());
             }
             m_Path.append(l_Point5);
 
@@ -1178,7 +1190,7 @@ void Connector::routeBackToSide(const QPoint& p_fromPoint, const QPoint& p_toPoi
         }
         break;
     case eConnectionDirection_Right:
-        l_Point2.setX(p_fromPoint.x() + CLEARANCE_FROM_CONNECTABLE);
+        l_Point2.setX(p_fromPoint.x() + this->getClearanceFromConnectables());
         l_Point2.setY(p_fromPoint.y());
         m_Path.append(l_Point2);
 
@@ -1187,19 +1199,19 @@ void Connector::routeBackToSide(const QPoint& p_fromPoint, const QPoint& p_toPoi
         if( p_toPoint.y() > p_fromPoint.y() )
         {
             // Bottom
-            l_Point3.setY(l_fromCollisionRect.bottom() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setY(l_fromCollisionRect.bottom() + this->getClearanceFromConnectables());
             m_Path.append(l_Point3);
         }
         else
         {
             // Top
-            l_Point3.setY(l_fromCollisionRect.top() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setY(l_fromCollisionRect.top() - this->getClearanceFromConnectables());
         }
         m_Path.append(l_Point3);
 
         // Check if end of path is direct
-        if( (l_Point3.y() > (l_toCollisionRect.bottom() + CLEARANCE_FROM_CONNECTABLE)) ||
-                (l_Point3.y() < (l_toCollisionRect.top() - CLEARANCE_FROM_CONNECTABLE)) )
+        if( (l_Point3.y() > (l_toCollisionRect.bottom() + this->getClearanceFromConnectables())) ||
+                (l_Point3.y() < (l_toCollisionRect.top() - this->getClearanceFromConnectables())) )
         {
             l_Point4.setX(p_toPoint.x());
             l_Point4.setY(l_Point3.y());
@@ -1214,11 +1226,11 @@ void Connector::routeBackToSide(const QPoint& p_fromPoint, const QPoint& p_toPoi
             l_Point5.setX(l_Point4.x());
             if( m_ConnectionToDirection == eConnectionDirection_Bottom )
             {
-                l_Point5.setY(p_toPoint.y() + CLEARANCE_FROM_CONNECTABLE);
+                l_Point5.setY(p_toPoint.y() + this->getClearanceFromConnectables());
             }
             else
             {
-                l_Point5.setY(p_toPoint.y() - CLEARANCE_FROM_CONNECTABLE);
+                l_Point5.setY(p_toPoint.y() - this->getClearanceFromConnectables());
             }
             m_Path.append(l_Point5);
 
@@ -1229,26 +1241,26 @@ void Connector::routeBackToSide(const QPoint& p_fromPoint, const QPoint& p_toPoi
         break;
     case eConnectionDirection_Top:
         l_Point2.setX(p_fromPoint.x());
-        l_Point2.setY(p_fromPoint.y() - CLEARANCE_FROM_CONNECTABLE);
+        l_Point2.setY(p_fromPoint.y() - this->getClearanceFromConnectables());
         m_Path.append(l_Point2);
 
         // Is top or bottom the shortest way?
         if( p_toPoint.x() > p_fromPoint.x() )
         {
             // Right
-            l_Point3.setX(l_fromCollisionRect.right() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setX(l_fromCollisionRect.right() + this->getClearanceFromConnectables());
         }
         else
         {
             // Left
-            l_Point3.setX(l_fromCollisionRect.left() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setX(l_fromCollisionRect.left() - this->getClearanceFromConnectables());
         }
         l_Point3.setY(l_Point2.y());
         m_Path.append(l_Point3);
 
         // Check if end of path is direct
-        if( (l_Point3.x() > (l_toCollisionRect.right() + CLEARANCE_FROM_CONNECTABLE)) ||
-                (l_Point3.x() < (l_toCollisionRect.left() - CLEARANCE_FROM_CONNECTABLE)) )
+        if( (l_Point3.x() > (l_toCollisionRect.right() + this->getClearanceFromConnectables())) ||
+                (l_Point3.x() < (l_toCollisionRect.left() - this->getClearanceFromConnectables())) )
         {
             l_Point4.setX(l_Point3.x());
             l_Point4.setY(p_toPoint.y());
@@ -1262,11 +1274,11 @@ void Connector::routeBackToSide(const QPoint& p_fromPoint, const QPoint& p_toPoi
 
             if( m_ConnectionToDirection == eConnectionDirection_Left )
             {
-                l_Point5.setX(p_toPoint.x() - CLEARANCE_FROM_CONNECTABLE);
+                l_Point5.setX(p_toPoint.x() - this->getClearanceFromConnectables());
             }
             else
             {
-                l_Point5.setX(p_toPoint.x() + CLEARANCE_FROM_CONNECTABLE);
+                l_Point5.setX(p_toPoint.x() + this->getClearanceFromConnectables());
             }
             l_Point5.setY(l_Point4.y());
             m_Path.append(l_Point5);
@@ -1278,26 +1290,26 @@ void Connector::routeBackToSide(const QPoint& p_fromPoint, const QPoint& p_toPoi
         break;
     case eConnectionDirection_Bottom:
         l_Point2.setX(p_fromPoint.x());
-        l_Point2.setY(p_fromPoint.y() + CLEARANCE_FROM_CONNECTABLE);
+        l_Point2.setY(p_fromPoint.y() + this->getClearanceFromConnectables());
         m_Path.append(l_Point2);
 
         // Is top or bottom the shortest way?
         if( p_toPoint.x() > p_fromPoint.x() )
         {
             // Right
-            l_Point3.setX(l_fromCollisionRect.right() + CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setX(l_fromCollisionRect.right() + this->getClearanceFromConnectables());
         }
         else
         {
             // Left
-            l_Point3.setX(l_fromCollisionRect.left() - CLEARANCE_FROM_CONNECTABLE);
+            l_Point3.setX(l_fromCollisionRect.left() - this->getClearanceFromConnectables());
         }
         l_Point3.setY(l_Point2.y());
         m_Path.append(l_Point3);
 
         // Check if end of path is direct
-        if( (l_Point3.x() > (l_toCollisionRect.right() + CLEARANCE_FROM_CONNECTABLE)) ||
-                (l_Point3.x() < (l_toCollisionRect.left() - CLEARANCE_FROM_CONNECTABLE)) )
+        if( (l_Point3.x() > (l_toCollisionRect.right() + this->getClearanceFromConnectables())) ||
+                (l_Point3.x() < (l_toCollisionRect.left() - this->getClearanceFromConnectables())) )
         {
             l_Point4.setX(l_Point3.x());
             l_Point4.setY(p_toPoint.y());
@@ -1311,11 +1323,11 @@ void Connector::routeBackToSide(const QPoint& p_fromPoint, const QPoint& p_toPoi
 
             if( m_ConnectionToDirection == eConnectionDirection_Left )
             {
-                l_Point5.setX(p_toPoint.x() - CLEARANCE_FROM_CONNECTABLE);
+                l_Point5.setX(p_toPoint.x() - this->getClearanceFromConnectables());
             }
             else
             {
-                l_Point5.setX(p_toPoint.x() + CLEARANCE_FROM_CONNECTABLE);
+                l_Point5.setX(p_toPoint.x() + this->getClearanceFromConnectables());
             }
             l_Point5.setY(l_Point4.y());
             m_Path.append(l_Point5);
@@ -1378,34 +1390,34 @@ void Connector::routeSideToSideSelf(const QPoint& p_fromPoint, const QPoint& p_t
     {
     case eConnectionDirection_Left:
     {
-        l_Point2.setX(p_fromPoint.x() - CLEARANCE_FROM_CONNECTABLE);
+        l_Point2.setX(p_fromPoint.x() - this->getClearanceFromConnectables());
         l_Point2.setY(p_fromPoint.y());
-        l_Point3.setX(p_fromPoint.x() - CLEARANCE_FROM_CONNECTABLE);
+        l_Point3.setX(p_fromPoint.x() - this->getClearanceFromConnectables());
         l_Point3.setY(p_toPoint.y());
         break;
     }
     case eConnectionDirection_Right:
     {
-        l_Point2.setX(p_fromPoint.x() + CLEARANCE_FROM_CONNECTABLE);
+        l_Point2.setX(p_fromPoint.x() + this->getClearanceFromConnectables());
         l_Point2.setY(p_fromPoint.y());
-        l_Point3.setX(p_fromPoint.x() + CLEARANCE_FROM_CONNECTABLE);
+        l_Point3.setX(p_fromPoint.x() + this->getClearanceFromConnectables());
         l_Point3.setY(p_toPoint.y());
         break;
     }
     case eConnectionDirection_Top:
     {
         l_Point2.setX(p_fromPoint.x());
-        l_Point2.setY(p_fromPoint.y() - CLEARANCE_FROM_CONNECTABLE);
+        l_Point2.setY(p_fromPoint.y() - this->getClearanceFromConnectables());
         l_Point3.setX(p_toPoint.x());
-        l_Point3.setY(p_toPoint.y() - CLEARANCE_FROM_CONNECTABLE);
+        l_Point3.setY(p_toPoint.y() - this->getClearanceFromConnectables());
         break;
     }
     case eConnectionDirection_Bottom:
     {
         l_Point2.setX(p_fromPoint.x());
-        l_Point2.setY(p_fromPoint.y() + CLEARANCE_FROM_CONNECTABLE);
+        l_Point2.setY(p_fromPoint.y() + this->getClearanceFromConnectables());
         l_Point3.setX(p_toPoint.x());
-        l_Point3.setY(p_toPoint.y() + CLEARANCE_FROM_CONNECTABLE);
+        l_Point3.setY(p_toPoint.y() + this->getClearanceFromConnectables());
         break;
     }
     default:

@@ -25,6 +25,9 @@ TransitionConfiguration::TransitionConfiguration()
     m_AutoRouteLabel = new QLabel("Auto route:");
     m_AutoRouteCheckBox = new QCheckBox();
 
+    m_CurvedLabel = new QLabel("Curved");
+    m_CurvedCheckBox = new QCheckBox();
+
     m_ConnectFromLabel = new QLabel();
     m_ConnectFromLabel->setFixedHeight(40);
     m_ConnectToLabel = new QLabel();
@@ -50,6 +53,9 @@ TransitionConfiguration::TransitionConfiguration()
 
     m_Layout->addWidget(m_AutoRouteLabel, l_row, 0, 1, 1, Qt::Alignment());
     m_Layout->addWidget(m_AutoRouteCheckBox, l_row++, 1, 1, 1, Qt::Alignment());
+
+    m_Layout->addWidget(m_CurvedLabel, l_row, 0, 1, 1, Qt::Alignment());
+    m_Layout->addWidget(m_CurvedCheckBox, l_row++, 1, 1, 1, Qt::Alignment());
 
     m_Layout->addWidget(m_ConnectFromLabel, l_row++, -1, 1, 1, Qt::Alignment());
     m_Layout->addWidget(m_ConnectToLabel, l_row++, -1, 1, 1, Qt::Alignment());
@@ -118,6 +124,14 @@ void TransitionConfiguration::setFromInfo(QString p_FromType, QString p_FromName
 void TransitionConfiguration::setToInfo(QString p_ToType, QString p_ToName)
 {
     m_ConnectToLabel->setText("To " + p_ToType + ":\n" + p_ToName);
+}
+void TransitionConfiguration::setCurvedInfo(bool p_Curved)
+{
+    m_CurvedCheckBox->setChecked(p_Curved);
+}
+bool TransitionConfiguration::getCurvedInfo() const
+{
+    return m_CurvedCheckBox->isChecked();
 }
 
 void TransitionConfiguration::setFocusOnFirstZone()
