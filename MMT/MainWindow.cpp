@@ -247,7 +247,19 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
 {
     switch(p_Event->key())
     {
-    case Qt::Key::Key_1:
+    case Qt::Key::Key_Tab:
+        if( p_Event->modifiers() == Qt::ControlModifier )
+        {
+            unsigned short l_DiagramToDisplay = m_CurrentDiagramID;
+            l_DiagramToDisplay++;
+            if( l_DiagramToDisplay >= m_Diagrams.count() )
+            {
+                l_DiagramToDisplay = 0U;
+            }
+            this->switchToContext(l_DiagramToDisplay);
+        }
+        break;
+    case Qt::Key::Key_F1:
         if( p_Event->modifiers() == Qt::AltModifier )
         {
             this->switchToContext(0U);
@@ -257,7 +269,7 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
             m_Diagrams[m_CurrentDiagramID]->selectToolByID(0U);
         }
         break;
-    case Qt::Key::Key_2:
+    case Qt::Key::Key_F2:
         if( p_Event->modifiers() == Qt::AltModifier )
         {
             this->switchToContext(1U);
@@ -267,7 +279,7 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
             m_Diagrams[m_CurrentDiagramID]->selectToolByID(1U);
         }
         break;
-    case Qt::Key::Key_3:
+    case Qt::Key::Key_F3:
         if( p_Event->modifiers() == Qt::AltModifier )
         {
             this->switchToContext(2U);
@@ -277,7 +289,7 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
             m_Diagrams[m_CurrentDiagramID]->selectToolByID(2U);
         }
         break;
-    case Qt::Key::Key_4:
+    case Qt::Key::Key_F4:
         if( p_Event->modifiers() == Qt::AltModifier )
         {
             this->switchToContext(3U);
@@ -287,7 +299,7 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
             m_Diagrams[m_CurrentDiagramID]->selectToolByID(3U);
         }
         break;
-    case Qt::Key::Key_5:
+    case Qt::Key::Key_F5:
         if( p_Event->modifiers() == Qt::AltModifier )
         {
             this->switchToContext(4U);
@@ -297,7 +309,7 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
             m_Diagrams[m_CurrentDiagramID]->selectToolByID(4U);
         }
         break;
-    case Qt::Key::Key_6:
+    case Qt::Key::Key_F6:
         if( p_Event->modifiers() == Qt::AltModifier )
         {
             this->switchToContext(5U);
@@ -307,7 +319,7 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
             m_Diagrams[m_CurrentDiagramID]->selectToolByID(5U);
         }
         break;
-    case Qt::Key::Key_7:
+    case Qt::Key::Key_F7:
         if( p_Event->modifiers() == Qt::AltModifier )
         {
             this->switchToContext(6U);
@@ -317,7 +329,7 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
             m_Diagrams[m_CurrentDiagramID]->selectToolByID(6U);
         }
         break;
-    case Qt::Key::Key_8:
+    case Qt::Key::Key_F8:
         if( p_Event->modifiers() == Qt::AltModifier )
         {
             this->switchToContext(7U);

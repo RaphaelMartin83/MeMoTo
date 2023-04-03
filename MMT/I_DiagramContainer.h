@@ -48,6 +48,8 @@ public:
     void copyPressed();
     void pastePressed();
     void selectToolByID(unsigned short p_ID);
+    void selectNextTool();
+    void selectPreviousTool();
     void mousePressEvent(QGraphicsSceneMouseEvent* p_Event);
     void mouseMoveEvent(QGraphicsSceneMouseEvent* p_Event);
 

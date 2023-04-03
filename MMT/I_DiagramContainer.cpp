@@ -266,6 +266,26 @@ void I_DiagramContainer::selectToolByID(unsigned short p_ID)
 {
     this->getToolBox()->selectByID(p_ID);
 }
+void I_DiagramContainer::selectNextTool()
+{
+    unsigned short l_ID = this->getToolBox()->getCurrentToolID();
+    l_ID++;
+    if( l_ID >= this->getToolBox()->getToolsList().count() )
+    {
+        l_ID = 0U;
+    }
+    this->selectToolByID(l_ID);
+}
+void I_DiagramContainer::selectPreviousTool()
+{
+    unsigned short l_ID = this->getToolBox()->getCurrentToolID();
+    l_ID--;
+    if( l_ID >= this->getToolBox()->getToolsList().count() )
+    {
+        l_ID = this->getToolBox()->getToolsList().count() - 1U;
+    }
+    this->selectToolByID(l_ID);
+}
 void I_DiagramContainer::mousePressEvent(QGraphicsSceneMouseEvent* p_Event)
 {
     QPoint l_PosInt;
