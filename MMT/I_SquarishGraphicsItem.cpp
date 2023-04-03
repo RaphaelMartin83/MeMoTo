@@ -26,7 +26,7 @@ I_SquarishGraphicsItem::I_SquarishGraphicsItem(const QPoint& p_Pos, const QStrin
     this->setWidth(p_Width);
     this->setHeight(p_Height);
 
-    m_Rect = new QGraphicsRectItem(QRect(
+    m_Rect = new GraphicsRoundedRectItem(QRect(
                                        this->getPos().x() - (m_Width/2),
                                        this->getPos().y() - (m_Height/2),
                                        m_Width,
@@ -83,7 +83,7 @@ I_SquarishGraphicsItem::I_SquarishGraphicsItem(const QJsonObject& p_Json):
     this->setHeight(p_Json.find("Height")->toInt());
     m_Name = p_Json.find("Name")->toString();
 
-    m_Rect = new QGraphicsRectItem(QRect(
+    m_Rect = new GraphicsRoundedRectItem(QRect(
                                        this->getPos().x() - (m_Width/2),
                                        this->getPos().y() - (m_Height/2),
                                        m_Width,

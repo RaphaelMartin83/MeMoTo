@@ -4,6 +4,7 @@
 #include "Connector.h"
 #include "HandleGraphicsItem.h"
 #include "TransitionGraphicsLabel.h"
+#include "GraphicsBezierCurve.h"
 
 class GraphicConnector:
         public Connector
@@ -25,6 +26,9 @@ public:
     GraphicConnector(const QJsonObject& p_JsonObject,
                      I_ConnectableContainer* p_Container);
 
+    bool isCurved() const;
+    void setCurved(bool p_isCurved);
+
     // I_Selectable
     void select();
     void select(QPoint p_Pos);
@@ -43,6 +47,7 @@ public:
 protected:
     void clear();
     void setupLines();
+    void setupCurve();
     void setupHandles();
     void deleteHandles();
     virtual void refreshDisplay();
@@ -53,10 +58,12 @@ protected:
 
 private:
     QList<QGraphicsLineItem*> m_Lines;
+    GraphicsBezierCurve* m_Curve;
     QList<HandleGraphicsItem*> m_Handles;
 
     int m_SelectedHandleID;
     bool m_isFullySelected;
+    bool m_isCurved;
 };
 
 #endif // GRAPHICCONNECTOR_H

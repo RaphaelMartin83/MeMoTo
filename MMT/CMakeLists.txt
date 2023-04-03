@@ -85,6 +85,8 @@ set(PROJECT_SOURCES
         ConfigLineEdit.h ConfigLineEdit.cpp
         ConfigList.h ConfigList.cpp
         I_ConfigLineEditListener.h
+        GraphicsRoundedRectItem.h GraphicsRoundedRectItem.cpp
+        GraphicsBezierCurve.h GraphicsBezierCurve.cpp
         ${TS_FILES}
 )
 

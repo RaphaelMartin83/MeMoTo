@@ -190,5 +190,9 @@ void ExternalClassConfiguration::openPressed()
 {
     QStringList l_argsList;
     l_argsList.append(this->getResolvedPath(this->getRoot(), this->getPath(), this->getName()));
+    l_argsList.append("--focus-on");
+    l_argsList.append(this->getName());
+    l_argsList.append("--default-diagram");
+    l_argsList.append("ClassDiagram");
     InstanceLauncher::getInstance().execute(QStringList(l_argsList));
 }

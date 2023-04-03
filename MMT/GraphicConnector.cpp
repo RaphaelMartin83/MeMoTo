@@ -6,7 +6,11 @@
 #include "I_ConnectableContainer.h"
 
 static const unsigned short GRAPHIC_CONNECTOR_THICKNESS = 4U;
+static const unsigned short GRAPHIC_CONNECTOR_SELECTION_THICKNESS = 16U;
 static const Qt::GlobalColor GRAPHIC_CONNECTOR_COLOR = Qt::black;
+
+static const int CLEARANCE_FROM_CONNECTABLE_LINES = 50;
+static const int CLEARANCE_FROM_CONNECTABLE_CURVE = 150;
 
 GraphicConnector::GraphicConnector(
             const I_Connectable* p_ConnectFrom,
@@ -16,9 +20,11 @@ GraphicConnector::GraphicConnector(
             I_ConnectableContainer* p_Container):
     Connector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container)
   , m_Lines()
+  , m_Curve(nullptr)
   , m_Handles()
   , m_SelectedHandleID(-1)
   , m_isFullySelected(false)
+  , m_isCurved(false)
 {
     // All Connectors are on the highest plan possible
     this->setPlan(0U);
@@ -34,9 +40,11 @@ GraphicConnector::GraphicConnector(
             const QList<QPoint>& p_ForcedPath):
     Connector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container, p_ForcedPath)
   , m_Lines()
+  , m_Curve(nullptr)
   , m_Handles()
   , m_SelectedHandleID(-1)
   , m_isFullySelected(false)
+  , m_isCurved(false)
 {
     this->setPlan(0U);
     GraphicConnector::refreshDisplay();
@@ -46,12 +54,49 @@ GraphicConnector::GraphicConnector(const QJsonObject& p_JsonObject,
                                  I_ConnectableContainer* p_Container):
     Connector(p_JsonObject, p_Container)
   , m_Lines()
+  , m_Curve(nullptr)
   , m_Handles()
   , m_SelectedHandleID(-1)
   , m_isFullySelected(false)
+  , m_isCurved(false)
 {
     this->setPlan(0U);
     GraphicConnector::refreshDisplay();
+}
+
+bool GraphicConnector::isCurved() const
+{
+    return m_isCurved;
+}
+void GraphicConnector::setCurved(bool p_isCurved)
+{
+    if( this->getPath().count() > 4 )
+    {
+        m_isCurved = false;
+    }
+    else
+    {
+        m_isCurved = p_isCurved;
+    }
+
+    if( m_isCurved )
+    {
+        this->setClearanceFromConnectables(CLEARANCE_FROM_CONNECTABLE_CURVE);
+        GraphicConnector::reroute();
+
+        if( this->getPath().count() > 4 )
+        {
+            // Special case (very uncommon) where difference in clearance changes route
+            // AND route becomes more complex (more than 4 points)
+            // -> Fall back to a square type path
+            this->setCurved(false);
+        }
+    }
+    else
+    {
+        this->setClearanceFromConnectables(CLEARANCE_FROM_CONNECTABLE_LINES);
+        GraphicConnector::reroute();
+    }
 }
 
 void GraphicConnector::route(QPoint p_From, QPoint p_To)
@@ -81,6 +126,12 @@ void GraphicConnector::clear()
     }
     m_Lines.clear();
 
+    if( nullptr != m_Curve )
+    {
+        delete m_Curve;
+        m_Curve = nullptr;
+    }
+
     for( unsigned short i_handles=0U; i_handles < m_Handles.count(); i_handles++ )
     {
         this->removeFromGroup(m_Handles[i_handles]);
@@ -104,6 +155,13 @@ void GraphicConnector::setupLines()
     {
         // Let's admit it, if the connector has less than 2 points, it's my bad.
     }
+}
+
+void GraphicConnector::setupCurve()
+{
+    m_Curve = new GraphicsBezierCurve(this->getPath());
+    m_Curve->setPen(QPen(GRAPHIC_CONNECTOR_COLOR, GRAPHIC_CONNECTOR_THICKNESS));
+    this->addToGroup(m_Curve);
 }
 
 void GraphicConnector::setupHandles()
@@ -134,7 +192,15 @@ void GraphicConnector::deleteHandles()
 void GraphicConnector::refreshDisplay()
 {
     this->clear();
-    this->setupLines();
+
+    if( this->isCurved() )
+    {
+        this->setupCurve();
+    }
+    else
+    {
+        this->setupLines();
+    }
     this->deleteHandles();
     this->setupHandles();
 
@@ -153,7 +219,18 @@ void GraphicConnector::selectAllHandles()
 
 qreal GraphicConnector::getLastLineAngle() const
 {
-    return qDegreesToRadians(m_Lines.last()->line().angle());
+    long double l_Ret;
+    if( 0 != m_Lines.count() )
+    {
+        l_Ret = qDegreesToRadians(m_Lines.last()->line().angle());
+    }
+    else
+    {
+        QLineF l_tmpLine(this->getPath()[this->getPath().count() - 2U],
+                this->getPath().last());
+        l_Ret = qDegreesToRadians(l_tmpLine.angle());
+    }
+    return l_Ret;
 }
 
 void GraphicConnector::setLinesPen(QPen p_Pen)
@@ -193,15 +270,9 @@ void GraphicConnector::select(QPoint p_Pos)
         }
     }
 
-    for(unsigned short i_lines = 0U;
-        (i_lines < m_Lines.count()) && (false == l_isFound);
-        i_lines++)
+    if( (false == l_isFound) && this->isItYou(p_Pos) )
     {
-        if( true == m_Lines[i_lines]->contains(p_Pos) )
-        {
-            l_isFound = true;
-            this->select();
-        }
+        this->select();
     }
 }
 void GraphicConnector::unselect()
@@ -284,10 +355,28 @@ bool GraphicConnector::isItYou(QPoint p_Pos) const
         l_ret = m_Handles[i_handles]->isItYou(p_Pos);
     }
 
-    for( unsigned short i_lines = 0U;
-         (i_lines < m_Lines.count()) && (false == l_ret); i_lines++ )
+    if( !this->isCurved() )
     {
-        l_ret = m_Lines[i_lines]->contains(p_Pos);
+        QGraphicsLineItem l_tmpThickLine;
+        QLineF l_tmpLine;
+        for( unsigned short i_points = 0U;
+             (i_points < (this->getPath().count() - 1U)) && (false == l_ret); i_points++ )
+        {
+            // Uses a fake line to avoid computing
+            l_tmpLine.setPoints(this->getPath()[i_points], this->getPath()[i_points + 1U]);
+            l_tmpThickLine.setLine(l_tmpLine);
+            l_tmpThickLine.setPen(QPen(GRAPHIC_CONNECTOR_COLOR, GRAPHIC_CONNECTOR_SELECTION_THICKNESS));
+            l_ret = l_tmpThickLine.contains(p_Pos);
+        }
+    }
+    else if( false == l_ret )
+    {
+        if( nullptr != m_Curve )
+        {
+            this->m_Curve->setPen(QPen(GRAPHIC_CONNECTOR_COLOR, GRAPHIC_CONNECTOR_SELECTION_THICKNESS));
+            l_ret = m_Curve->contains(p_Pos);
+            this->m_Curve->setPen(QPen(GRAPHIC_CONNECTOR_COLOR, GRAPHIC_CONNECTOR_THICKNESS));
+        }
     }
 
     return l_ret;

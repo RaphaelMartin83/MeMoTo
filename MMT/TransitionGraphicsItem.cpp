@@ -16,7 +16,7 @@ static const float TRANSITION_LABEL_STRING_SIZE_FACTOR = 2.0F;
 
 const char* TransitionGraphicsItem::SERIALIZABLE_NAME = "Transitions";
 
-static TransitionConfiguration* s_ConfigurationContext;
+static TransitionConfiguration* s_ConfigurationContext = nullptr;
 
 TransitionGraphicsItem::TransitionGraphicsItem(
             const I_Connectable* p_ConnectFrom,
@@ -34,12 +34,9 @@ TransitionGraphicsItem::TransitionGraphicsItem(
   , m_LabelWidth()
   , m_Text(nullptr)
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
+    if( this->getConnectFrom() == this->getConnectTo() )
     {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new TransitionConfiguration();
+        this->setCurved(true);
     }
 
     TransitionGraphicsItem::refreshDisplay();
@@ -61,12 +58,9 @@ TransitionGraphicsItem::TransitionGraphicsItem(
   , m_LabelWidth()
   , m_Text(nullptr)
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
+    if( this->getConnectFrom() == this->getConnectTo() )
     {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new TransitionConfiguration();
+        this->setCurved(true);
     }
 
     TransitionGraphicsItem::refreshDisplay();
@@ -74,21 +68,16 @@ TransitionGraphicsItem::TransitionGraphicsItem(
 TransitionGraphicsItem::TransitionGraphicsItem(const QJsonObject& p_JsonObject,
                                                I_ConnectableContainer* p_Container):
     GraphicConnector(p_JsonObject, p_Container)
-  , m_Guard(p_JsonObject.find("Guard")->toString())
-  , m_Event(p_JsonObject.find("Event")->toString())
-  , m_Action(p_JsonObject.find("Action")->toString())
-  , m_Stereotype(p_JsonObject.find("Stereotype")->toString())
   , m_Arrow()
   , m_LabelPosition()
   , m_LabelWidth()
   , m_Text(nullptr)
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
+    TransitionGraphicsItem::fromJson(p_JsonObject);
+
+    if( this->getConnectFrom() == this->getConnectTo() )
     {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new TransitionConfiguration();
+        this->setCurved(true);
     }
 
     TransitionGraphicsItem::refreshDisplay();
@@ -328,6 +317,12 @@ void TransitionGraphicsItem::setupArrow()
 
 void TransitionGraphicsItem::openConfiguration()
 {
+    // Instanciate configuration layout if needed
+    if( nullptr == s_ConfigurationContext )
+    {
+        s_ConfigurationContext = new TransitionConfiguration();
+    }
+
     s_ConfigurationContext->registerDiagram(this->getDiagramContainer());
     s_ConfigurationContext->setListener(this->getSelectableType(), this->getID());
 
@@ -341,6 +336,7 @@ void TransitionGraphicsItem::openConfiguration()
     s_ConfigurationContext->setToInfo(this->getConnectTo()->getConnectableType(),
                                         this->getConnectTo()->getConnectableName());
     s_ConfigurationContext->setAutoRoute(!this->getPathIsForced());
+    s_ConfigurationContext->setCurvedInfo(this->isCurved());
 
     // Let's rock
     ConfigWidget::open(s_ConfigurationContext);
@@ -356,6 +352,7 @@ void TransitionGraphicsItem::applyConfiguration()
     this->setGuard(s_ConfigurationContext->getGuard());
     this->setStereotype(s_ConfigurationContext->getStereotype());
     this->setPathIsForced(!s_ConfigurationContext->getAutoRoute());
+    this->setCurved(s_ConfigurationContext->getCurvedInfo());
 
     if( false == this->getPathIsForced() )
     {
@@ -376,18 +373,31 @@ QJsonObject TransitionGraphicsItem::toJson() const
     l_MyJson.insert("Event", m_Event);
     l_MyJson.insert("Action", m_Action);
     l_MyJson.insert("Stereotype", m_Stereotype);
+    l_MyJson.insert("RouteType", this->isCurved()?"Curved":"Square");
 
     return l_MyJson;
 }
 
-void TransitionGraphicsItem::fromJson(QJsonObject p_Json)
+void TransitionGraphicsItem::fromJson(const QJsonObject& p_Json)
 {
     GraphicConnector::fromJson(p_Json);
 
-    this->setEvent(p_Json.find("Event")->toString());
-    this->setAction(p_Json.find("Action")->toString());
-    this->setGuard(p_Json.find("Guard")->toString());
-    this->setStereotype(p_Json.find("Stereotype")->toString());
+    QJsonObject::const_iterator l_FoundObject;
+    l_FoundObject = p_Json.find("Event");
+    if( p_Json.end() != l_FoundObject )
+        this->setEvent(l_FoundObject->toString());
+    l_FoundObject = p_Json.find("Action");
+    if( p_Json.end() != l_FoundObject )
+        this->setAction(l_FoundObject->toString());
+    l_FoundObject = p_Json.find("Guard");
+    if( p_Json.end() != l_FoundObject )
+        this->setGuard(l_FoundObject->toString());
+    l_FoundObject = p_Json.find("Stereotype");
+    if( p_Json.end() != l_FoundObject )
+        this->setStereotype(l_FoundObject->toString());
+    l_FoundObject = p_Json.find("RouteType");
+    if( p_Json.end() != l_FoundObject )
+        this->setCurved(l_FoundObject->toString() == "Curved");
 }
 
 QString TransitionGraphicsItem::getSerializableName() const
