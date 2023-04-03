@@ -146,7 +146,12 @@ void GraphicConnector::setupLines()
     {
         for(unsigned short i_points = 0U; i_points < this->getPath().count() - 1U; i_points++ )
         {
-            m_Lines.append(new QGraphicsLineItem(QLineF(this->getPath()[i_points], this->getPath()[i_points + 1U])));
+            QLineF l_LineToAdd(this->getPath()[i_points], this->getPath()[i_points + 1U]);
+            if( i_points == (this->getPath().count() - 2U) )
+            {
+                l_LineToAdd.setLength(l_LineToAdd.length() - 3);
+            }
+            m_Lines.append(new QGraphicsLineItem(l_LineToAdd));
             m_Lines.last()->setPen(QPen(GRAPHIC_CONNECTOR_COLOR, GRAPHIC_CONNECTOR_THICKNESS));
             this->addToGroup(m_Lines.last());
         }
