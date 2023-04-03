@@ -102,6 +102,8 @@ void ClassGraphicsItem::applyConfiguration()
     this->setAttributesList(s_ConfigurationContext->getAttributes());
     this->setColor(s_ConfigurationContext->getColor());
 
+    this->getDiagramContainer()->changed(this);
+
     ConfigWidget::close();
 }
 
