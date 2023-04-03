@@ -5,6 +5,7 @@
 #include <QGraphicsScene>
 #include <QGraphicsRectItem>
 #include <QGridLayout>
+#include <QPushButton>
 
 #include "I_DiagramContainer.h"
 #include "DiagramGraphicsView.h"
@@ -40,6 +41,10 @@ public:
 
     void startSharing();
 
+private slots:
+    void NextButtonPressed();
+    void PrevButtonPressed();
+
 private:
     void initGUI();
     void initDiagrams();
@@ -55,6 +60,9 @@ private:
 
     QGridLayout* m_mainLayout;
     QWidget* m_centralWidget;
+
+    QPushButton* m_PrevDiagButton;
+    QPushButton* m_NextDiagButton;
 
     QGraphicsView* m_ToolBoxView;
     DiagramGraphicsView* m_DiagramView;

@@ -124,12 +124,38 @@ void MainWindow::startSharing()
     SharingManager::getInstance().start();
 }
 
+void MainWindow::NextButtonPressed()
+{
+    unsigned short l_DiagramToDisplay = m_CurrentDiagramID;
+    l_DiagramToDisplay++;
+    if( l_DiagramToDisplay >= m_Diagrams.count() )
+    {
+        l_DiagramToDisplay = 0U;
+    }
+    this->switchToContext(l_DiagramToDisplay);
+}
+void MainWindow::PrevButtonPressed()
+{
+    unsigned short l_DiagramToDisplay = m_CurrentDiagramID;
+    l_DiagramToDisplay--;
+    if( l_DiagramToDisplay >= m_Diagrams.count() )
+    {
+        l_DiagramToDisplay = m_Diagrams.count() - 1U;
+    }
+    this->switchToContext(l_DiagramToDisplay);
+}
+
 void MainWindow::initGUI()
 {
-    QIcon l_ApplicationIcon = QIcon("logo.ico");
+    QIcon l_ApplicationIcon = QIcon(QApplication::applicationDirPath() + "/logo.ico");
     this->setWindowIcon(l_ApplicationIcon);
 
     m_mainLayout = new QGridLayout();
+
+    m_PrevDiagButton = new QPushButton("<-");
+    m_PrevDiagButton->setFixedWidth(47);
+    m_NextDiagButton = new QPushButton("->");
+    m_NextDiagButton->setFixedWidth(47);
 
     m_ToolBoxView = new QGraphicsView();
     m_ToolBoxView->setFixedWidth(100);
@@ -140,8 +166,10 @@ void MainWindow::initGUI()
 
     ConfigWidget::getInstance().setFixedWidth(200);
 
-    m_mainLayout->addWidget(m_ToolBoxView, 0, 0, 1, 1, Qt::Alignment());
-    m_mainLayout->addWidget(m_DiagramView, 0, 1, 1, 1, Qt::Alignment());
+    m_mainLayout->addWidget(m_ToolBoxView, 0, 0, 1, 2, Qt::Alignment());
+    m_mainLayout->addWidget(m_PrevDiagButton, 1, 0, 1, 1, Qt::Alignment());
+    m_mainLayout->addWidget(m_NextDiagButton, 1, 1, 1, 1, Qt::Alignment());
+    m_mainLayout->addWidget(m_DiagramView, 0, 2, -1, 1, Qt::Alignment());
     m_mainLayout->addWidget(&ConfigWidget::getInstance(), 0, 2, 1, 1, Qt::Alignment());
 
     m_centralWidget = new QWidget();
@@ -150,6 +178,9 @@ void MainWindow::initGUI()
     this->setCentralWidget(m_centralWidget);
     this->setWindowTitle(s_ProgramName);
     this->move(300, 150);
+
+    connect(m_PrevDiagButton, &QPushButton::pressed, this, &MainWindow::PrevButtonPressed);
+    connect(m_NextDiagButton, &QPushButton::pressed, this, &MainWindow::NextButtonPressed);
 }
 void MainWindow::updateTitle()
 {
@@ -250,13 +281,7 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
     case Qt::Key::Key_Tab:
         if( p_Event->modifiers() == Qt::ControlModifier )
         {
-            unsigned short l_DiagramToDisplay = m_CurrentDiagramID;
-            l_DiagramToDisplay++;
-            if( l_DiagramToDisplay >= m_Diagrams.count() )
-            {
-                l_DiagramToDisplay = 0U;
-            }
-            this->switchToContext(l_DiagramToDisplay);
+            this->NextButtonPressed();
         }
         break;
     case Qt::Key::Key_F1:
