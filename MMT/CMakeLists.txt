@@ -16,8 +16,6 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools Sql
 
 set(TS_FILES MMT_en_US.ts)
 
-set(app_icon_resource_windows "${CMAKE_CURRENT_SOURCE_DIR}/MeMoTo.res")
-
 set(PROJECT_SOURCES
         main.cpp
         MeMoToApplication.h MeMoToApplication.cpp
