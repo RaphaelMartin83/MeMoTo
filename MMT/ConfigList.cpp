@@ -3,7 +3,7 @@
 ConfigList::ConfigList(I_ConfigLineEditListener* p_Listener):
     m_Listener(p_Listener)
 {
-
+    this->setDragDropMode(QAbstractItemView::InternalMove);
 }
 
 void ConfigList::keyPressEvent(QKeyEvent* p_Event)
@@ -21,7 +21,7 @@ void ConfigList::keyPressEvent(QKeyEvent* p_Event)
             m_Listener->escapePressed();
         }
     }
-    else if( p_Event->key() == Qt::Key::Key_Delete)
+    else if( p_Event->key() == Qt::Key::Key_Delete )
     {
         p_Event->ignore();
     }
