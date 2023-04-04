@@ -56,8 +56,12 @@ Note: The sharing feature is a bit wierd. It relies on a common network reposito
 - You can create your tools and items implementing I_Tool and the item type you want
 - Plug your diagram into MainWindow::initDiagrams() method, you're good to go!
 
+# How to deploy
+
+- To deploy for windows, I only make a zip yet but plan to create a msi.
+- To deploy for linux based distributions, I use [LinuxDeployQt project](https://github.com/probonopd/linuxdeployqt). I run the deploy appimage giving -appimage argument and the binary file. Note: Qt lib and plugin directories must be into the build directory.
+
 # What is planed
 
 - Usability: png generation path asking
-- Aesthetic: curved connections, rounded items
 
