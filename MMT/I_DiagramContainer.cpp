@@ -32,12 +32,12 @@ QPoint I_DiagramContainer::getCurrentCursorPosition() const
 void I_DiagramContainer::undo()
 {
     I_Undoable::undo();
-    this->changed(nullptr);
+    SharingManager::getInstance().pushModifications();
 }
 void I_DiagramContainer::redo()
 {
     I_Undoable::undo();
-    this->changed(nullptr);
+    SharingManager::getInstance().pushModifications();
 }
 
 void I_DiagramContainer::changed(I_GraphicsItem* p_WhoChanged)
