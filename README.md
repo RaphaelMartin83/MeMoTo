@@ -32,6 +32,7 @@ Let's assume you are developing a critical/complex system and need code to be ge
 - redo with ctrl+shift+z
 - Copy/paste with ctrl+c and ctrl+v
 - share with ctrl+space
+- open new diagram with ctrl+n
 - find into diagram with ctrl+f
 - print to png with ctrl+p
 

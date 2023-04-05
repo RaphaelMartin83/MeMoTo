@@ -11,6 +11,7 @@
 #include "SharingManager.h"
 #include "MeMoToApplication.h"
 #include "MeMoToLoader.h"
+#include "InstanceLauncher.h"
 
 #include "SMDiagramScene.h"
 #include "ClassDiagramScene.h"
@@ -144,6 +145,10 @@ void MainWindow::PrevButtonPressed()
     }
     this->switchToContext(l_DiagramToDisplay);
 }
+void MainWindow::newMenuClicked()
+{
+    InstanceLauncher::getInstance().execute(QStringList());
+}
 void MainWindow::openMenuClicked()
 {
     this->loadPressed();
@@ -228,6 +233,7 @@ void MainWindow::initGUI()
     m_MenuBar = this->menuBar();
     m_FileMenu = new QMenu("File");
     QList<QAction*> l_ActionsListFile;
+    l_ActionsListFile.append(new QAction("New"));
     l_ActionsListFile.append(new QAction("Open"));
     l_ActionsListFile.append(new QAction("Open new"));
     l_ActionsListFile.append(new QAction("Save"));
@@ -249,10 +255,11 @@ void MainWindow::initGUI()
     connect(m_PrevDiagButton, &QPushButton::pressed, this, &MainWindow::PrevButtonPressed);
     connect(m_NextDiagButton, &QPushButton::pressed, this, &MainWindow::NextButtonPressed);
 
-    connect(m_FileMenu->actions().at(0), &QAction::triggered, this, &MainWindow::openMenuClicked);
-    connect(m_FileMenu->actions().at(1), &QAction::triggered, this, &MainWindow::openNewMenuClicked);
-    connect(m_FileMenu->actions().at(2), &QAction::triggered, this, &MainWindow::saveMenuClicked);
-    connect(m_FileMenu->actions().at(3), &QAction::triggered, this, &MainWindow::saveAsMenuClicked);
+    connect(m_FileMenu->actions().at(0), &QAction::triggered, this, &MainWindow::newMenuClicked);
+    connect(m_FileMenu->actions().at(1), &QAction::triggered, this, &MainWindow::openMenuClicked);
+    connect(m_FileMenu->actions().at(2), &QAction::triggered, this, &MainWindow::openNewMenuClicked);
+    connect(m_FileMenu->actions().at(3), &QAction::triggered, this, &MainWindow::saveMenuClicked);
+    connect(m_FileMenu->actions().at(4), &QAction::triggered, this, &MainWindow::saveAsMenuClicked);
 
     connect(m_EditMenu->actions().at(0), &QAction::triggered, this, &MainWindow::undoMenuClicked);
     connect(m_EditMenu->actions().at(1), &QAction::triggered, this, &MainWindow::redoMenuClicked);
@@ -495,6 +502,10 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
     else if( p_Event->matches(QKeySequence::Find) )
     {
         m_Diagrams[m_CurrentDiagramID]->find();
+    }
+    else if( p_Event->matches(QKeySequence::New) )
+    {
+        this->newMenuClicked();
     }
     else if( (p_Event->key() == Qt::Key_Space) && (p_Event->modifiers() == Qt::ControlModifier) )
     {
