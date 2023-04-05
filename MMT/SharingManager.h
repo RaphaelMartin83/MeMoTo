@@ -37,7 +37,7 @@ public:
     void dataChanged(const QByteArray& p_Data);
 
 private:
-    void setData(const QJsonObject& p_Data, bool p_first = false);
+    void setData(const QJsonObject& p_Data);
 
     static SharingManager* m_Me;
     bool m_isInited;

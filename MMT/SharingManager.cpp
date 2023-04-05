@@ -97,6 +97,8 @@ void SharingManager::sharingStopped()
         m_Client = nullptr;
     }
     m_isInited = false;
+
+    ConfigWidget::close();
 }
 void SharingManager::sharingCanceled()
 {
@@ -105,22 +107,23 @@ void SharingManager::sharingCanceled()
 
 void SharingManager::dataChanged(const QByteArray& p_Data)
 {
-    QJsonObject l_Json = MeMoToLoader::loadFromArray(p_Data);
+    QJsonObject l_Json = MeMoToLoader::loadFromArray(qUncompress(p_Data));
     m_Manager->setApplicationData(l_Json);
 }
 
-void SharingManager::setData(const QJsonObject& p_Data, bool p_first)
+void SharingManager::setData(const QJsonObject& p_Data)
 {
     QByteArray l_JSonText;
     MeMoToLoader::JsonToArray(p_Data, l_JSonText);
+    QByteArray l_CompressedPayload = qCompress(l_JSonText, 2);
 
     if( nullptr != m_Server )
     {
-        m_Server->updateData(l_JSonText);
+        m_Server->updateData(l_CompressedPayload);
     }
     if( nullptr != m_Client )
     {
-        m_Client->updateData(l_JSonText);
+        m_Client->updateData(l_CompressedPayload);
     }
 }
 
@@ -130,7 +133,7 @@ void SharingManager::pushModifications()
 
     QJsonObject l_ObjectToWrite;
     m_Manager->getApplicationData(l_ObjectToWrite);
-    this->setData(l_ObjectToWrite, false);
+    this->setData(l_ObjectToWrite);
 }
 
 void SharingManager::registerDataManager(I_DataManager* p_Manager)
