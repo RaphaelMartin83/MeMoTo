@@ -18,7 +18,7 @@ set(TS_FILES MMT_en_US.ts)
 
 set(PROJECT_SOURCES
         main.cpp
-        MeMoToApplication.h MeMoToApplication.cpp
+        MeMoToApplication.h MeMoToApplication.cpp MeMoToThemeDefinition.h
         MainWindow.h MainWindow.cpp I_DataManager.h
         SharingManager.h SharingManager.cpp
         SharingConfiguration.h SharingConfiguration.cpp I_SharingConfigurationListener.h

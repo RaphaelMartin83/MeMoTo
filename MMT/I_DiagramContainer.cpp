@@ -3,6 +3,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QFile>
 
+#include "MeMoToThemeDefinition.h"
 #include "I_DiagramContainer.h"
 #include "SharingManager.h"
 #include "MeMoToLoader.h"
@@ -16,7 +17,7 @@ I_DiagramContainer::I_DiagramContainer():
     , m_CurrentPosition()
     , m_isFirstDisplay(true)
 {
-
+    this->setBackgroundBrush(SCENES_BACKGROUND_COLOR);
 }
 
 QPoint I_DiagramContainer::getCurrentCursorPosition() const

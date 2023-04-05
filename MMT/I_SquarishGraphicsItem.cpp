@@ -4,6 +4,7 @@
 
 #include "I_SquarishGraphicsItem.h"
 
+#include "MeMoToThemeDefinition.h"
 #include "HumanReadableColor.h"
 
 static const unsigned short DEFAULT_HANDLES_DIAMETER = 8U;
@@ -165,6 +166,7 @@ void I_SquarishGraphicsItem::refreshDisplay()
     m_NameGraphicsItem->setPos(l_NameGraphicsItemPos);
     m_NameGraphicsItem->setTextWidth(m_Width);
     m_NameGraphicsItem->setPlainText(m_Name);
+    m_NameGraphicsItem->setDefaultTextColor(TEXT_GRAPHICS_COLOR);
     m_LineUnderTitle->setLine(QLine(this->getPos().x() - (m_Width/2),
                                     this->getPos().y() - (m_Height/2) + SQUARE_TEXT_LABELS_HEIGHT*2,
                                     this->getPos().x() + (m_Width/2),

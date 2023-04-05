@@ -2,6 +2,7 @@
 #include "ConfigWidget.h"
 #include "StackingDefinitions.h"
 #include "I_DiagramContainer.h"
+#include "MeMoToThemeDefinition.h"
 
 static const char* STATE_CONNECTABLE_NAME = "State";
 static const unsigned short STATE_TEXT_LABELS_HEIGHT = 15U;
@@ -127,10 +128,13 @@ void StateGraphicsItem::refreshDisplay()
 
     m_EntryActionGraphicsItem->setPos(this->getPos().x() - this->getWidth()/2,
                                       this->getPos().y() - this->getHeight()/2 + STATE_TEXT_LABELS_HEIGHT*2);
+    m_EntryActionGraphicsItem->setDefaultTextColor(TEXT_GRAPHICS_COLOR);
     m_ExitActionGraphicsItem->setPos(this->getPos().x() - this->getWidth()/2,
                                      this->getPos().y() - this->getHeight()/2 + (STATE_TEXT_LABELS_HEIGHT*3));
+    m_ExitActionGraphicsItem->setDefaultTextColor(TEXT_GRAPHICS_COLOR);
     m_StereotypeGraphicsItem->setPos(this->getPos().x() - this->getWidth()/2,
                                      this->getPos().y() - this->getHeight()/2 + (STATE_TEXT_LABELS_HEIGHT*4));
+    m_StereotypeGraphicsItem->setDefaultTextColor(TEXT_GRAPHICS_COLOR);
 
     this->setZValue(getDepthFromPlan(this->getPlan()));
 }
