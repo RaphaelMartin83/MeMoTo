@@ -1,0 +1,25 @@
+{
+    "ClassDiagram": {
+        "Classes": [
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 300,
+                "HideContent": "false",
+                "ID": "{e72cc393-2447-462a-8ceb-31bc995b9e74}",
+                "Methods": [
+                    "openConnection",
+                    "closeConnection",
+                    "updateData"
+                ],
+                "Name": "CollaborativeClient",
+                "PositionX": 49940,
+                "PositionY": 50020,
+                "Width": 250
+            }
+        ]
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "ClassDiagram": {
+        "Classes": [
+            {
+                "Attributes": [
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 300,
+                "HideContent": "false",
+                "ID": "{caff2a31-a091-4020-b809-4bd1babe898c}",
+                "Methods": [
+                    "startServer",
+                    "stopServer",
+                    "updateData"
+                ],
+                "Name": "CollaborativeServer",
+                "PositionX": 49980,
+                "PositionY": 49980,
+                "Width": 250
+            }
+        ]
+    }
+}

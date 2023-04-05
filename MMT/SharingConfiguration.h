@@ -4,6 +4,8 @@
 #include <QGridLayout>
 #include <QLabel>
 #include <QPushButton>
+#include <QSpinBox>
+#include <QHostAddress>
 
 #include "ConfigLineEdit.h"
 
@@ -19,32 +21,55 @@ class SharingConfiguration:
 public:
     SharingConfiguration();
 
-    QString getFilePathAndName();
-    void setFilePathAndName(const QString& p_File);
-
-    void setFileSharingRunning(bool p_isFileSharingRunning);
-
     void registerConfigListener(I_SharingConfigurationListener* p_Listener);
+
+    QString getHostName() const;
+    void setHostName(const QString& p_Host);
+
+    quint16 getHostPort() const;
+    void setHostPort(const quint16& p_Port);
+
+    QString getSessionAddress() const;
+    void setSessionAddress(const QHostAddress& p_Address);
+
+    quint16 getSessionPort() const;
+    void setSessionPort(const quint16& p_Port);
 
     // I_ConfigurationContent
     void setFocusOnFirstZone();
+    void OKPressed() {}
 
     // I_ConfigLineEditListener
     void enterPressed();
     void escapePressed();
 
 public slots:
-    void OKPressed();
-    void CancelPressed();
+    void clientStartPressed();
+    void clientStopPressed();
+    void serverStartPressed();
+    void serverStopPressed();
+
+    void cancelPressed();
 
 private:
     QGridLayout* m_Layout;
 
-    QLabel* m_ContextLabel;
-    QLabel* m_FileNameLabel;
-    ConfigLineEdit* m_FileNameEdit;
+    QLabel* m_ClientLabel;
+    QLabel* m_HostLabel;
+    ConfigLineEdit* m_HostNameEdit;
+    QLabel* m_PortLabel;
+    QSpinBox* m_PortEdit;
+    QPushButton* m_StartClientButton;
+    QPushButton* m_StopClientButton;
 
-    QPushButton* m_OKButton;
+    QLabel* m_ServerLabel;
+    QLabel* m_HostLabelServer;
+    ConfigLineEdit* m_HostEditServer;
+    QLabel* m_PortLabelServer;
+    QSpinBox* m_PortEditServer;
+    QPushButton* m_StartServerButton;
+    QPushButton* m_StopServerButton;
+
     QPushButton* m_CancelButton;
 
     QWidget* m_emptySpace;

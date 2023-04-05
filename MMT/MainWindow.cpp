@@ -114,8 +114,12 @@ void MainWindow::setApplicationData(const QJsonObject& p_Data)
         {
             m_Diagrams[i_diagrams]->clearAll();
             m_Diagrams[i_diagrams]->fromJson(l_foundDiagramJson->toObject());
-            m_Diagrams[i_diagrams]->saveUndoState();
         }
+        else
+        {
+            m_Diagrams[i_diagrams]->clearAll();
+        }
+        m_Diagrams[i_diagrams]->saveUndoState();
     }
 }
 
