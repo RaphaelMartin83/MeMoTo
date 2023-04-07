@@ -5,6 +5,7 @@ CollaborativeServer::CollaborativeServer():
   , m_Clients()
   , m_Socket()
   , m_Listener(nullptr)
+  , m_CurrentSessionData()
 {
     connect(this, &QTcpServer::newConnection, this, &CollaborativeServer::newClientConnected);
 }
@@ -22,6 +23,7 @@ void CollaborativeServer::newClientConnected()
         m_Clients.append(l_newClient);
         connect(l_newClient, &QTcpSocket::disconnected, this, &CollaborativeServer::clientDisconnected);
         connect(l_newClient, &QTcpSocket::readyRead, this, &CollaborativeServer::dataReady);
+        l_newClient->write(m_CurrentSessionData);
         l_newClient = this->nextPendingConnection();
     }
 }
@@ -36,6 +38,7 @@ void CollaborativeServer::stop()
 }
 void CollaborativeServer::updateData(const QByteArray& p_Data)
 {
+    m_CurrentSessionData = p_Data;
     for( unsigned int i_clients = 0U; i_clients < m_Clients.count(); i_clients++ )
     {
         QTcpSocket* l_cclient = m_Clients[i_clients];

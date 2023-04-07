@@ -27,6 +27,8 @@ private:
 
     QTcpSocket m_Socket;
 
+    QByteArray m_CurrentSessionData;
+
     QList<QTcpSocket*> m_Clients;
 
     I_ConnectionListener* m_Listener;

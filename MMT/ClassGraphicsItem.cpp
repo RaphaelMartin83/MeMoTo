@@ -95,7 +95,6 @@ void ClassGraphicsItem::closeConfiguration()
 }
 void ClassGraphicsItem::applyConfiguration()
 {
-    this->getDiagramContainer()->changed(this);
     this->setContentToHide(s_ConfigurationContext->isContentToHide());
     this->setName(s_ConfigurationContext->getName());
     this->setMethodsList(s_ConfigurationContext->getMethods());
