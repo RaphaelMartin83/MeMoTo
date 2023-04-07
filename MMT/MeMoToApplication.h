@@ -3,6 +3,7 @@
 
 #include <QApplication>
 #include <QString>
+#include <QIcon>
 #include <MainWindow.h>
 
 class MeMoToApplication: public QApplication
@@ -21,6 +22,8 @@ public:
     static const QString& getFileToOpen();
     static const QString& getPNGToCreate();
     static const quint16& getCollaborativePort();
+
+    static QIcon getLogo();
 
     static void registerMainWindow(MainWindow* p_MW);
 

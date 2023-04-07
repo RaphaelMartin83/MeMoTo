@@ -202,8 +202,7 @@ void MainWindow::printMenuClicked()
 
 void MainWindow::initGUI()
 {
-    QIcon l_ApplicationIcon = QIcon(QApplication::applicationDirPath() + "/logo.ico");
-    this->setWindowIcon(l_ApplicationIcon);
+    this->setWindowIcon(MeMoToApplication::getLogo());
 
     m_mainLayout = new QGridLayout();
 

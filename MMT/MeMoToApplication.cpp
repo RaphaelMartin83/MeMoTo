@@ -1,4 +1,5 @@
 #include <QCommandLineParser>
+#include <QFile>
 
 #include "MeMoToApplication.h"
 
@@ -123,6 +124,13 @@ const QString& MeMoToApplication::getPNGToCreate()
 const quint16& MeMoToApplication::getCollaborativePort()
 {
     return sm_CollaborativePort;
+}
+
+QIcon MeMoToApplication::getLogo()
+{
+    QIcon l_Ret = QIcon(QApplication::applicationDirPath() + "/MeMoTo-icon.png");
+
+    return l_Ret;
 }
 
 void MeMoToApplication::registerMainWindow(MainWindow* p_MW)
