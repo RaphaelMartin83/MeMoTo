@@ -55,6 +55,7 @@ void SharingManager::start()
     }
     s_ConfigurationContext->setSessionAddress(l_myAddress);
     s_ConfigurationContext->setSessionPort(MeMoToApplication::getCollaborativePort());
+    s_ConfigurationContext->setRunning(m_isInited);
     ConfigWidget::open(s_ConfigurationContext);
 }
 
@@ -109,6 +110,21 @@ void SharingManager::dataChanged(const QByteArray& p_Data)
 {
     QJsonObject l_Json = MeMoToLoader::loadFromArray(qUncompress(p_Data));
     m_Manager->setApplicationData(l_Json);
+}
+void SharingManager::connectionClosed()
+{
+    if( nullptr != m_Server )
+    {
+        delete m_Server;
+        m_Server = nullptr;
+    }
+
+    if( nullptr != m_Client )
+    {
+        delete m_Client;
+        m_Client = nullptr;
+    }
+    m_isInited = false;
 }
 
 void SharingManager::setData(const QJsonObject& p_Data)

@@ -35,6 +35,7 @@ public:
 
     // I_ConnectionListener
     void dataChanged(const QByteArray& p_Data);
+    void connectionClosed();
 
 private:
     void setData(const QJsonObject& p_Data);

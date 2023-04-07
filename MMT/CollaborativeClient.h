@@ -15,6 +15,7 @@ public:
     void updateData(const QByteArray& p_Data);
     void serverDisconnected();
     void dataReady();
+    void errorOccurred();
 
     void registerListener(I_ConnectionListener* p_Listener);
 

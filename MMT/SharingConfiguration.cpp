@@ -22,7 +22,6 @@ SharingConfiguration::SharingConfiguration()
     m_PortEdit->setMinimum(1024);
     m_PortEdit->setMaximum(65535);
     m_StartClientButton = new QPushButton("Start");
-    m_StopClientButton = new QPushButton("Stop");
 
     // Init widgets (Server)
     m_ServerLabel = new QLabel("Open session");
@@ -36,7 +35,7 @@ SharingConfiguration::SharingConfiguration()
     m_PortEditServer->setMinimum(1024);
     m_PortEditServer->setMaximum(65535);
     m_StartServerButton = new QPushButton("Start");
-    m_StopServerButton = new QPushButton("Stop");
+    m_StopCollaborativeButton = new QPushButton("Stop");
 
     m_CancelButton = new QPushButton("Cancel");
     m_emptySpace = new QWidget();
@@ -50,8 +49,7 @@ SharingConfiguration::SharingConfiguration()
     m_Layout->addWidget(m_HostNameEdit, l_row++, 1, 1, 1, Qt::Alignment());
     m_Layout->addWidget(m_PortLabel, l_row, 0, 1, 1, Qt::Alignment());
     m_Layout->addWidget(m_PortEdit, l_row++, 1, 1, 1, Qt::Alignment());
-    m_Layout->addWidget(m_StartClientButton, l_row, 0, 1, 1, Qt::Alignment());
-    m_Layout->addWidget(m_StopClientButton, l_row++, 1, 1, 1, Qt::Alignment());
+    m_Layout->addWidget(m_StartClientButton, l_row++, 0, 1, -1, Qt::Alignment());
 
     // Server side
     m_Layout->addWidget(m_ServerLabel, l_row++, 0, 1, -1, Qt::Alignment());
@@ -59,8 +57,9 @@ SharingConfiguration::SharingConfiguration()
     m_Layout->addWidget(m_HostEditServer, l_row++, 1, 1, 1, Qt::Alignment());
     m_Layout->addWidget(m_PortLabelServer, l_row, 0, 1, 1, Qt::Alignment());
     m_Layout->addWidget(m_PortEditServer, l_row++, 1, 1, 1, Qt::Alignment());
-    m_Layout->addWidget(m_StartServerButton, l_row, 0, 1, 1, Qt::Alignment());
-    m_Layout->addWidget(m_StopServerButton, l_row++, 1, 1, 1, Qt::Alignment());
+    m_Layout->addWidget(m_StartServerButton, l_row++, 0, 1, -1, Qt::Alignment());
+
+    m_Layout->addWidget(m_StopCollaborativeButton, l_row++, 0, 1, -1, Qt::Alignment());
 
     m_Layout->addWidget(m_CancelButton, l_row++, 0, 1, -1, Qt::Alignment());
 
@@ -72,9 +71,8 @@ SharingConfiguration::SharingConfiguration()
 
     // Setup events
     connect(m_StartClientButton, &QPushButton::clicked, this, &SharingConfiguration::clientStartPressed);
-    connect(m_StopClientButton, &QPushButton::clicked, this, &SharingConfiguration::clientStopPressed);
     connect(m_StartServerButton, &QPushButton::clicked, this, &SharingConfiguration::serverStartPressed);
-    connect(m_StopServerButton, &QPushButton::clicked, this, &SharingConfiguration::serverStopPressed);
+    connect(m_StopCollaborativeButton, &QPushButton::clicked, this, &SharingConfiguration::stopPressed);
     connect(m_CancelButton, &QPushButton::clicked, this, &SharingConfiguration::cancelPressed);
 }
 
@@ -119,6 +117,13 @@ void SharingConfiguration::setSessionPort(const quint16& p_Port)
     m_PortEditServer->setValue(p_Port);
 }
 
+void SharingConfiguration::setRunning(bool p_isRunning)
+{
+    m_StopCollaborativeButton->setEnabled(p_isRunning);
+    m_StartClientButton->setEnabled(!p_isRunning);
+    m_StartServerButton->setEnabled(!p_isRunning);
+}
+
 // I_ConfigurationContent
 void SharingConfiguration::setFocusOnFirstZone()
 {
@@ -142,13 +147,6 @@ void SharingConfiguration::clientStartPressed()
                          m_PortEdit->value());
     }
 }
-void SharingConfiguration::clientStopPressed()
-{
-    if( nullptr != m_Listener )
-    {
-        m_Listener->sharingStopped();
-    }
-}
 void SharingConfiguration::serverStartPressed()
 {
     if( (nullptr != m_Listener) )
@@ -156,7 +154,7 @@ void SharingConfiguration::serverStartPressed()
         m_Listener->sharingSessionCreationSelected(m_PortEdit->value());
     }
 }
-void SharingConfiguration::serverStopPressed()
+void SharingConfiguration::stopPressed()
 {
     if( nullptr != m_Listener )
     {

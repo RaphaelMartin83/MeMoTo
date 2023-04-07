@@ -35,6 +35,8 @@ public:
     quint16 getSessionPort() const;
     void setSessionPort(const quint16& p_Port);
 
+    void setRunning(bool p_isRunning);
+
     // I_ConfigurationContent
     void setFocusOnFirstZone();
     void OKPressed() {}
@@ -45,9 +47,8 @@ public:
 
 public slots:
     void clientStartPressed();
-    void clientStopPressed();
     void serverStartPressed();
-    void serverStopPressed();
+    void stopPressed();
 
     void cancelPressed();
 
@@ -60,7 +61,6 @@ private:
     QLabel* m_PortLabel;
     QSpinBox* m_PortEdit;
     QPushButton* m_StartClientButton;
-    QPushButton* m_StopClientButton;
 
     QLabel* m_ServerLabel;
     QLabel* m_HostLabelServer;
@@ -68,7 +68,8 @@ private:
     QLabel* m_PortLabelServer;
     QSpinBox* m_PortEditServer;
     QPushButton* m_StartServerButton;
-    QPushButton* m_StopServerButton;
+
+    QPushButton* m_StopCollaborativeButton;
 
     QPushButton* m_CancelButton;
 
