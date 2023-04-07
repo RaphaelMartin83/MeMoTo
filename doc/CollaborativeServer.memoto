@@ -1,0 +1,165 @@
+{
+    "ClassDiagram": {
+        "Aggregations": [
+            {
+                "AttributesNames": [
+                    "m_Listener"
+                ],
+                "ConnectFromDirection": 2,
+                "ConnectFromID": "{d1c8bbb1-4382-4f78-88ed-2d2cd75cc98d}",
+                "ConnectFromNumber": 14,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": "{caff2a31-a091-4020-b809-4bd1babe898c}",
+                "ConnectToNumber": 23,
+                "ConnectToType": "Class",
+                "ID": "{1d8c4602-14e8-4838-826c-c366de4b2dd2}",
+                "PositionX": 49773,
+                "PositionY": 49950
+            }
+        ],
+        "Classes": [
+            {
+                "Attributes": [
+                    "QTcpSocket m_Socket",
+                    "QList<QTcpSocket*> m_Clients",
+                    "I_ConnectionListener* m_Listener"
+                ],
+                "Color": "blanchedalmond",
+                "Contained": {
+                },
+                "Height": 300,
+                "HideContent": "false",
+                "ID": "{caff2a31-a091-4020-b809-4bd1babe898c}",
+                "Methods": [
+                    "CollaborativeServer()",
+                    "void start(const QString&, quint16&)",
+                    "void stop()",
+                    "void updateData(const QByteArray&)",
+                    "void clientDisconnected()",
+                    "void dataReady()",
+                    "void registerListener(I_ConnectionListener*)",
+                    "slot void newClientConnected()"
+                ],
+                "Name": "CollaborativeServer",
+                "PositionX": 50007,
+                "PositionY": 49980,
+                "Width": 305
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "greenyellow",
+                "Contained": {
+                },
+                "Height": 150,
+                "HideContent": "false",
+                "ID": "{992a32c5-c195-4622-b2e2-53c9e6cef9b1}",
+                "Methods": [
+                ],
+                "Name": "QTcpServer",
+                "PositionX": 50020,
+                "PositionY": 49600,
+                "Width": 160
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "greenyellow",
+                "Contained": {
+                },
+                "Height": 150,
+                "HideContent": "false",
+                "ID": "{4aece011-6cd4-43c3-89c2-c5c918457e82}",
+                "Methods": [
+                ],
+                "Name": "QTcpSocket",
+                "PositionX": 50400,
+                "PositionY": 49880,
+                "Width": 144
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "greenyellow",
+                "Contained": {
+                },
+                "Height": 150,
+                "HideContent": "false",
+                "ID": "{370ff176-d106-4dd6-9698-0ab5421e6b52}",
+                "Methods": [
+                ],
+                "Name": "QByteArray",
+                "PositionX": 50400,
+                "PositionY": 50060,
+                "Width": 144
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "whitesmoke",
+                "Contained": {
+                },
+                "Height": 130,
+                "HideContent": "false",
+                "ID": "{d1c8bbb1-4382-4f78-88ed-2d2cd75cc98d}",
+                "Methods": [
+                ],
+                "Name": "I_ConnectionListener",
+                "PositionX": 49620,
+                "PositionY": 49940,
+                "Width": 144
+            }
+        ],
+        "Compositions": [
+            {
+                "AttributesNames": [
+                    "m_Socket",
+                    "m_Clients"
+                ],
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{4aece011-6cd4-43c3-89c2-c5c918457e82}",
+                "ConnectFromNumber": 15,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": "{caff2a31-a091-4020-b809-4bd1babe898c}",
+                "ConnectToNumber": 10,
+                "ConnectToType": "Class",
+                "ID": "{72597cb1-bdc5-4ea4-8bf2-500c32445851}",
+                "PositionX": 50243,
+                "PositionY": 49885
+            },
+            {
+                "AttributesNames": [
+                    "m_CurrentSessionData"
+                ],
+                "ConnectFromDirection": 1,
+                "ConnectFromID": "{370ff176-d106-4dd6-9698-0ab5421e6b52}",
+                "ConnectFromNumber": 9,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 2,
+                "ConnectToID": "{caff2a31-a091-4020-b809-4bd1babe898c}",
+                "ConnectToNumber": 40,
+                "ConnectToType": "Class",
+                "ID": "{704f3362-5ad3-478a-9364-89320d52fc1f}",
+                "PositionX": 50243,
+                "PositionY": 50035
+            }
+        ],
+        "Generalizations": [
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": "{caff2a31-a091-4020-b809-4bd1babe898c}",
+                "ConnectFromNumber": 31,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": "{992a32c5-c195-4622-b2e2-53c9e6cef9b1}",
+                "ConnectToNumber": 14,
+                "ConnectToType": "Class",
+                "ID": "{e9bf65c2-293b-4d0e-b86f-30d1c1c157d4}",
+                "PositionX": 50015,
+                "PositionY": 49752
+            }
+        ]
+    }
+}

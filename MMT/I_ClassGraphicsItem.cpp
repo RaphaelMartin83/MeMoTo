@@ -1,6 +1,7 @@
 #include <QJsonArray>
 
 #include "I_ClassGraphicsItem.h"
+#include "MeMoToThemeDefinition.h"
 
 static const unsigned short CLASS_TEXT_LABELS_HEIGHT = 15U;
 
@@ -72,6 +73,7 @@ void I_ClassGraphicsItem::refreshDisplay()
     this->refreshText();
     m_ClassContentToDisplay->setPos(this->getPos().x() - this->getWidth()/2 + 10U,
                                       this->getPos().y() - this->getHeight()/2 + CLASS_TEXT_LABELS_HEIGHT*2);
+    m_ClassContentToDisplay->setDefaultTextColor(TEXT_GRAPHICS_COLOR);
     this->setZValue(getDepthFromPlan(this->getPlan()));
 }
 

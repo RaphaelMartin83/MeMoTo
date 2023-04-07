@@ -32,6 +32,7 @@ Let's assume you are developing a critical/complex system and need code to be ge
 - redo with ctrl+shift+z
 - Copy/paste with ctrl+c and ctrl+v
 - share with ctrl+space
+- open new diagram with ctrl+n
 - find into diagram with ctrl+f
 - print to png with ctrl+p
 
@@ -43,7 +44,7 @@ Let's assume you are developing a critical/complex system and need code to be ge
 - --default-diagram (since a class can have multiple diagram types, opens MeMoTo on the desired diagram)
 - --focus-on (searchs for the first occurence of the given value and opens MeMoTo to quickly find something)
 
-Note: The sharing feature is a bit wierd. It relies on a common network repository and uses a sqlite file. Choose a network volume to put the sharing file on it and give the full network path to your coworkers.
+Note: The sharing feature works like when hosting a videogame. The person with de best connection should be the one hosting if possible. Everybody shall be under the same subnet (VPN works).
 
 # How to add a diagram type
 

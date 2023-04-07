@@ -3,6 +3,7 @@
 
 #include <QGraphicsScene>
 
+#include "MeMoToThemeDefinition.h"
 #include "I_ToolSwitcherListener.h"
 #include "I_Connectable.h"
 #include "I_Tool.h"
@@ -10,6 +11,12 @@
 class I_ToolBox: public QGraphicsScene
 {
 public:
+
+    I_ToolBox()
+    {
+        this->setBackgroundBrush(SCENES_BACKGROUND_COLOR);
+    }
+
     virtual unsigned short getToolsQuantity() const = 0;
     virtual const QList<I_Tool*>& getToolsList() const = 0;
 

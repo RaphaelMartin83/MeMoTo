@@ -1,19 +1,18 @@
 #ifndef SHARINGMANAGER_H
 #define SHARINGMANAGER_H
 
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlQuery>
-#include <QDateTime>
-#include <QTimer>
-
 #include "I_DiagramContainer.h"
 #include "I_DataManager.h"
+#include "CollaborativeServer.h"
+#include "CollaborativeClient.h"
 
 #include "I_SharingConfigurationListener.h"
+#include "I_ConnectionListener.h"
 
 class SharingManager:
         public QObject,
-        public I_SharingConfigurationListener
+        public I_SharingConfigurationListener,
+        public I_ConnectionListener
 {
     Q_OBJECT
 private:
@@ -28,27 +27,27 @@ public:
     void registerDataManager(I_DataManager* p_Manager);
 
     // I_SharingConfigurationListener
-    void sharingPlaceSelected(const QString& p_Place);
-    void sharingCanceled();
-    void fileChanged();
+    virtual void sharingHostSelected(const QString& p_Place,
+                                      const quint16& p_Port);
+    virtual void sharingSessionCreationSelected(const quint16& p_Port);
+    virtual void sharingStopped();
+    virtual void sharingCanceled();
 
-public slots:
-    void checkFileModification();
+    // I_ConnectionListener
+    void dataChanged(const QByteArray& p_Data);
+    void connectionClosed();
 
 private:
-    void initDB();
-    void setData(const QJsonObject& p_Data, bool p_first = false);
-    QDateTime getFileDate() const;
-
-    QSqlDatabase m_DataBaseHandle;
-    QTimer m_Timer;
-    QDateTime m_LastFileTime;
+    void setData(const QJsonObject& p_Data);
 
     static SharingManager* m_Me;
     bool m_isInited;
     bool m_isDatatoPush;
 
     I_DataManager* m_Manager;
+
+    CollaborativeServer* m_Server;
+    CollaborativeClient* m_Client;
 };
 
 #endif // SHARINGMANAGER_H

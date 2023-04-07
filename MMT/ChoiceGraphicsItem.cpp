@@ -119,6 +119,7 @@ void ChoiceGraphicsItem::refreshDisplay()
     m_NameGraphicsItem->setPos(this->getPos().x() - m_Width/2, this->getPos().y() - CHOICE_TEXT_LABELS_HEIGHT);
     m_NameGraphicsItem->setTextWidth(m_Width);
     m_NameGraphicsItem->document()->setDefaultTextOption(QTextOption(Qt::AlignCenter));
+    m_NameGraphicsItem->setDefaultTextColor(TEXT_GRAPHICS_COLOR);
     m_NameGraphicsItem->setPlainText(m_Name);
 
     this->deleteHandles();

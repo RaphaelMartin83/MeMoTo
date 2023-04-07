@@ -1,4 +1,5 @@
 #include <QCommandLineParser>
+#include <QFile>
 
 #include "MeMoToApplication.h"
 
@@ -6,6 +7,7 @@ QString MeMoToApplication::sm_DefaultDiagram("");
 QString MeMoToApplication::sm_OutputString("");
 QString MeMoToApplication::sm_FileToOpen("");
 QString MeMoToApplication::sm_FocusOn("");
+quint16 MeMoToApplication::sm_CollaborativePort(11310);
 
 MainWindow* MeMoToApplication::sm_MW = nullptr;
 
@@ -117,6 +119,18 @@ const QString& MeMoToApplication::getFileToOpen()
 const QString& MeMoToApplication::getPNGToCreate()
 {
     return sm_OutputString;
+}
+
+const quint16& MeMoToApplication::getCollaborativePort()
+{
+    return sm_CollaborativePort;
+}
+
+QIcon MeMoToApplication::getLogo()
+{
+    QIcon l_Ret = QIcon(QApplication::applicationDirPath() + "/MeMoTo-icon.png");
+
+    return l_Ret;
 }
 
 void MeMoToApplication::registerMainWindow(MainWindow* p_MW)

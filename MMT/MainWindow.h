@@ -46,6 +46,7 @@ private slots:
     void NextButtonPressed();
     void PrevButtonPressed();
 
+    void newMenuClicked();
     void openMenuClicked();
     void openNewMenuClicked();
     void saveMenuClicked();
