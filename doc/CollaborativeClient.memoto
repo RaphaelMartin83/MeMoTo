@@ -1,8 +1,27 @@
 {
     "ClassDiagram": {
+        "Aggregations": [
+            {
+                "AttributesNames": [
+                    "m_Listener"
+                ],
+                "ConnectFromDirection": 2,
+                "ConnectFromID": "{0fd8f7bf-89b7-4f50-9c06-a44ba871c816}",
+                "ConnectFromNumber": 13,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": "{e72cc393-2447-462a-8ceb-31bc995b9e74}",
+                "ConnectToNumber": 30,
+                "ConnectToType": "Class",
+                "ID": "{3cba9c9a-874f-4b80-98f4-2427af4abd9d}",
+                "PositionX": 49723,
+                "PositionY": 50025
+            }
+        ],
         "Classes": [
             {
                 "Attributes": [
+                    "I_ConnectionListener* m_Listener"
                 ],
                 "Color": "blanchedalmond",
                 "Contained": {
@@ -11,14 +30,65 @@
                 "HideContent": "false",
                 "ID": "{e72cc393-2447-462a-8ceb-31bc995b9e74}",
                 "Methods": [
-                    "openConnection",
-                    "closeConnection",
-                    "updateData"
+                    "CollaborativeClient()",
+                    "void start(const QString& p_Host, const quint16& p_Port)",
+                    "void stop()",
+                    "void updateData(const QByteArray& p_Data)",
+                    "void serverDisconnected()",
+                    "void errorOccurred()",
+                    "void registerListener(I_ConnectionListener* p_Listener)"
                 ],
                 "Name": "CollaborativeClient",
-                "PositionX": 49940,
+                "PositionX": 50007,
                 "PositionY": 50020,
-                "Width": 250
+                "Width": 385
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "greenyellow",
+                "Contained": {
+                },
+                "Height": 150,
+                "HideContent": "false",
+                "ID": "{148e9a1e-adcf-4634-a4d4-41b7196b919d}",
+                "Methods": [
+                ],
+                "Name": "QTcpSocket",
+                "PositionX": 50000,
+                "PositionY": 49680,
+                "Width": 160
+            },
+            {
+                "Attributes": [
+                ],
+                "Color": "whitesmoke",
+                "Contained": {
+                },
+                "Height": 130,
+                "HideContent": "false",
+                "ID": "{0fd8f7bf-89b7-4f50-9c06-a44ba871c816}",
+                "Methods": [
+                ],
+                "Name": "I_ConnectionListener",
+                "PositionX": 49560,
+                "PositionY": 50020,
+                "Width": 144
+            }
+        ],
+        "Generalizations": [
+            {
+                "ConnectFromDirection": 3,
+                "ConnectFromID": "{e72cc393-2447-462a-8ceb-31bc995b9e74}",
+                "ConnectFromNumber": 37,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 4,
+                "ConnectToID": "{148e9a1e-adcf-4634-a4d4-41b7196b919d}",
+                "ConnectToNumber": 16,
+                "ConnectToType": "Class",
+                "ID": "{9f420fa1-d533-4062-8218-5b15d07e7232}",
+                "PositionX": 50005,
+                "PositionY": 49812
             }
         ]
     }

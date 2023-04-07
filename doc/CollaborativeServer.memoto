@@ -1,5 +1,23 @@
 {
     "ClassDiagram": {
+        "Aggregations": [
+            {
+                "AttributesNames": [
+                    "m_Listener"
+                ],
+                "ConnectFromDirection": 2,
+                "ConnectFromID": "{d1c8bbb1-4382-4f78-88ed-2d2cd75cc98d}",
+                "ConnectFromNumber": 14,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": "{caff2a31-a091-4020-b809-4bd1babe898c}",
+                "ConnectToNumber": 23,
+                "ConnectToType": "Class",
+                "ID": "{1d8c4602-14e8-4838-826c-c366de4b2dd2}",
+                "PositionX": 49773,
+                "PositionY": 49950
+            }
+        ],
         "Classes": [
             {
                 "Attributes": [
@@ -14,6 +32,7 @@
                 "HideContent": "false",
                 "ID": "{caff2a31-a091-4020-b809-4bd1babe898c}",
                 "Methods": [
+                    "CollaborativeServer()",
                     "void start(const QString&, quint16&)",
                     "void stop()",
                     "void updateData(const QByteArray&)",
@@ -39,8 +58,8 @@
                 "Methods": [
                 ],
                 "Name": "QTcpServer",
-                "PositionX": 49980,
-                "PositionY": 49580,
+                "PositionX": 50020,
+                "PositionY": 49600,
                 "Width": 160
             },
             {
@@ -55,7 +74,7 @@
                 "Methods": [
                 ],
                 "Name": "QTcpSocket",
-                "PositionX": 50540,
+                "PositionX": 50400,
                 "PositionY": 49880,
                 "Width": 144
             },
@@ -71,14 +90,14 @@
                 "Methods": [
                 ],
                 "Name": "QByteArray",
-                "PositionX": 50540,
+                "PositionX": 50400,
                 "PositionY": 50060,
                 "Width": 144
             },
             {
                 "Attributes": [
                 ],
-                "Color": "gray",
+                "Color": "whitesmoke",
                 "Contained": {
                 },
                 "Height": 130,
@@ -100,15 +119,15 @@
                 ],
                 "ConnectFromDirection": 1,
                 "ConnectFromID": "{4aece011-6cd4-43c3-89c2-c5c918457e82}",
-                "ConnectFromNumber": 6,
+                "ConnectFromNumber": 15,
                 "ConnectFromType": "Class",
                 "ConnectToDirection": 2,
                 "ConnectToID": "{caff2a31-a091-4020-b809-4bd1babe898c}",
-                "ConnectToNumber": 6,
+                "ConnectToNumber": 10,
                 "ConnectToType": "Class",
                 "ID": "{72597cb1-bdc5-4ea4-8bf2-500c32445851}",
-                "PositionX": 50313,
-                "PositionY": 49887
+                "PositionX": 50243,
+                "PositionY": 49885
             },
             {
                 "AttributesNames": [
@@ -120,42 +139,26 @@
                 "ConnectFromType": "Class",
                 "ConnectToDirection": 2,
                 "ConnectToID": "{caff2a31-a091-4020-b809-4bd1babe898c}",
-                "ConnectToNumber": 20,
+                "ConnectToNumber": 40,
                 "ConnectToType": "Class",
                 "ID": "{704f3362-5ad3-478a-9364-89320d52fc1f}",
-                "PositionX": 50313,
-                "PositionY": 50062
-            },
-            {
-                "AttributesNames": [
-                    "m_Listener"
-                ],
-                "ConnectFromDirection": 2,
-                "ConnectFromID": "{d1c8bbb1-4382-4f78-88ed-2d2cd75cc98d}",
-                "ConnectFromNumber": 6,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 1,
-                "ConnectToID": "{caff2a31-a091-4020-b809-4bd1babe898c}",
-                "ConnectToNumber": 7,
-                "ConnectToType": "Class",
-                "ID": "{9cb55f53-8e6e-4a65-9369-42f0139177ea}",
-                "PositionX": 49773,
-                "PositionY": 49927
+                "PositionX": 50243,
+                "PositionY": 50035
             }
         ],
         "Generalizations": [
             {
                 "ConnectFromDirection": 3,
                 "ConnectFromID": "{caff2a31-a091-4020-b809-4bd1babe898c}",
-                "ConnectFromNumber": 11,
+                "ConnectFromNumber": 31,
                 "ConnectFromType": "Class",
                 "ConnectToDirection": 4,
                 "ConnectToID": "{992a32c5-c195-4622-b2e2-53c9e6cef9b1}",
-                "ConnectToNumber": 7,
+                "ConnectToNumber": 14,
                 "ConnectToType": "Class",
                 "ID": "{e9bf65c2-293b-4d0e-b86f-30d1c1c157d4}",
-                "PositionX": 49977,
-                "PositionY": 49742
+                "PositionX": 50015,
+                "PositionY": 49752
             }
         ]
     }

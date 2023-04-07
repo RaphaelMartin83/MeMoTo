@@ -8,7 +8,7 @@
 #include "HumanReadableColor.h"
 
 static const unsigned short DEFAULT_HANDLES_DIAMETER = 8U;
-static const unsigned short MIN_DIST_BETWEEN_HANDLES = 10U;
+static const unsigned short MIN_DIST_BETWEEN_HANDLES = 5U;
 static const unsigned short SQUARE_CORNERS_SELECTION_THICKNESS = 30U;
 static const unsigned short SQUARE_TEXT_LABELS_HEIGHT = 15U;
 static const unsigned short SQUARE_CLEARANCE = static_cast<unsigned short>(GridReferential::getGridDistance(100U));
