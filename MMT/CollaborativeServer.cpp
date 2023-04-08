@@ -10,6 +10,19 @@ CollaborativeServer::CollaborativeServer():
     connect(this, &QTcpServer::newConnection, this, &CollaborativeServer::newClientConnected);
 }
 
+CollaborativeServer::~CollaborativeServer()
+{
+    while( 0 != m_Clients.count() )
+    {
+        QTcpSocket* l_Socket = m_Clients.takeAt(0);
+        if( nullptr != l_Socket )
+        {
+            l_Socket->close();
+            l_Socket->deleteLater();
+        }
+    }
+}
+
 void CollaborativeServer::registerListener(I_ConnectionListener* p_Listener)
 {
     m_Listener = p_Listener;
@@ -21,6 +34,7 @@ void CollaborativeServer::newClientConnected()
     while(nullptr != l_newClient)
     {
         m_Clients.append(l_newClient);
+        m_Clients.last()->setSocketOption(QAbstractSocket::LowDelayOption, 1);
         connect(l_newClient, &QTcpSocket::disconnected, this, &CollaborativeServer::clientDisconnected);
         connect(l_newClient, &QTcpSocket::readyRead, this, &CollaborativeServer::dataReady);
         l_newClient->write(m_CurrentSessionData);
@@ -55,6 +69,7 @@ void CollaborativeServer::clientDisconnected()
             disconnect(l_cclient, &QTcpSocket::disconnected, this, &CollaborativeServer::clientDisconnected);
             disconnect(l_cclient, &QTcpSocket::readyRead, this, &CollaborativeServer::dataReady);
             l_cclient->close();
+            l_cclient->deleteLater();
             m_Clients.removeAt(i_clients);
         }
     }

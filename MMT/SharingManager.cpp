@@ -115,13 +115,13 @@ void SharingManager::connectionClosed()
 {
     if( nullptr != m_Server )
     {
-        delete m_Server;
+        m_Server->deleteLater();
         m_Server = nullptr;
     }
 
     if( nullptr != m_Client )
     {
-        delete m_Client;
+        m_Client->deleteLater();
         m_Client = nullptr;
     }
     m_isInited = false;

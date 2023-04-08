@@ -6,9 +6,18 @@
 CollaborativeClient::CollaborativeClient():
     QTcpSocket()
 {
+    this->setSocketOption(QAbstractSocket::LowDelayOption, 1);
+
     connect(this, &QTcpSocket::disconnected, this, &CollaborativeClient::serverDisconnected);
     connect(this, &QTcpSocket::readyRead, this, &CollaborativeClient::dataReady);
     connect(this, &QTcpSocket::errorOccurred, this, &CollaborativeClient::errorOccurred);
+}
+
+CollaborativeClient::~CollaborativeClient()
+{
+    disconnect(this, &QTcpSocket::disconnected, this, &CollaborativeClient::serverDisconnected);
+    disconnect(this, &QTcpSocket::readyRead, this, &CollaborativeClient::dataReady);
+    disconnect(this, &QTcpSocket::errorOccurred, this, &CollaborativeClient::errorOccurred);
 }
 
 void CollaborativeClient::start(const QString& p_Host, const quint16& p_Port)

@@ -11,6 +11,7 @@ class CollaborativeServer: public QTcpServer
     Q_OBJECT
 public:
     CollaborativeServer();
+    ~CollaborativeServer();
 
     void start(const QString& p_Host, const quint16& p_Port);
     void stop();
