@@ -9,6 +9,7 @@ class CollaborativeClient: public QTcpSocket
 {
 public:
     CollaborativeClient();
+    ~CollaborativeClient();
 
     void start(const QString& p_Host, const quint16& p_Port);
     void stop();
