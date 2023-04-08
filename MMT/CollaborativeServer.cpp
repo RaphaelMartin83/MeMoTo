@@ -18,7 +18,7 @@ CollaborativeServer::~CollaborativeServer()
         if( nullptr != l_Socket )
         {
             l_Socket->close();
-            delete l_Socket;
+            l_Socket->deleteLater();
         }
     }
 }
@@ -69,6 +69,7 @@ void CollaborativeServer::clientDisconnected()
             disconnect(l_cclient, &QTcpSocket::disconnected, this, &CollaborativeServer::clientDisconnected);
             disconnect(l_cclient, &QTcpSocket::readyRead, this, &CollaborativeServer::dataReady);
             l_cclient->close();
+            l_cclient->deleteLater();
             m_Clients.removeAt(i_clients);
         }
     }
