@@ -562,6 +562,66 @@
                 "ID": "{bd844582-23c9-4cd7-b98e-765541e20eb0}",
                 "PositionX": 50218,
                 "PositionY": 51935
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 2,
+                "ConnectFromID": "{3913a471-8517-4c41-9e1f-379a4daf3874}",
+                "ConnectFromNumber": 9,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": "{a79779d6-5b31-4087-9433-1b7e70df4b76}",
+                "ConnectToNumber": 7,
+                "ConnectToType": "Class",
+                "ID": "{16d6a7f9-cf5b-41a7-a289-d57918245432}",
+                "PositionX": 49617,
+                "PositionY": 52330
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 2,
+                "ConnectFromID": "{8d26d4d4-dbe2-40b6-b7ab-6baa47588e01}",
+                "ConnectFromNumber": 8,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": "{a79779d6-5b31-4087-9433-1b7e70df4b76}",
+                "ConnectToNumber": 33,
+                "ConnectToType": "Class",
+                "ID": "{9d3be39e-8f08-4455-b2f9-258819fd5bff}",
+                "PositionX": 49613,
+                "PositionY": 52460
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 2,
+                "ConnectFromID": "{c35e0484-0636-4041-9674-b435c6d65c77}",
+                "ConnectFromNumber": 9,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": "{a79779d6-5b31-4087-9433-1b7e70df4b76}",
+                "ConnectToNumber": 62,
+                "ConnectToType": "Class",
+                "ID": "{9b943a54-3bb4-49e8-b827-ef24295932a8}",
+                "PositionX": 49610,
+                "PositionY": 52605
+            },
+            {
+                "AttributesNames": [
+                ],
+                "ConnectFromDirection": 2,
+                "ConnectFromID": "{0c96390e-a64c-4936-a8d5-7e6428dacfd9}",
+                "ConnectFromNumber": 12,
+                "ConnectFromType": "Class",
+                "ConnectToDirection": 1,
+                "ConnectToID": "{a79779d6-5b31-4087-9433-1b7e70df4b76}",
+                "ConnectToNumber": 92,
+                "ConnectToType": "Class",
+                "ID": "{bdb926b6-421a-4997-a288-13e6627455fb}",
+                "PositionX": 49610,
+                "PositionY": 52755
             }
         ],
         "ExternalClass": [
@@ -831,60 +891,8 @@
             },
             {
                 "ConnectFromDirection": 1,
-                "ConnectFromID": "{a79779d6-5b31-4087-9433-1b7e70df4b76}",
-                "ConnectFromNumber": 6,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 2,
-                "ConnectToID": "{3913a471-8517-4c41-9e1f-379a4daf3874}",
-                "ConnectToNumber": 8,
-                "ConnectToType": "Class",
-                "ID": "{84ddf14b-3762-4675-a873-78a13feaf7d1}",
-                "PositionX": 49617,
-                "PositionY": 52325
-            },
-            {
-                "ConnectFromDirection": 1,
-                "ConnectFromID": "{a79779d6-5b31-4087-9433-1b7e70df4b76}",
-                "ConnectFromNumber": 30,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 2,
-                "ConnectToID": "{8d26d4d4-dbe2-40b6-b7ab-6baa47588e01}",
-                "ConnectToNumber": 5,
-                "ConnectToType": "Class",
-                "ID": "{761b2957-7b6d-4a4e-8dd2-b5f8e358e885}",
-                "PositionX": 49613,
-                "PositionY": 52445
-            },
-            {
-                "ConnectFromDirection": 1,
-                "ConnectFromID": "{a79779d6-5b31-4087-9433-1b7e70df4b76}",
-                "ConnectFromNumber": 60,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 2,
-                "ConnectToID": "{c35e0484-0636-4041-9674-b435c6d65c77}",
-                "ConnectToNumber": 7,
-                "ConnectToType": "Class",
-                "ID": "{5f6f0095-3de0-4854-95a3-0795ef0d3a78}",
-                "PositionX": 49610,
-                "PositionY": 52595
-            },
-            {
-                "ConnectFromDirection": 1,
-                "ConnectFromID": "{a79779d6-5b31-4087-9433-1b7e70df4b76}",
-                "ConnectFromNumber": 87,
-                "ConnectFromType": "Class",
-                "ConnectToDirection": 2,
-                "ConnectToID": "{0c96390e-a64c-4936-a8d5-7e6428dacfd9}",
-                "ConnectToNumber": 7,
-                "ConnectToType": "Class",
-                "ID": "{183d9d50-4bb6-4372-935b-ae7ae97aaf55}",
-                "PositionX": 49610,
-                "PositionY": 52730
-            },
-            {
-                "ConnectFromDirection": 1,
                 "ConnectFromID": "{3913a471-8517-4c41-9e1f-379a4daf3874}",
-                "ConnectFromNumber": 3,
+                "ConnectFromNumber": 7,
                 "ConnectFromType": "Class",
                 "ConnectToDirection": 3,
                 "ConnectToID": "{3584803a-f8df-4a7d-b2a7-2c65e6d48fd6}",
@@ -892,7 +900,7 @@
                 "ConnectToType": "Class",
                 "ID": "{a82a0121-88b0-4440-b99f-be66cd7c2025}",
                 "PositionX": 49087,
-                "PositionY": 52335
+                "PositionY": 52345
             },
             {
                 "ConnectFromDirection": 1,
