@@ -16,78 +16,32 @@ find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools Net
 
 set(TS_FILES MMT_en_US.ts)
 
+file(GLOB COMMON_GRAPHICS_HEADERS "CommonGraphics/*.h")
+file(GLOB COMMON_GRAPHICS_SOURCES "CommonGraphics/*.cpp")
+file(GLOB DIAGRAM_SCENES_HEADERS "DiagramScenes/*.h")
+file(GLOB DIAGRAM_SCENES_SOURCES "DiagramScenes/*.cpp")
+file(GLOB GRAPHICS_ITEMS_HEADERS "GraphicsItems/*.h")
+file(GLOB GRAPHICS_ITEMS_SOURCES "GraphicsItems/*.cpp")
+file(GLOB TOOLBOX_SCENES_HEADERS "ToolBoxScenes/*.h")
+file(GLOB TOOLBOX_SCENES_SOURCES "ToolBoxScenes/*.cpp")
+file(GLOB CONFIGURATION_CONTEXTS_HEADERS "ConfigurationContexts/*.h")
+file(GLOB CONFIGURATION_CONTEXTS_SOURCES "ConfigurationContexts/*.cpp")
+file(GLOB ENGINE_HEADERS "Engine/*.h")
+file(GLOB ENGINE_SOURCES "Engine/*.cpp")
+file(GLOB SHARING_HEADERS "Sharing/*.h")
+file(GLOB SHARING_SOURCES "Sharing/*.cpp")
+
 set(PROJECT_SOURCES
         main.cpp
         MeMoToApplication.h MeMoToApplication.cpp MeMoToThemeDefinition.h
-        MainWindow.h MainWindow.cpp I_DataManager.h
-        SharingManager.h SharingManager.cpp
-        SharingConfiguration.h SharingConfiguration.cpp I_SharingConfigurationListener.h
-        I_ConnectionListener.h
-        CollaborativeServer.h CollaborativeServer.cpp
-        CollaborativeClient.h CollaborativeClient.cpp
-        MeMoToLoader.h MeMoToLoader.cpp
-        ErrorDisplayer.h ErrorDisplayer.cpp
-        InstanceLauncher.h InstanceLauncher.cpp
-        DiagramGraphicsView.h DiagramGraphicsView.cpp
-        GridReferential.h GridReferential.cpp
-        SaveFileConfiguration.h SaveFileConfiguration.cpp I_SaveFileConfigurationListener.h
-        LoadFileConfiguration.h LoadFileConfiguration.cpp I_LoadFileConfigurationListener.h
-        FindConfiguration.h FindConfiguration.cpp I_FindConfigurationListener.h
-        I_Selectable.h
-        I_Connectable.h
-        I_ConnectableContainer.h I_ConnectableContainer.cpp
-        I_ToolSwitcherListener.h I_ToolListener.h
-        I_Configurable.h
-        I_ConfigurationContent.h I_ConfigurationContent.cpp
-        I_GraphicsItem.h
-        I_Tool.h
-        I_Undoable.h
-        MouseTool.h MouseTool.cpp
-        ConnectionDefinitions.h
-        StackingDefinitions.h
-        I_Serializable.h
-        I_DiagramContainer.h I_DiagramContainer.cpp I_ToolBox.h
-        ConnectableTool.h ConnectorTool.h ContainerTool.h
-        SMDiagramScene.h SMDiagramScene.cpp
-        SMToolBoxScene.h SMToolBoxScene.cpp
-        ClassDiagramScene.h ClassDiagramScene.cpp
-        ClassToolBoxScene.h ClassToolBoxScene.cpp
-        MouseToolPolygon.h MouseToolPolygon.cpp
-        I_SquarishGraphicsItem.h I_SquarishGraphicsItem.cpp
-        I_ClassGraphicsItem.h I_ClassGraphicsItem.cpp
-        I_ContainerGraphicsItem.h I_ContainerGraphicsItem.cpp I_ContainersContainer.h
-        ClassGraphicsItem.h ClassGraphicsItem.cpp
-        ClassConfiguration.h ClassConfiguration.cpp
-        ExternalClassGraphicsItem.h ExternalClassGraphicsItem.cpp
-        ExternalClassConfiguration.h ExternalClassConfiguration.cpp
-        StateGraphicsItem.h StateGraphicsItem.cpp
-        StateConfiguration.h StateConfiguration.cpp
-        ChoiceGraphicsItem.h ChoiceGraphicsItem.cpp
-        ChoiceConfiguration.h ChoiceConfiguration.cpp
-        InitialStateGraphicsItem.h InitialStateGraphicsItem.cpp
-        EntryStateGraphicsItem.h EntryStateGraphicsItem.cpp
-        HandleGraphicsItem.h HandleGraphicsItem.cpp
-        Connector.h Connector.cpp I_Connector.h
-        GraphicConnector.h GraphicConnector.cpp
-        ConfigWidget.h ConfigWidget.cpp
-        TransitionGraphicsItem.h TransitionGraphicsItem.cpp
-        TransitionConfiguration.h TransitionConfiguration.cpp
-        TransitionGraphicsLabel.h TransitionGraphicsLabel.cpp
-        GeneralizationGraphicsItem.h GeneralizationGraphicsItem.cpp
-        GeneralizationConfiguration.h GeneralizationConfiguration.cpp
-        CompositionGraphicsItem.h CompositionGraphicsItem.cpp
-        CompositionConfiguration.h CompositionConfiguration.cpp
-        AggregationGraphicsItem.h AggregationGraphicsItem.cpp
-        AggregationConfiguration.h AggregationConfiguration.cpp
-        ImplementationGraphicsItem.h ImplementationGraphicsItem.cpp
-        ImplementationConfiguration.h ImplementationConfiguration.cpp
-        DoubleArrowGraphicsItem.h DoubleArrowGraphicsItem.cpp
-        HumanReadableColor.h HumanReadableColor.cpp
-        ConfigLineEdit.h ConfigLineEdit.cpp
-        ConfigList.h ConfigList.cpp
-        I_ConfigLineEditListener.h
-        GraphicsRoundedRectItem.h GraphicsRoundedRectItem.cpp
-        GraphicsBezierCurve.h GraphicsBezierCurve.cpp
+        MainWindow.h MainWindow.cpp
+        ${COMMON_GRAPHICS_HEADERS} ${COMMON_GRAPHICS_SOURCES}
+        ${DIAGRAM_SCENES_HEADERS} ${DIAGRAM_SCENES_SOURCES}
+        ${GRAPHICS_ITEMS_HEADERS} ${GRAPHICS_ITEMS_SOURCES}
+        ${TOOLBOX_SCENES_HEADERS} ${TOOLBOX_SCENES_SOURCES}
+        ${CONFIGURATION_CONTEXTS_HEADERS} ${CONFIGURATION_CONTEXTS_SOURCES}
+        ${ENGINE_HEADERS} ${ENGINE_SOURCES}
+        ${SHARING_HEADERS} ${SHARING_SOURCES}
         ${TS_FILES}
 )
 
@@ -119,7 +73,10 @@ else()
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
 
-target_link_libraries(MMT PRIVATE Qt${QT_VERSION_MAJOR}::Widgets Qt${QT_VERSION_MAJOR}::Network)
+target_link_libraries(MMT
+    PRIVATE
+    Qt${QT_VERSION_MAJOR}::Widgets
+    Qt${QT_VERSION_MAJOR}::Network)
 
 set_target_properties(MMT PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

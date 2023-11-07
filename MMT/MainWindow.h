@@ -8,11 +8,11 @@
 #include <QPushButton>
 #include <QMenuBar>
 
-#include "I_DiagramContainer.h"
-#include "DiagramGraphicsView.h"
-#include "I_SaveFileConfigurationListener.h"
-#include "I_LoadFileConfigurationListener.h"
-#include "I_DataManager.h"
+#include <Engine/I_DiagramContainer.h>
+#include <Engine/DiagramGraphicsView.h>
+#include <Engine/I_SaveFileConfigurationListener.h>
+#include <Engine/I_LoadFileConfigurationListener.h>
+#include <Sharing/I_DataManager.h>
 
 class MainWindow : public QMainWindow,
         public I_SaveFileConfigurationListener,

@@ -3,18 +3,23 @@
 #include <QJsonObject>
 #include <QFile>
 
-#include "MainWindow.h"
-#include "DiagramGraphicsView.h"
-#include "ConfigWidget.h"
-#include "SaveFileConfiguration.h"
-#include "LoadFileConfiguration.h"
-#include "SharingManager.h"
-#include "MeMoToApplication.h"
-#include "MeMoToLoader.h"
-#include "InstanceLauncher.h"
+#include <MeMoToApplication.h>
 
-#include "SMDiagramScene.h"
-#include "ClassDiagramScene.h"
+#include <Engine/DiagramGraphicsView.h>
+#include <Engine/MeMoToLoader.h>
+#include <Engine/InstanceLauncher.h>
+
+#include <CommonGraphics/ConfigWidget.h>
+
+#include <ConfigurationContexts/SaveFileConfiguration.h>
+#include <ConfigurationContexts/LoadFileConfiguration.h>
+
+#include <Sharing/SharingManager.h>
+
+#include <DiagramScenes/SMDiagramScene.h>
+#include <DiagramScenes/ClassDiagramScene.h>
+
+#include "MainWindow.h"
 
 static const char* s_ProgramName = "MeMoTo";
 
