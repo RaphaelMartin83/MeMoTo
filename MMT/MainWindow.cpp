@@ -13,6 +13,7 @@
 
 #include <ConfigurationContexts/SaveFileConfiguration.h>
 #include <ConfigurationContexts/LoadFileConfiguration.h>
+#include <ConfigurationContexts/CloseWithoutSavingConfiguration.h>
 
 #include <Sharing/SharingManager.h>
 
@@ -25,6 +26,7 @@ static const char* s_ProgramName = "MeMoTo";
 
 static SaveFileConfiguration* s_SaveFileConfiguration = nullptr;
 static LoadFileConfiguration* s_LoadFileConfiguration = nullptr;
+static CloseWithoutSavingConfiguration* s_CloseConfiguration = nullptr;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -36,6 +38,7 @@ MainWindow::MainWindow(QWidget *parent)
     , m_CurrentDiagramID(0U)
     , m_SerializablesIndexes()
     , m_FileName()
+    , m_hasChangesUnsaved(false)
 {
     this->initGUI();
 
@@ -128,6 +131,23 @@ void MainWindow::setApplicationData(const QJsonObject& p_Data)
     }
 }
 
+void MainWindow::diagramChanged()
+{
+    m_hasChangesUnsaved = true;
+    this->updateTitle();
+}
+
+void MainWindow::saveBeforeClosing()
+{
+    ConfigWidget::close();
+
+    this->savePressed(true);
+}
+void MainWindow::closeAndDropChanges()
+{
+    MeMoToApplication::exit();
+}
+
 void MainWindow::startSharing()
 {
     SharingManager::getInstance().registerDataManager(this);
@@ -203,6 +223,21 @@ void MainWindow::findMenuClicked()
 void MainWindow::printMenuClicked()
 {
     m_Diagrams[m_CurrentDiagramID]->printPressed("");
+}
+
+void MainWindow::closeEvent(QCloseEvent* p_event)
+{
+    if( m_hasChangesUnsaved )
+    {
+        p_event->ignore();
+
+        if( nullptr == s_CloseConfiguration )
+        {
+            s_CloseConfiguration = new CloseWithoutSavingConfiguration();
+            s_CloseConfiguration->registerListener(this);
+        }
+        ConfigWidget::open(s_CloseConfiguration);
+    }
 }
 
 void MainWindow::initGUI()
@@ -294,6 +329,12 @@ void MainWindow::updateTitle()
         }
     }
     l_newTitle += " (" + m_Diagrams[m_CurrentDiagramID]->getDiagramString() + ")";
+
+    if( m_hasChangesUnsaved )
+    {
+        l_newTitle += "*";
+    }
+
     this->setWindowTitle(l_newTitle);
 }
 void MainWindow::initDiagrams()
@@ -301,9 +342,11 @@ void MainWindow::initDiagrams()
     // Initialize all the diagrams
     m_Diagrams.append(new ClassDiagramScene);
     m_Diagrams.last()->registerDiagramView(m_DiagramView);
+    m_Diagrams.last()->registerDiagramListener(static_cast<I_DiagramListener*>(this));
     m_SerializablesIndexes.append(m_Diagrams.last()->getSerializableName());
     m_Diagrams.append(new SMDiagramScene);
     m_Diagrams.last()->registerDiagramView(m_DiagramView);
+    m_Diagrams.last()->registerDiagramListener(static_cast<I_DiagramListener*>(this));
     m_SerializablesIndexes.append(m_Diagrams.last()->getSerializableName());
 
     // Displays the default diagram
@@ -331,6 +374,10 @@ void MainWindow::saveDiagrams()
 
     QFile l_File(m_FileName);
     MeMoToLoader::saveToFile(l_File, l_JSonGlobal);
+
+    m_hasChangesUnsaved = false;
+
+    this->updateTitle();
 }
 
 void MainWindow::loadDiagrams()

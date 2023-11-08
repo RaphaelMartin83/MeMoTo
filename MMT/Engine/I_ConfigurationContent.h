@@ -3,10 +3,9 @@
 
 #include <QWidget>
 #include <QKeyEvent>
+#include <QUuid>
 
 #include "I_Configurable.h"
-
-#include "I_Selectable.h"
 
 class I_DiagramContainer;
 

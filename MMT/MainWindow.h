@@ -12,12 +12,17 @@
 #include <Engine/DiagramGraphicsView.h>
 #include <Engine/I_SaveFileConfigurationListener.h>
 #include <Engine/I_LoadFileConfigurationListener.h>
+#include <Engine/I_CloseWithoutSavingConfigurationListener.h>
+#include <Engine/I_DiagramListener.h>
+
 #include <Sharing/I_DataManager.h>
 
 class MainWindow : public QMainWindow,
         public I_SaveFileConfigurationListener,
         public I_LoadFileConfigurationListener,
-        public I_DataManager
+        public I_DataManager,
+        public I_DiagramListener,
+        public I_CloseWithoutSavingConfigurationListener
 {
     Q_OBJECT
 
@@ -40,6 +45,13 @@ public:
     void getApplicationData(QJsonObject& p_rData) const;
     void setApplicationData(const QJsonObject& p_Data);
 
+    // I_DiagramListener
+    void diagramChanged();
+
+    // I_CloseWithoutSavingConfigurationListener
+    void saveBeforeClosing();
+    void closeAndDropChanges();
+
     void startSharing();
 
 private slots:
@@ -59,6 +71,9 @@ private slots:
     void shareMenuClicked();
     void findMenuClicked();
     void printMenuClicked();
+
+public slots:
+    void closeEvent(QCloseEvent* p_event);
 
 private:
     void initGUI();
@@ -92,5 +107,7 @@ private:
     QList<QString> m_SerializablesIndexes;
 
     QString m_FileName;
+
+    bool m_hasChangesUnsaved;
 };
 #endif // MAINWINDOW_H
