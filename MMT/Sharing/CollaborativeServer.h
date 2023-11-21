@@ -1,12 +1,12 @@
 #ifndef COLLABORATIVESERVER_H
 #define COLLABORATIVESERVER_H
 
-#include <QTcpSocket>
-#include <QTcpServer>
+#include <QWebSocketServer>
+#include <QWebSocket>
 
 #include <Engine/I_ConnectionListener.h>
 
-class CollaborativeServer: public QTcpServer
+class CollaborativeServer: public QWebSocketServer
 {
     Q_OBJECT
 public:
@@ -17,7 +17,7 @@ public:
     void stop();
     void updateData(const QByteArray& p_Data);
     void clientDisconnected();
-    void dataReady();
+    void dataReady(QByteArray);
 
     void registerListener(I_ConnectionListener* p_Listener);
 
@@ -26,11 +26,11 @@ private slots:
 
 private:
 
-    QTcpSocket m_Socket;
+    QWebSocket m_Socket;
 
     QByteArray m_CurrentSessionData;
 
-    QList<QTcpSocket*> m_Clients;
+    QList<QWebSocket*> m_Clients;
 
     I_ConnectionListener* m_Listener;
 };

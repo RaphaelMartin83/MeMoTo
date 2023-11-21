@@ -48,6 +48,7 @@ void SharingManager::start()
 
     const QHostAddress &localhost = QHostAddress(QHostAddress::LocalHost);
     QHostAddress l_myAddress;
+#ifndef __EMSCRIPTEN__
     for( const QHostAddress &i_address: QNetworkInterface::allAddresses() )
     {
         if( (i_address.protocol() == QAbstractSocket::IPv4Protocol) && (i_address != localhost) )
@@ -55,6 +56,7 @@ void SharingManager::start()
             l_myAddress = i_address;
         }
     }
+#endif
     s_ConfigurationContext->setSessionAddress(l_myAddress);
     s_ConfigurationContext->setSessionPort(MeMoToApplication::getCollaborativePort());
     s_ConfigurationContext->setRunning(m_isInited);

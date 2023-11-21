@@ -1,20 +1,20 @@
 #include "CollaborativeServer.h"
 
 CollaborativeServer::CollaborativeServer():
-    QTcpServer()
+    QWebSocketServer(QString("MeMoToServer"), SslMode::NonSecureMode)
   , m_Clients()
   , m_Socket()
   , m_Listener(nullptr)
   , m_CurrentSessionData()
 {
-    connect(this, &QTcpServer::newConnection, this, &CollaborativeServer::newClientConnected);
+    connect(this, &QWebSocketServer::newConnection, this, &CollaborativeServer::newClientConnected);
 }
 
 CollaborativeServer::~CollaborativeServer()
 {
     while( 0 != m_Clients.count() )
     {
-        QTcpSocket* l_Socket = m_Clients.takeAt(0);
+        QWebSocket* l_Socket = m_Clients.takeAt(0);
         if( nullptr != l_Socket )
         {
             l_Socket->close();
@@ -30,14 +30,13 @@ void CollaborativeServer::registerListener(I_ConnectionListener* p_Listener)
 
 void CollaborativeServer::newClientConnected()
 {
-    QTcpSocket* l_newClient = this->nextPendingConnection();
+    QWebSocket* l_newClient = this->nextPendingConnection();
     while(nullptr != l_newClient)
     {
         m_Clients.append(l_newClient);
-        m_Clients.last()->setSocketOption(QAbstractSocket::LowDelayOption, 1);
-        connect(l_newClient, &QTcpSocket::disconnected, this, &CollaborativeServer::clientDisconnected);
-        connect(l_newClient, &QTcpSocket::readyRead, this, &CollaborativeServer::dataReady);
-        l_newClient->write(m_CurrentSessionData);
+        connect(l_newClient, &QWebSocket::disconnected, this, &CollaborativeServer::clientDisconnected);
+        connect(l_newClient, &QWebSocket::binaryMessageReceived, this, &CollaborativeServer::dataReady);
+        l_newClient->sendBinaryMessage(m_CurrentSessionData);
         l_newClient = this->nextPendingConnection();
     }
 }
@@ -55,48 +54,44 @@ void CollaborativeServer::updateData(const QByteArray& p_Data)
     m_CurrentSessionData = p_Data;
     for( unsigned int i_clients = 0U; i_clients < m_Clients.count(); i_clients++ )
     {
-        QTcpSocket* l_cclient = m_Clients[i_clients];
-        l_cclient->write(p_Data);
+        QWebSocket* l_cclient = m_Clients[i_clients];
+        l_cclient->sendBinaryMessage(p_Data);
     }
 }
 void CollaborativeServer::clientDisconnected()
 {
     for( unsigned int i_clients = 0U; i_clients < m_Clients.count(); i_clients++ )
     {
-        QTcpSocket* l_cclient = m_Clients[i_clients];
+        QWebSocket* l_cclient = m_Clients[i_clients];
         if( QAbstractSocket::SocketState::ConnectedState!= l_cclient->state() )
         {
-            disconnect(l_cclient, &QTcpSocket::disconnected, this, &CollaborativeServer::clientDisconnected);
-            disconnect(l_cclient, &QTcpSocket::readyRead, this, &CollaborativeServer::dataReady);
+            disconnect(l_cclient, &QWebSocket::disconnected, this, &CollaborativeServer::clientDisconnected);
+            disconnect(l_cclient, &QWebSocket::binaryMessageReceived, this, &CollaborativeServer::dataReady);
             l_cclient->close();
             l_cclient->deleteLater();
             m_Clients.removeAt(i_clients);
         }
     }
 }
-void CollaborativeServer::dataReady()
+void CollaborativeServer::dataReady(QByteArray p_Message)
 {
     for( unsigned int i_clients = 0U; i_clients < m_Clients.count(); i_clients++ )
     {
         // Find the sender
-        QTcpSocket* l_cclient = m_Clients[i_clients];
-        if( 0 != l_cclient->bytesAvailable() )
+        QWebSocket* l_cclient = m_Clients[i_clients];
+        // Sender found, give to listener
+        if( nullptr != m_Listener )
         {
-            QByteArray l_Data = l_cclient->readAll();
-            // Sender found, give to listener
-            if( nullptr != m_Listener )
-            {
-                m_Listener->dataChanged(l_Data);
-            }
+            m_Listener->dataChanged(p_Message);
+        }
 
-            // Also send to all others
-            for( unsigned int i_others = 0U; i_others < m_Clients.count(); i_others++ )
+        // Also send to all others
+        for( unsigned int i_others = 0U; i_others < m_Clients.count(); i_others++ )
+        {
+            if( i_clients != i_others )
             {
-                if( i_clients != i_others )
-                {
-                    QTcpSocket* l_cother = m_Clients[i_others];
-                    l_cother->write(l_Data);
-                }
+                QWebSocket* l_cother = m_Clients[i_others];
+                l_cother->sendBinaryMessage(p_Message);
             }
         }
     }

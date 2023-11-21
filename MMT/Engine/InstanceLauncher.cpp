@@ -17,8 +17,10 @@ InstanceLauncher& InstanceLauncher::getInstance()
 
 void InstanceLauncher::execute(QStringList p_Arguments)
 {
+#ifndef __EMSCRIPTEN__
     QProcess l_Proc;
     l_Proc.setProgram(QApplication::applicationFilePath());
     l_Proc.setArguments(p_Arguments);
     l_Proc.startDetached();
+#endif
 }

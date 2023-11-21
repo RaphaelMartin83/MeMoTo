@@ -1,11 +1,11 @@
 #ifndef COLLABORATIVECLIENT_H
 #define COLLABORATIVECLIENT_H
 
-#include <QTcpSocket>
+#include <QWebSocket>
 
 #include <Engine/I_ConnectionListener.h>
 
-class CollaborativeClient: public QTcpSocket
+class CollaborativeClient: public QWebSocket
 {
 public:
     CollaborativeClient();
@@ -15,7 +15,7 @@ public:
     void stop();
     void updateData(const QByteArray& p_Data);
     void serverDisconnected();
-    void dataReady();
+    void dataReady(QByteArray);
     void errorOccurred();
 
     void registerListener(I_ConnectionListener* p_Listener);

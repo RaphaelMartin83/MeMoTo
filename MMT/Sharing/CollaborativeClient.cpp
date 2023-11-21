@@ -4,25 +4,24 @@
 #include <Sharing/CollaborativeClient.h>
 
 CollaborativeClient::CollaborativeClient():
-    QTcpSocket()
+    QWebSocket()
 {
-    this->setSocketOption(QAbstractSocket::LowDelayOption, 1);
-
-    connect(this, &QTcpSocket::disconnected, this, &CollaborativeClient::serverDisconnected);
-    connect(this, &QTcpSocket::readyRead, this, &CollaborativeClient::dataReady);
-    connect(this, &QTcpSocket::errorOccurred, this, &CollaborativeClient::errorOccurred);
+    connect(this, &QWebSocket::disconnected, this, &CollaborativeClient::serverDisconnected);
+    connect(this, &QWebSocket::binaryMessageReceived, this, &CollaborativeClient::dataReady);
+    connect(this, &QWebSocket::errorOccurred, this, &CollaborativeClient::errorOccurred);
 }
 
 CollaborativeClient::~CollaborativeClient()
 {
-    disconnect(this, &QTcpSocket::disconnected, this, &CollaborativeClient::serverDisconnected);
-    disconnect(this, &QTcpSocket::readyRead, this, &CollaborativeClient::dataReady);
-    disconnect(this, &QTcpSocket::errorOccurred, this, &CollaborativeClient::errorOccurred);
+    disconnect(this, &QWebSocket::disconnected, this, &CollaborativeClient::serverDisconnected);
+    disconnect(this, &QWebSocket::binaryMessageReceived, this, &CollaborativeClient::dataReady);
+    disconnect(this, &QWebSocket::errorOccurred, this, &CollaborativeClient::errorOccurred);
 }
 
 void CollaborativeClient::start(const QString& p_Host, const quint16& p_Port)
 {
-    this->connectToHost(p_Host, p_Port);
+    QUrl l_URL("ws://" + p_Host + ":" + QString::number(p_Port));
+    this->open(l_URL);
 }
 void CollaborativeClient::stop()
 {
@@ -30,15 +29,15 @@ void CollaborativeClient::stop()
 }
 void CollaborativeClient::updateData(const QByteArray& p_Data)
 {
-    this->write(p_Data);
+    this->sendBinaryMessage(p_Data);
 }
 void CollaborativeClient::serverDisconnected()
 {
     this->close();
 }
-void CollaborativeClient::dataReady()
+void CollaborativeClient::dataReady(QByteArray p_Message)
 {
-    m_Listener->dataChanged(this->readAll());
+    m_Listener->dataChanged(p_Message);
 }
 void CollaborativeClient::errorOccurred()
 {
