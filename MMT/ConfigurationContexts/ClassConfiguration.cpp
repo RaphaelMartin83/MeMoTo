@@ -143,8 +143,7 @@ void ClassConfiguration::setAttributes(const QList<QString>& p_Attributes)
 QColor ClassConfiguration::getColor() const
 {
     QString l_ColorString = this->m_ColorSelection->currentText();
-    QColor l_Ret;
-    l_Ret.setNamedColor(l_ColorString);
+    QColor l_Ret(l_ColorString);
 
     return l_Ret;
 }
