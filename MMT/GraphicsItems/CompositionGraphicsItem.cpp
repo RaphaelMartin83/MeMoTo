@@ -232,21 +232,21 @@ void CompositionGraphicsItem::setupTip()
     static const unsigned short ARROW_WIDTH = 10U;
 
     // The middle point is the point in the middle of the tip, only for computation ease
-    qreal l_lastLineAngle = this->getLastLineAngle();
+    qreal l_firstLineAngle = this->getFirstAngle();
     QPointF l_MiddlePoint;
-    l_MiddlePoint.setX(this->getPath().last().x() - (qCos(l_lastLineAngle)*ARROW_DEPTH));
-    l_MiddlePoint.setY(this->getPath().last().y() + (qSin(l_lastLineAngle)*ARROW_DEPTH));
+    l_MiddlePoint.setX(this->getPath().first().x() + (qCos(l_firstLineAngle)*ARROW_DEPTH));
+    l_MiddlePoint.setY(this->getPath().first().y() - (qSin(l_firstLineAngle)*ARROW_DEPTH));
 
     QList<QPointF> l_Points;
     // The polynoma needs 4 points
-    l_Points.append(this->getPath().last()); // first point is end of line
-    qreal l_currentPointAngle = l_lastLineAngle + (M_PI/2.0);
+    l_Points.append(this->getPath().first()); // first point is end of line
+    qreal l_currentPointAngle = l_firstLineAngle + (M_PI/2.0);
     l_Points.append(QPointF(l_MiddlePoint.x() + qCos(l_currentPointAngle)*ARROW_WIDTH,
                     l_MiddlePoint.y() - qSin(l_currentPointAngle)*ARROW_WIDTH));
-    l_currentPointAngle += (M_PI / 2.0);
+    l_currentPointAngle -= (M_PI / 2.0);
     l_Points.append(QPointF(l_MiddlePoint.x() + qCos(l_currentPointAngle)*ARROW_DEPTH,
                     l_MiddlePoint.y() - qSin(l_currentPointAngle)*ARROW_DEPTH));
-    l_currentPointAngle += (M_PI / 2.0);
+    l_currentPointAngle -= (M_PI / 2.0);
     l_Points.append(QPointF(l_MiddlePoint.x() + qCos(l_currentPointAngle)*ARROW_WIDTH,
                     l_MiddlePoint.y() - qSin(l_currentPointAngle)*ARROW_WIDTH));
 

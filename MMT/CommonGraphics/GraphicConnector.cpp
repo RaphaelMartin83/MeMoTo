@@ -223,6 +223,21 @@ void GraphicConnector::selectAllHandles()
     }
 }
 
+qreal GraphicConnector::getFirstAngle() const
+{
+    long double l_Ret;
+    if( 0 != m_Lines.count() )
+    {
+        l_Ret = qDegreesToRadians(m_Lines.first()->line().angle());
+    }
+    else
+    {
+        QLineF l_tmpLine(this->getPath()[0], this->getPath()[1]);
+        l_Ret = qDegreesToRadians(l_tmpLine.angle());
+    }
+    return l_Ret;
+}
+
 qreal GraphicConnector::getLastLineAngle() const
 {
     long double l_Ret;

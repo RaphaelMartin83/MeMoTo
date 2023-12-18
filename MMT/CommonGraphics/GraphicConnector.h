@@ -52,6 +52,7 @@ protected:
     void deleteHandles();
     virtual void refreshDisplay();
     void selectAllHandles();
+    qreal getFirstAngle() const;
     qreal getLastLineAngle() const;
     void setLinesPen(QPen p_Pen);
     unsigned short getThickness() const;
