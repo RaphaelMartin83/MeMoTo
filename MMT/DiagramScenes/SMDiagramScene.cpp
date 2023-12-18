@@ -36,7 +36,16 @@ QString SMDiagramScene::getSerializableName() const
 QPoint SMDiagramScene::getStartPosition() const
 {
     // By now the middle but could be different
-    return QPoint(0, 0);
+    if(this->getAllSelectables().size() == 0)
+    {
+        return QPoint(0, 0);
+    }
+    else
+    {
+        QPointF centerFloat = this->itemsBoundingRect().center();
+        QPoint centerInt(centerFloat.x(), centerFloat.y());
+        return centerInt;
+    }
 }
 
 unsigned int SMDiagramScene::getDiagramMaxWidth() const

@@ -37,7 +37,16 @@ QString ClassDiagramScene::getSerializableName() const
 QPoint ClassDiagramScene::getStartPosition() const
 {
     // By now the middle but could be different
-    return QPoint(s_ClassSceneSize/2U, s_ClassSceneSize/2U);
+    if(this->getAllSelectables().size() == 0)
+    {
+        return QPoint(s_ClassSceneSize/2U, s_ClassSceneSize/2U);
+    }
+    else
+    {
+        QPointF centerFloat = this->itemsBoundingRect().center();
+        QPoint centerInt(centerFloat.x(), centerFloat.y());
+        return centerInt;
+    }
 }
 
 unsigned int ClassDiagramScene::getDiagramMaxWidth() const

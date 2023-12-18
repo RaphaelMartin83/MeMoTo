@@ -295,6 +295,13 @@ void MeMoToApplication::loadDiagrams()
     QJsonObject l_JsonObject = MeMoToLoader::loadFromFile(l_File);
 
     setApplicationData(l_JsonObject);
+
+    // After loading from a file, reset position of each diagram
+    for( unsigned short i_diagrams = 0U; i_diagrams < sm_Diagrams.count(); i_diagrams++ )
+    {
+        sm_Diagrams[i_diagrams]->setCurrentPosition(
+            sm_Diagrams[i_diagrams]->getStartPosition());
+    }
 }
 
 void MeMoToApplication::setFileName(const QString& p_FileName)
