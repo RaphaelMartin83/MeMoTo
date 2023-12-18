@@ -3,8 +3,6 @@
 #include <QLocale>
 #include <QTranslator>
 
-#include "MainWindow.h"
-
 #include "MeMoToApplication.h"
 
 int main(int argc, char** argv)
@@ -21,9 +19,6 @@ int main(int argc, char** argv)
             break;
         }
     }
-
-    MainWindow* l_MainWindow = new MainWindow();
-    MeMoToApplication::registerMainWindow(l_MainWindow);
 
     return MeMoToApplication::exec();
 }

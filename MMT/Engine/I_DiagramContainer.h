@@ -7,7 +7,6 @@
 #include <ConfigurationContexts/FindConfiguration.h>
 #include <CommonGraphics/ConfigWidget.h>
 #include <Engine/DiagramGraphicsView.h>
-#include <Engine/I_DiagramListener.h>
 
 #include "I_ToolBox.h"
 #include "I_ToolSwitcherListener.h"
@@ -59,9 +58,6 @@ public:
     void showDiagram();
     void setUnfocused();
     void setCurrentPosition(QPointF p_Position);
-
-    // I_DiagramListener
-    void registerDiagramListener(I_DiagramListener* p_Listener);
 
     // I_ToolSwitchListener
     void toolChanged();
@@ -117,8 +113,6 @@ private:
     QPointF m_CurrentPosition;
     bool m_isFirstDisplay;
     QPointF m_CurrentCursorPosition;
-
-    I_DiagramListener* m_Listener;
 };
 
 #endif // I_DIAGRAMCONTAINER_H

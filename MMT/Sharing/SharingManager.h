@@ -4,7 +4,6 @@
 #include <Engine/I_DiagramContainer.h>
 #include <Engine/I_ConnectionListener.h>
 
-#include <Sharing/I_DataManager.h>
 #include <Sharing/CollaborativeServer.h>
 #include <Sharing/CollaborativeClient.h>
 #include <Sharing/I_SharingConfigurationListener.h>
@@ -21,10 +20,9 @@ public:
     static SharingManager& getInstance();
 
     void start();
+    void start(const QString& p_Place, const quint16& p_Port);
 
     void pushModifications();
-
-    void registerDataManager(I_DataManager* p_Manager);
 
     // I_SharingConfigurationListener
     virtual void sharingHostSelected(const QString& p_Place,
@@ -35,6 +33,7 @@ public:
 
     // I_ConnectionListener
     void dataChanged(const QByteArray& p_Data);
+    void newClientConnected();
     void connectionClosed();
 
 private:
@@ -43,8 +42,6 @@ private:
     static SharingManager* m_Me;
     bool m_isInited;
     bool m_isDatatoPush;
-
-    I_DataManager* m_Manager;
 
     CollaborativeServer* m_Server;
     CollaborativeClient* m_Client;

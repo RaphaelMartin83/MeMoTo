@@ -1,3 +1,5 @@
+#include <MeMoToApplication.h>
+
 #include "CollaborativeServer.h"
 
 CollaborativeServer::CollaborativeServer():
@@ -36,9 +38,9 @@ void CollaborativeServer::newClientConnected()
         m_Clients.append(l_newClient);
         connect(l_newClient, &QWebSocket::disconnected, this, &CollaborativeServer::clientDisconnected);
         connect(l_newClient, &QWebSocket::binaryMessageReceived, this, &CollaborativeServer::dataReady);
-        l_newClient->sendBinaryMessage(m_CurrentSessionData);
         l_newClient = this->nextPendingConnection();
     }
+    m_Listener->newClientConnected();
 }
 void CollaborativeServer::start(const QString& p_Host, const quint16& p_Port)
 {
@@ -77,9 +79,6 @@ void CollaborativeServer::dataReady(QByteArray p_Message)
 {
     for( unsigned int i_clients = 0U; i_clients < m_Clients.count(); i_clients++ )
     {
-        // Find the sender
-        QWebSocket* l_cclient = m_Clients[i_clients];
-        // Sender found, give to listener
         if( nullptr != m_Listener )
         {
             m_Listener->dataChanged(p_Message);

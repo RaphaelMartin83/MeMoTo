@@ -21,7 +21,6 @@ SharingManager* SharingManager::m_Me = nullptr;
 
 SharingManager::SharingManager():
     m_isInited(false),
-    m_Manager(nullptr),
     m_Server(nullptr),
     m_Client(nullptr)
 {
@@ -61,6 +60,14 @@ void SharingManager::start()
     s_ConfigurationContext->setSessionPort(MeMoToApplication::getCollaborativePort());
     s_ConfigurationContext->setRunning(m_isInited);
     ConfigWidget::open(s_ConfigurationContext);
+}
+
+void SharingManager::start(const QString& p_Place, const quint16& p_Port)
+{
+    m_Server = new CollaborativeServer();
+    m_Server->registerListener(this);
+    m_Server->start(p_Place, p_Port);
+    m_isInited = true;
 }
 
 void SharingManager::sharingHostSelected(const QString& p_Place,
@@ -113,7 +120,11 @@ void SharingManager::sharingCanceled()
 void SharingManager::dataChanged(const QByteArray& p_Data)
 {
     QJsonObject l_Json = MeMoToLoader::loadFromArray(qUncompress(p_Data));
-    m_Manager->setApplicationData(l_Json);
+    MeMoToApplication::setApplicationData(l_Json);
+}
+void SharingManager::newClientConnected()
+{
+    this->pushModifications();
 }
 void SharingManager::connectionClosed()
 {
@@ -152,11 +163,6 @@ void SharingManager::pushModifications()
     if(!m_isInited) {return;}
 
     QJsonObject l_ObjectToWrite;
-    m_Manager->getApplicationData(l_ObjectToWrite);
+    MeMoToApplication::getApplicationData(l_ObjectToWrite);
     this->setData(l_ObjectToWrite);
-}
-
-void SharingManager::registerDataManager(I_DataManager* p_Manager)
-{
-    m_Manager = p_Manager;
 }

@@ -3,6 +3,7 @@
 #include <QGraphicsSceneMouseEvent>
 #include <QFile>
 
+#include <MeMoToApplication.h>
 #include <MeMoToThemeDefinition.h>
 
 #include <Engine/I_DiagramContainer.h>
@@ -18,7 +19,6 @@ I_DiagramContainer::I_DiagramContainer():
     , m_isFocused(false)
     , m_CurrentPosition()
     , m_isFirstDisplay(true)
-    , m_Listener(nullptr)
 {
     this->setBackgroundBrush(SCENES_BACKGROUND_COLOR);
 }
@@ -47,10 +47,7 @@ void I_DiagramContainer::redo()
 void I_DiagramContainer::changed(I_GraphicsItem* p_WhoChanged)
 {
     this->saveUndoState();
-    if( nullptr != m_Listener )
-    {
-        m_Listener->diagramChanged();
-    }
+    MeMoToApplication::diagramChanged();
     SharingManager::getInstance().pushModifications();
 }
 
@@ -155,7 +152,7 @@ void I_DiagramContainer::escapePressed()
 }
 int I_DiagramContainer::printPressed(QString p_OutputFile)
 {
-    QFile l_FileOutput(p_OutputFile);
+    QFile l_FileOutput(p_OutputFile + "_" + this->getDiagramString() + ".png");
     bool l_isFileWritable = l_FileOutput.open(QIODevice::WriteOnly);
     l_FileOutput.close();
     if( ("" != p_OutputFile) && (!l_isFileWritable) )
@@ -362,11 +359,6 @@ void I_DiagramContainer::setCurrentPosition(QPointF p_Position)
         m_View->centerOn(p_Position);
     }
     m_CurrentPosition = p_Position;
-}
-
-void I_DiagramContainer::registerDiagramListener(I_DiagramListener* p_Listener)
-{
-    m_Listener = p_Listener;
 }
 
 void I_DiagramContainer::toolChanged()

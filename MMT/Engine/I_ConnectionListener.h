@@ -7,6 +7,7 @@ class I_ConnectionListener
 {
 public:
     virtual void dataChanged(const QByteArray& p_Data) = 0;
+    virtual void newClientConnected() = 0;
     virtual void connectionClosed() = 0;
 };
 
