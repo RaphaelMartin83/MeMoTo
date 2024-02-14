@@ -7,7 +7,6 @@ CollaborativeServer::CollaborativeServer():
   , m_Clients()
   , m_Socket()
   , m_Listener(nullptr)
-  , m_CurrentSessionData()
 {
     connect(this, &QWebSocketServer::newConnection, this, &CollaborativeServer::newClientConnected);
 }
@@ -53,7 +52,6 @@ void CollaborativeServer::stop()
 }
 void CollaborativeServer::updateData(const QByteArray& p_Data)
 {
-    m_CurrentSessionData = p_Data;
     for( unsigned int i_clients = 0U; i_clients < m_Clients.count(); i_clients++ )
     {
         QWebSocket* l_cclient = m_Clients[i_clients];

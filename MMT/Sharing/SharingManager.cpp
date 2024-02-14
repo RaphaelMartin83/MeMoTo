@@ -119,8 +119,11 @@ void SharingManager::sharingCanceled()
 
 void SharingManager::dataChanged(const QByteArray& p_Data)
 {
-    QJsonObject l_Json = MeMoToLoader::loadFromArray(qUncompress(p_Data));
-    MeMoToApplication::setApplicationData(l_Json);
+    if(!MeMoToApplication::isReadOnly())
+    {
+        QJsonObject l_Json = MeMoToLoader::loadFromArray(qUncompress(p_Data));
+        MeMoToApplication::setApplicationData(l_Json);
+    }
 }
 void SharingManager::newClientConnected()
 {

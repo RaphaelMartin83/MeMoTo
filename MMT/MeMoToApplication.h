@@ -5,6 +5,7 @@
 #include <QString>
 #include <QIcon>
 #include <QList>
+#include <QTimer>
 
 #include <Engine/I_DiagramContainer.h>
 
@@ -22,6 +23,7 @@ public:
     static QString SharedFileExtension();
 
     static bool isHeadless();
+    static bool isReadOnly();
     static const QString& getDefaultDiagarm();
     static const QString& getPNGToCreate();
     static const QString& getServerIP();
@@ -45,10 +47,13 @@ public:
     static void setFileName(const QString& p_FileName);
     static const QString& getFileName();
 
+    void displayModeFileUpdateTick();
+
 private:
     static QString sm_OutputString;
     static QString sm_DefaultDiagram;
     static QString sm_FocusOn;
+    static quint32 sm_Period;
     static QString sm_ServerIP;
     static quint16 sm_ServerPort;
 
@@ -62,7 +67,11 @@ private:
 
     static bool sm_isHeadless;
 
+    static bool sm_isReadOnly;
+
     static QString sm_FileName;
+
+    QTimer m_timer;
 };
 
 #endif // MEMOTOAPPLICATION_H

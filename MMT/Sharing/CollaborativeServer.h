@@ -28,8 +28,6 @@ private:
 
     QWebSocket m_Socket;
 
-    QByteArray m_CurrentSessionData;
-
     QList<QWebSocket*> m_Clients;
 
     I_ConnectionListener* m_Listener;

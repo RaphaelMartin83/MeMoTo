@@ -5,6 +5,11 @@
 
 QJsonObject MeMoToLoader::loadFromFile(QFile& p_File)
 {
+    if(!p_File.exists())
+    {
+        ErrorDisplayer::displayError("File not found!", p_File.fileName());
+        return QJsonObject();
+    }
     p_File.open(QIODevice::ReadOnly | QIODevice::Text);
     QByteArray l_FileContent = p_File.readAll();
     p_File.close();

@@ -12,18 +12,21 @@
 QString MeMoToApplication::sm_DefaultDiagram("");
 QString MeMoToApplication::sm_OutputString("");
 QString MeMoToApplication::sm_FocusOn("");
+quint32 MeMoToApplication::sm_Period(60000);
 QString MeMoToApplication::sm_ServerIP("");
 quint16 MeMoToApplication::sm_ServerPort = 0U; // Given port in headless mode
 quint16 MeMoToApplication::sm_CollaborativePort(11310); // Default port on GUI
 QList<I_DiagramContainer*> MeMoToApplication::sm_Diagrams;
 bool MeMoToApplication::sm_hasChangesUnsaved = false;
 bool MeMoToApplication::sm_isHeadless = false;
+bool MeMoToApplication::sm_isReadOnly = false;
 QString MeMoToApplication::sm_FileName("");
 
 MainWindow* MeMoToApplication::sm_MW = nullptr;
 
 MeMoToApplication::MeMoToApplication(int& argc, char** argv):
     QApplication(argc, argv)
+    , m_timer(this)
 {
     QCoreApplication::setApplicationName("MeMoTo");
     QCoreApplication::setApplicationVersion("0.2.0");
@@ -59,6 +62,11 @@ MeMoToApplication::MeMoToApplication(int& argc, char** argv):
                                         "Activate server mode");
     l_Parser.addOption(l_HeadlessOption);
 
+    QCommandLineOption l_DisplayerOption("displayer", "MeMoTo will run headless as for server, but read only and will refresh from the given file at the given period in milliseconds",
+                                         "Activate displayer mode with refresh period, default is " + QString::number(sm_Period),
+                                         "Period");
+    l_Parser.addOption(l_DisplayerOption);
+
     QCommandLineOption l_ServerInterfaceOption("interface", "Mandatory if server is selected, will listen on the given IP address",
                                                "The IP address to listen to", "IPAddress");
     l_Parser.addOption(l_ServerInterfaceOption);
@@ -75,7 +83,7 @@ MeMoToApplication::MeMoToApplication(int& argc, char** argv):
     sm_FocusOn = l_Parser.value(l_FocusOption);
 
     // Get into this loop if it's server mode
-    if(l_Parser.isSet(l_HeadlessOption))
+    if(l_Parser.isSet(l_HeadlessOption) || l_Parser.isSet(l_DisplayerOption))
     {
         sm_isHeadless = true;
         if(!l_Parser.isSet(l_ServerInterfaceOption))
@@ -95,6 +103,25 @@ MeMoToApplication::MeMoToApplication(int& argc, char** argv):
             {
                 sm_ServerPort = sm_CollaborativePort;
             }
+        }
+    }
+
+    if(l_Parser.isSet(l_DisplayerOption))
+    {
+        sm_isReadOnly = true;
+
+        bool l_isPeriodOK = false;
+        sm_Period = l_Parser.value(l_DisplayerOption).toUInt(&l_isPeriodOK);
+        if(!l_isPeriodOK)
+        {
+            qDebug("Bad period given");
+            l_Parser.showHelp();
+            exit(-1);
+        }
+        else
+        {
+            connect(&m_timer, &QTimer::timeout, this, &MeMoToApplication::displayModeFileUpdateTick);
+            m_timer.start(sm_Period);
         }
     }
 
@@ -166,8 +193,8 @@ int MeMoToApplication::exec()
         {
             // Run the server mode
             QString l_debugString("Will start server at " + QString(sm_ServerIP) + " on server port " + QString::number(sm_ServerPort));
+            qDebug() << l_debugString;
             SharingManager::getInstance().start(sm_ServerIP, sm_ServerPort);
-            //SharingManager::getInstance().start("127.0.0.1", 4242);
             l_Ret = QApplication::exec();
         }
     }
@@ -193,6 +220,11 @@ bool MeMoToApplication::isHeadless()
     }
 
     return l_Ret;
+}
+
+bool MeMoToApplication::isReadOnly()
+{
+    return sm_isReadOnly;
 }
 
 const QString& MeMoToApplication::getDefaultDiagarm()
@@ -302,6 +334,8 @@ void MeMoToApplication::loadDiagrams()
         sm_Diagrams[i_diagrams]->setCurrentPosition(
             sm_Diagrams[i_diagrams]->getStartPosition());
     }
+
+    SharingManager::getInstance().pushModifications();
 }
 
 void MeMoToApplication::setFileName(const QString& p_FileName)
@@ -311,4 +345,9 @@ void MeMoToApplication::setFileName(const QString& p_FileName)
 const QString& MeMoToApplication::getFileName()
 {
     return sm_FileName;
+}
+
+void MeMoToApplication::displayModeFileUpdateTick()
+{
+    MeMoToApplication::loadDiagrams();
 }
