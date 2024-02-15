@@ -8,16 +8,16 @@
 #include <QPushButton>
 #include <QMenuBar>
 
-#include "I_DiagramContainer.h"
-#include "DiagramGraphicsView.h"
-#include "I_SaveFileConfigurationListener.h"
-#include "I_LoadFileConfigurationListener.h"
-#include "I_DataManager.h"
+#include <Engine/I_DiagramContainer.h>
+#include <Engine/DiagramGraphicsView.h>
+#include <Engine/I_SaveFileConfigurationListener.h>
+#include <Engine/I_LoadFileConfigurationListener.h>
+#include <Engine/I_CloseWithoutSavingConfigurationListener.h>
 
 class MainWindow : public QMainWindow,
         public I_SaveFileConfigurationListener,
         public I_LoadFileConfigurationListener,
-        public I_DataManager
+        public I_CloseWithoutSavingConfigurationListener
 {
     Q_OBJECT
 
@@ -26,7 +26,13 @@ public:
     MainWindow(const char* argv, QWidget *parent = nullptr);
     ~MainWindow();
 
+    void show();
+    void updateTitle();
+
     I_DiagramContainer* getCurrentDiagram();
+    void addDiagram(I_DiagramContainer* p_Diagram);
+
+    void switchToContext(unsigned short p_ContextID, bool p_Force = false);
 
     // I_SaveFileConfigurationListener
     virtual void fileSelectedForSaving(QString p_File);
@@ -36,11 +42,9 @@ public:
     void fileSelectedForLoading(QString p_File);
     void fileLoadingCanceled();
 
-    // I_DataManager
-    void getApplicationData(QJsonObject& p_rData) const;
-    void setApplicationData(const QJsonObject& p_Data);
-
-    void startSharing();
+    // I_CloseWithoutSavingConfigurationListener
+    void saveBeforeClosing();
+    void closeAndDropChanges();
 
 private slots:
     void NextButtonPressed();
@@ -60,18 +64,15 @@ private slots:
     void findMenuClicked();
     void printMenuClicked();
 
+public slots:
+    void closeEvent(QCloseEvent* p_event);
+
 private:
     void initGUI();
-    void initDiagrams();
 
-    void updateTitle();
-
-    void saveDiagrams();
-    void loadDiagrams();
     void keyPressEvent(QKeyEvent* p_Event);
     void savePressed(bool p_alwaysOpen=false);
     void loadPressed(bool p_alwaysOpen=false);
-    void switchToContext(unsigned short p_ContextID, bool p_Force = false);
 
     QMenuBar* m_MenuBar;
     QMenu* m_FileMenu;
@@ -88,9 +89,5 @@ private:
 
     QList<I_DiagramContainer*> m_Diagrams;
     unsigned short m_CurrentDiagramID;
-
-    QList<QString> m_SerializablesIndexes;
-
-    QString m_FileName;
 };
 #endif // MAINWINDOW_H

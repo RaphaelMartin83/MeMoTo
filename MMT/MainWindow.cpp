@@ -2,24 +2,32 @@
 #include <QKeyEvent>
 #include <QJsonObject>
 #include <QFile>
+#include <QDir>
+#include <QStandardPaths>
+
+#include <MeMoToApplication.h>
+
+#include <Engine/DiagramGraphicsView.h>
+#include <Engine/InstanceLauncher.h>
+
+#include <CommonGraphics/ConfigWidget.h>
+
+#include <ConfigurationContexts/SaveFileConfiguration.h>
+#include <ConfigurationContexts/LoadFileConfiguration.h>
+#include <ConfigurationContexts/CloseWithoutSavingConfiguration.h>
+
+#include <Sharing/SharingManager.h>
+
+#include <DiagramScenes/SMDiagramScene.h>
+#include <DiagramScenes/ClassDiagramScene.h>
 
 #include "MainWindow.h"
-#include "DiagramGraphicsView.h"
-#include "ConfigWidget.h"
-#include "SaveFileConfiguration.h"
-#include "LoadFileConfiguration.h"
-#include "SharingManager.h"
-#include "MeMoToApplication.h"
-#include "MeMoToLoader.h"
-#include "InstanceLauncher.h"
-
-#include "SMDiagramScene.h"
-#include "ClassDiagramScene.h"
 
 static const char* s_ProgramName = "MeMoTo";
 
 static SaveFileConfiguration* s_SaveFileConfiguration = nullptr;
 static LoadFileConfiguration* s_LoadFileConfiguration = nullptr;
+static CloseWithoutSavingConfiguration* s_CloseConfiguration = nullptr;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -29,17 +37,8 @@ MainWindow::MainWindow(QWidget *parent)
     , m_DiagramView(nullptr)
     , m_Diagrams()
     , m_CurrentDiagramID(0U)
-    , m_SerializablesIndexes()
-    , m_FileName()
 {
     this->initGUI();
-
-    this->initDiagrams();
-
-    if( "" != MeMoToApplication::getFileToOpen() )
-    {
-        MainWindow::fileSelectedForLoading(MeMoToApplication::getFileToOpen());
-    }
 }
 
 MainWindow::MainWindow(const char* argv, QWidget *parent)
@@ -58,15 +57,20 @@ I_DiagramContainer* MainWindow::getCurrentDiagram()
 {
     return m_Diagrams[m_CurrentDiagramID];
 }
+void MainWindow::addDiagram(I_DiagramContainer* p_Diagram)
+{
+    m_Diagrams.append(p_Diagram);
+    m_Diagrams.last()->registerDiagramView(m_DiagramView);
+}
 
 // I_SaveFileConfigurationListener
 void MainWindow::fileSelectedForSaving(QString p_File)
 {
-    m_FileName = p_File;
+    MeMoToApplication::setFileName(p_File);
 
     ConfigWidget::close();
 
-    this->saveDiagrams();
+    MeMoToApplication::saveDiagrams();
     this->updateTitle();
 }
 void MainWindow::fileSavingCanceled()
@@ -78,11 +82,11 @@ void MainWindow::fileSelectedForLoading(QString p_File)
 {
     if( QFile(p_File).exists() )
     {
-        m_FileName = p_File;
+        MeMoToApplication::setFileName(p_File);
 
         ConfigWidget::close();
 
-        this->loadDiagrams();
+        MeMoToApplication::loadDiagrams();
         this->updateTitle();
     }
 }
@@ -91,42 +95,15 @@ void MainWindow::fileLoadingCanceled()
     ConfigWidget::close();
 }
 
-void MainWindow::getApplicationData(QJsonObject& p_rData) const
+void MainWindow::saveBeforeClosing()
 {
-    p_rData = QJsonObject();
-    QJsonObject l_JsonDiag;
-    for( unsigned short i_diagrams = 0U; i_diagrams < m_Diagrams.count(); i_diagrams++ )
-    {
-        l_JsonDiag = m_Diagrams[i_diagrams]->toJson();
-        if( l_JsonDiag.count() != 0 )
-        {
-            p_rData.insert(m_SerializablesIndexes[i_diagrams],
-            l_JsonDiag);
-        }
-    }
-}
-void MainWindow::setApplicationData(const QJsonObject& p_Data)
-{
-    for( unsigned short i_diagrams = 0U; i_diagrams < m_Diagrams.count(); i_diagrams++ )
-    {
-        QJsonObject::const_iterator l_foundDiagramJson = p_Data.find(m_SerializablesIndexes[i_diagrams]);
-        if( p_Data.end() != l_foundDiagramJson )
-        {
-            m_Diagrams[i_diagrams]->clearAll();
-            m_Diagrams[i_diagrams]->fromJson(l_foundDiagramJson->toObject());
-        }
-        else
-        {
-            m_Diagrams[i_diagrams]->clearAll();
-        }
-        m_Diagrams[i_diagrams]->saveUndoState();
-    }
-}
+    ConfigWidget::close();
 
-void MainWindow::startSharing()
+    this->savePressed(true);
+}
+void MainWindow::closeAndDropChanges()
 {
-    SharingManager::getInstance().registerDataManager(this);
-    SharingManager::getInstance().start();
+    MeMoToApplication::exit();
 }
 
 void MainWindow::NextButtonPressed()
@@ -189,7 +166,7 @@ void MainWindow::pasteMenuClicked()
 }
 void MainWindow::shareMenuClicked()
 {
-    this->startSharing();
+    MeMoToApplication::startSharing();
 }
 void MainWindow::findMenuClicked()
 {
@@ -197,7 +174,22 @@ void MainWindow::findMenuClicked()
 }
 void MainWindow::printMenuClicked()
 {
-    m_Diagrams[m_CurrentDiagramID]->printPressed("");
+    m_Diagrams[m_CurrentDiagramID]->printPressed(MeMoToApplication::getFileName());
+}
+
+void MainWindow::closeEvent(QCloseEvent* p_event)
+{
+    if( MeMoToApplication::hasChangesUnsaved() )
+    {
+        p_event->ignore();
+
+        if( nullptr == s_CloseConfiguration )
+        {
+            s_CloseConfiguration = new CloseWithoutSavingConfiguration();
+            s_CloseConfiguration->registerListener(this);
+        }
+        ConfigWidget::open(s_CloseConfiguration);
+    }
 }
 
 void MainWindow::initGUI()
@@ -276,65 +268,31 @@ void MainWindow::updateTitle()
 {
     static const unsigned short MAX_DISPLAYED_NAME_SIZE = 100;
     QString l_newTitle = s_ProgramName;
-    if( "" != m_FileName )
+    QString l_FileName = MeMoToApplication::getFileName();
+    if( "" != l_FileName )
     {
         l_newTitle += " on ";
-        if( m_FileName.size() > MAX_DISPLAYED_NAME_SIZE )
+        if( l_FileName.size() > MAX_DISPLAYED_NAME_SIZE )
         {
-            l_newTitle += ".." + m_FileName.last(MAX_DISPLAYED_NAME_SIZE);
+            l_newTitle += ".." + l_FileName.last(MAX_DISPLAYED_NAME_SIZE);
         }
         else
         {
-            l_newTitle += m_FileName;
+            l_newTitle += l_FileName;
         }
     }
     l_newTitle += " (" + m_Diagrams[m_CurrentDiagramID]->getDiagramString() + ")";
+
+    if( MeMoToApplication::hasChangesUnsaved() )
+    {
+        l_newTitle += "*";
+    }
+
     this->setWindowTitle(l_newTitle);
 }
-void MainWindow::initDiagrams()
+void MainWindow::show()
 {
-    // Initialize all the diagrams
-    m_Diagrams.append(new ClassDiagramScene);
-    m_Diagrams.last()->registerDiagramView(m_DiagramView);
-    m_SerializablesIndexes.append(m_Diagrams.last()->getSerializableName());
-    m_Diagrams.append(new SMDiagramScene);
-    m_Diagrams.last()->registerDiagramView(m_DiagramView);
-    m_SerializablesIndexes.append(m_Diagrams.last()->getSerializableName());
-
-    // Displays the default diagram
-    bool l_Found = false;
-    for(unsigned short i_diagrams = 0U;
-        (i_diagrams < m_Diagrams.count()) && (false == l_Found);
-        i_diagrams++ )
-    {
-        if( MeMoToApplication::getDefaultDiagarm() == m_Diagrams[i_diagrams]->getSerializableName() )
-        {
-            this->switchToContext(i_diagrams, true);
-            l_Found = true;
-        }
-    }
-    if( !l_Found )
-    {
-        this->switchToContext(0U, true);
-    }
-}
-
-void MainWindow::saveDiagrams()
-{
-    QJsonObject l_JSonGlobal;
-    this->getApplicationData(l_JSonGlobal);
-
-    QFile l_File(m_FileName);
-    MeMoToLoader::saveToFile(l_File, l_JSonGlobal);
-}
-
-void MainWindow::loadDiagrams()
-{
-    QFile l_File(m_FileName);
-
-    QJsonObject l_JsonObject = MeMoToLoader::loadFromFile(l_File);
-
-    MainWindow::setApplicationData(l_JsonObject);
+    QMainWindow::show();
 }
 
 void MainWindow::switchToContext(unsigned short p_ContextID, bool p_Force)
@@ -482,7 +440,7 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
     }
     else if( p_Event->matches(QKeySequence::Print) )
     {
-        m_Diagrams[m_CurrentDiagramID]->printPressed("");
+        this->printMenuClicked();
     }
     else if( p_Event->matches(QKeySequence::Copy) )
     {
@@ -512,15 +470,15 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
     }
     else if( (p_Event->key() == Qt::Key_Space) && (p_Event->modifiers() == Qt::ControlModifier) )
     {
-        this->startSharing();
+        MeMoToApplication::startSharing();
     }
 }
 
 void MainWindow::savePressed(bool p_alwaysOpen)
 {
-    if( ("" != m_FileName) && (false == p_alwaysOpen) )
+    if( ("" != MeMoToApplication::getFileName()) && (false == p_alwaysOpen) )
     {
-        this->saveDiagrams();
+        MeMoToApplication::saveDiagrams();
     }
     else
     {
@@ -537,9 +495,9 @@ void MainWindow::savePressed(bool p_alwaysOpen)
 
 void MainWindow::loadPressed(bool p_alwaysOpen)
 {
-    if( ("" != m_FileName) && (false == p_alwaysOpen) )
+    if( ("" != MeMoToApplication::getFileName()) && (false == p_alwaysOpen) )
     {
-        this->loadDiagrams();
+        MeMoToApplication::loadDiagrams();
     }
     else
     {
