@@ -20,6 +20,7 @@ QList<I_DiagramContainer*> MeMoToApplication::sm_Diagrams;
 bool MeMoToApplication::sm_hasChangesUnsaved = false;
 bool MeMoToApplication::sm_isHeadless = false;
 bool MeMoToApplication::sm_isReadOnly = false;
+bool MeMoToApplication::sm_isAutoconnect = false;
 QString MeMoToApplication::sm_FileName("");
 
 MainWindow* MeMoToApplication::sm_MW = nullptr;
@@ -58,22 +59,33 @@ MeMoToApplication::MeMoToApplication(int& argc, char** argv):
                                      "");
     l_Parser.addOption(l_FocusOption);
 
-    QCommandLineOption l_HeadlessOption("server", "MeMoTo will run headless and automatically open a session on given IP:PORT",
+    QCommandLineOption l_HeadlessOption("server",
+                                        "MeMoTo will run headless and automatically open a session on given IP:PORT",
                                         "Activate server mode");
     l_Parser.addOption(l_HeadlessOption);
 
-    QCommandLineOption l_DisplayerOption("displayer", "MeMoTo will run headless as for server, but read only and will refresh from the given file at the given period in milliseconds",
+    QCommandLineOption l_DisplayerOption("displayer",
+                                         "MeMoTo will run headless as for server, but read only and will refresh from the given file at the given period in milliseconds",
                                          "Activate displayer mode with refresh period, default is " + QString::number(sm_Period),
                                          "Period");
     l_Parser.addOption(l_DisplayerOption);
 
-    QCommandLineOption l_ServerInterfaceOption("interface", "Mandatory if server is selected, will listen on the given IP address",
-                                               "The IP address to listen to", "IPAddress");
+    QCommandLineOption l_ServerInterfaceOption("interface",
+                                               "Mandatory if server is selected, will listen on the given IP address",
+                                               "The IP address to listen to",
+                                               "IPAddress");
     l_Parser.addOption(l_ServerInterfaceOption);
 
-    QCommandLineOption l_ServerPortOption("port", "If server is selected, will listen on the given port",
-                                          "The port to listen to, default is " + QString::number(sm_CollaborativePort), "Port");
+    QCommandLineOption l_ServerPortOption("port",
+                                          "If server is selected, will listen on the given port",
+                                          "The port to listen to, default is " + QString::number(sm_CollaborativePort),
+                                          "Port");
     l_Parser.addOption(l_ServerPortOption);
+
+    QCommandLineOption l_ClientOption("client",
+                                      "MeMoTo will open the GUI and automatically connect to the given IP:PORT"
+                                      "Activate client autoconnect");
+    l_Parser.addOption(l_ClientOption);
 
     l_Parser.process(*this);
 
@@ -83,12 +95,15 @@ MeMoToApplication::MeMoToApplication(int& argc, char** argv):
     sm_FocusOn = l_Parser.value(l_FocusOption);
 
     // Get into this loop if it's server mode
-    if(l_Parser.isSet(l_HeadlessOption) || l_Parser.isSet(l_DisplayerOption))
+    if(l_Parser.isSet(l_HeadlessOption) ||
+        l_Parser.isSet(l_DisplayerOption) ||
+        l_Parser.isSet(l_ClientOption))
     {
-        sm_isHeadless = true;
+        // The only way it's not headless here is if it's not client option
+        sm_isHeadless = !l_Parser.isSet(l_ClientOption);
         if(!l_Parser.isSet(l_ServerInterfaceOption))
         {
-            qDebug("\nWhen activating server option, an interface IP address is needed");
+            qDebug("\nWhen activating server or client option, an interface IP address is needed");
             l_Parser.showHelp();
             exit(-1);
         }
@@ -104,6 +119,7 @@ MeMoToApplication::MeMoToApplication(int& argc, char** argv):
                 sm_ServerPort = sm_CollaborativePort;
             }
         }
+        sm_isAutoconnect = l_Parser.isSet(l_ClientOption);
     }
 
     if(l_Parser.isSet(l_DisplayerOption))
@@ -173,6 +189,11 @@ int MeMoToApplication::exec()
         if( "" != sm_FocusOn )
         {
             sm_MW->getCurrentDiagram()->focusOnItem("", "", sm_FocusOn, 0U, false, true);
+        }
+
+        if(sm_isAutoconnect)
+        {
+            SharingManager::getInstance().sharingHostSelected(sm_ServerIP, sm_ServerPort);
         }
 
         // Regular run

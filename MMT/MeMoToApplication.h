@@ -69,6 +69,8 @@ private:
 
     static bool sm_isReadOnly;
 
+    static bool sm_isAutoconnect;
+
     static QString sm_FileName;
 
     QTimer m_timer;
