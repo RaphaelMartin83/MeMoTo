@@ -106,10 +106,15 @@ void FindConfiguration::CancelPressed()
 }
 void FindConfiguration::selectedItemChanged()
 {
-    m_Listener->focusOnItem(m_ItemTypeComboBox->currentText(),
-                            m_ItemAttributeComboBox->currentText(),
-                            m_OccurencesList->currentItem()->text(),
-                            this->getCurrentSelectionOffset());
+    if (nullptr != m_ItemAttributeComboBox &&
+        nullptr != m_ItemTypeComboBox &&
+        nullptr != m_OccurencesList->currentItem())
+    {
+        m_Listener->focusOnItem(m_ItemTypeComboBox->currentText(),
+                                m_ItemAttributeComboBox->currentText(),
+                                m_OccurencesList->currentItem()->text(),
+                                this->getCurrentSelectionOffset());
+    }
 }
 void FindConfiguration::researchChanged()
 {
