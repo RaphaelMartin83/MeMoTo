@@ -90,10 +90,15 @@ void FindConfiguration::escapePressed()
 }
 void FindConfiguration::OKPressed()
 {
-    m_Listener->findConfigurationValidated(m_ItemTypeComboBox->currentText(),
-                                           m_ItemAttributeComboBox->currentText(),
-                                           m_OccurencesList->currentItem()->text(),
-                                           this->getCurrentSelectionOffset());
+    if (nullptr != m_ItemAttributeComboBox &&
+        nullptr != m_ItemTypeComboBox &&
+        nullptr != m_OccurencesList->currentItem())
+    {
+        m_Listener->findConfigurationValidated(m_ItemTypeComboBox->currentText(),
+                                               m_ItemAttributeComboBox->currentText(),
+                                               m_OccurencesList->currentItem()->text(),
+                                               this->getCurrentSelectionOffset());
+    }
 }
 void FindConfiguration::CancelPressed()
 {
