@@ -18,187 +18,38 @@ quint16 MeMoToApplication::sm_ServerPort = 0U; // Given port in headless mode
 quint16 MeMoToApplication::sm_CollaborativePort(11310); // Default port on GUI
 QList<I_DiagramContainer*> MeMoToApplication::sm_Diagrams;
 bool MeMoToApplication::sm_hasChangesUnsaved = false;
-bool MeMoToApplication::sm_isHeadless = false;
+bool MeMoToApplication::sm_isServer = false;
+bool MeMoToApplication::sm_isInDisplayMode = false;
 bool MeMoToApplication::sm_isReadOnly = false;
+bool MeMoToApplication::sm_isAutoconnect = false;
 QString MeMoToApplication::sm_FileName("");
+QTimer* MeMoToApplication::sm_Timer = nullptr;
 
 MainWindow* MeMoToApplication::sm_MW = nullptr;
 
 MeMoToApplication::MeMoToApplication(int& argc, char** argv):
     QApplication(argc, argv)
-    , m_timer(this)
 {
     QCoreApplication::setApplicationName("MeMoTo");
     QCoreApplication::setApplicationVersion("0.2.0");
 
-    QCommandLineParser l_Parser;
-    l_Parser.setApplicationDescription("MErgeable MOdeling TOol: A DevOps oriented modeling tool");
-    l_Parser.addHelpOption();
-    l_Parser.addVersionOption();
+    this->createAndHandleArguments();
 
-    // The file to open
-    l_Parser.addPositionalArgument("file", "File to open");
-
-    // The options
-    QCommandLineOption l_PngOutputOption("output-png",
-                                        "MeMoTo will output a png file from the given memoto file, use default-diagram option to output needed diagram",
-                                        "Output png file",
-                                        "");
-    l_Parser.addOption(l_PngOutputOption);
-
-    QCommandLineOption l_DefaultDiagram("default-diagram",
-                                        "MeMoTo will open on the given diagram, can be ClassDiagram or StateMachine",
-                                        "Default diagram",
-                                        "ClassDiagram");
-    l_Parser.addOption(l_DefaultDiagram);
-
-    QCommandLineOption l_FocusOption("focus-on",
-                                     "MeMoTo will open the application on the first occurence of given value in default diagram displayed (see default-diagram option)",
-                                     "Focus on item",
-                                     "");
-    l_Parser.addOption(l_FocusOption);
-
-    QCommandLineOption l_HeadlessOption("server", "MeMoTo will run headless and automatically open a session on given IP:PORT",
-                                        "Activate server mode");
-    l_Parser.addOption(l_HeadlessOption);
-
-    QCommandLineOption l_DisplayerOption("displayer", "MeMoTo will run headless as for server, but read only and will refresh from the given file at the given period in milliseconds",
-                                         "Activate displayer mode with refresh period, default is " + QString::number(sm_Period),
-                                         "Period");
-    l_Parser.addOption(l_DisplayerOption);
-
-    QCommandLineOption l_ServerInterfaceOption("interface", "Mandatory if server is selected, will listen on the given IP address",
-                                               "The IP address to listen to", "IPAddress");
-    l_Parser.addOption(l_ServerInterfaceOption);
-
-    QCommandLineOption l_ServerPortOption("port", "If server is selected, will listen on the given port",
-                                          "The port to listen to, default is " + QString::number(sm_CollaborativePort), "Port");
-    l_Parser.addOption(l_ServerPortOption);
-
-    l_Parser.process(*this);
-
-    // Retrieve value arguments
-    sm_OutputString = l_Parser.value(l_PngOutputOption);
-    sm_DefaultDiagram = l_Parser.value(l_DefaultDiagram);
-    sm_FocusOn = l_Parser.value(l_FocusOption);
-
-    // Get into this loop if it's server mode
-    if(l_Parser.isSet(l_HeadlessOption) || l_Parser.isSet(l_DisplayerOption))
-    {
-        sm_isHeadless = true;
-        if(!l_Parser.isSet(l_ServerInterfaceOption))
-        {
-            qDebug("\nWhen activating server option, an interface IP address is needed");
-            l_Parser.showHelp();
-            exit(-1);
-        }
-        else
-        {
-            sm_ServerIP = l_Parser.value(l_ServerInterfaceOption);
-            if(l_Parser.isSet(l_ServerPortOption))
-            {
-                sm_ServerPort = l_Parser.value(l_ServerPortOption).toInt();
-            }
-            else
-            {
-                sm_ServerPort = sm_CollaborativePort;
-            }
-        }
-    }
-
-    if(l_Parser.isSet(l_DisplayerOption))
-    {
-        sm_isReadOnly = true;
-
-        bool l_isPeriodOK = false;
-        sm_Period = l_Parser.value(l_DisplayerOption).toUInt(&l_isPeriodOK);
-        if(!l_isPeriodOK)
-        {
-            qDebug("Bad period given");
-            l_Parser.showHelp();
-            exit(-1);
-        }
-        else
-        {
-            connect(&m_timer, &QTimer::timeout, this, &MeMoToApplication::displayModeFileUpdateTick);
-            m_timer.start(sm_Period);
-        }
-    }
-
-    // Retrieve positionnal arguments
-    QStringList l_PositionalArguments = l_Parser.positionalArguments();
-    if( l_PositionalArguments.count() >= 1 )
-    {
-        sm_FileName = l_PositionalArguments[0];
-    }
+    sm_Timer = new QTimer(this);
+    connect(sm_Timer, &QTimer::timeout, this, &MeMoToApplication::displayModeFileUpdateTick);
 }
 
 int MeMoToApplication::exec()
 {
-    int l_Ret = -1;
+    createDiagrams();
+    loadFileIfNeeded();
 
-    // Creates the diagrams
-    sm_Diagrams.append(new ClassDiagramScene());
-    sm_Diagrams.append(new SMDiagramScene());
+    // Each one of these methods will exit with their own error code
+    runPNGDumpIfAsked();
+    runAsServerIfAsked();
+    runAsGUI();
 
-    if( "" != sm_FileName )
-    {
-        loadDiagrams();
-    }
-
-    // Switch to the default diagram
-    bool l_Found = false;
-    unsigned short l_defaultDiagram = 0U;
-    for(unsigned short i_diagrams = 0U;
-        (i_diagrams < sm_Diagrams.count()) && (false == l_Found);
-        i_diagrams++ )
-    {
-        if( getDefaultDiagarm() == sm_Diagrams[i_diagrams]->getSerializableName() )
-        {
-            l_defaultDiagram = i_diagrams;
-            l_Found = true;
-        }
-    }
-
-    if( !MeMoToApplication::isHeadless() )
-    {
-        // Initialize the main window
-        sm_MW = new MainWindow();
-        for(unsigned short i_diagrams = 0U; i_diagrams < sm_Diagrams.count(); i_diagrams++)
-        {
-            sm_MW->addDiagram(sm_Diagrams[i_diagrams]);
-        }
-
-        sm_MW->switchToContext(l_defaultDiagram, true);
-        if( "" != sm_FocusOn )
-        {
-            sm_MW->getCurrentDiagram()->focusOnItem("", "", sm_FocusOn, 0U, false, true);
-        }
-
-        // Regular run
-        sm_MW->show();
-
-        l_Ret = QApplication::exec();
-    }
-    else
-    {
-        // Headless run
-        if( "" != MeMoToApplication::getPNGToCreate() )
-        {
-            // Need to generate PNG file
-            l_Ret = sm_Diagrams.at(l_defaultDiagram)->printPressed(MeMoToApplication::getPNGToCreate());
-        }
-
-        if( isHeadless() )
-        {
-            // Run the server mode
-            QString l_debugString("Will start server at " + QString(sm_ServerIP) + " on server port " + QString::number(sm_ServerPort));
-            qDebug() << l_debugString;
-            SharingManager::getInstance().start(sm_ServerIP, sm_ServerPort);
-            l_Ret = QApplication::exec();
-        }
-    }
-    return l_Ret;
+    return 0;
 }
 
 QString MeMoToApplication::FileExtension()
@@ -210,11 +61,11 @@ QString MeMoToApplication::SharedFileExtension()
     return QString(".memos");
 }
 
-bool MeMoToApplication::isHeadless()
+bool MeMoToApplication::isServer()
 {
     bool l_Ret = false;
 
-    if( QString("") != sm_OutputString || sm_isHeadless )
+    if( sm_isServer )
     {
         l_Ret = true;
     }
@@ -227,9 +78,28 @@ bool MeMoToApplication::isReadOnly()
     return sm_isReadOnly;
 }
 
-const QString& MeMoToApplication::getDefaultDiagarm()
+const QString& MeMoToApplication::getDefaultDiagram()
 {
     return sm_DefaultDiagram;
+}
+
+unsigned short MeMoToApplication::getDefaultDiagramID()
+{
+    // Switch to the default diagram
+    bool l_Found = false;
+    unsigned short l_defaultDiagram = 0U;
+    for(unsigned short i_diagrams = 0U;
+        (i_diagrams < sm_Diagrams.count()) && (false == l_Found);
+        i_diagrams++ )
+    {
+        if( getDefaultDiagram() == sm_Diagrams[i_diagrams]->getSerializableName() )
+        {
+            l_defaultDiagram = i_diagrams;
+            l_Found = true;
+        }
+    }
+
+    return l_defaultDiagram;
 }
 
 const QString& MeMoToApplication::getPNGToCreate()
@@ -350,4 +220,208 @@ const QString& MeMoToApplication::getFileName()
 void MeMoToApplication::displayModeFileUpdateTick()
 {
     MeMoToApplication::loadDiagrams();
+}
+
+void MeMoToApplication::createAndHandleArguments()
+{
+    QCommandLineParser l_Parser;
+    l_Parser.setApplicationDescription("MErgeable MOdeling TOol: A DevOps oriented modeling tool");
+    l_Parser.addHelpOption();
+    l_Parser.addVersionOption();
+
+    // The file to open
+    l_Parser.addPositionalArgument("file", "File to open");
+
+    // The options
+    QCommandLineOption l_PngOutputOption("output-png",
+                                        "MeMoTo will output a png file from the given memoto file, use default-diagram option to output needed diagram",
+                                        "Output png file",
+                                        "");
+    l_Parser.addOption(l_PngOutputOption);
+
+    QCommandLineOption l_DefaultDiagram("default-diagram",
+                                        "MeMoTo will open on the given diagram, can be ClassDiagram or StateMachine",
+                                        "Default diagram",
+                                        "ClassDiagram");
+    l_Parser.addOption(l_DefaultDiagram);
+
+    QCommandLineOption l_FocusOption("focus-on",
+                                     "MeMoTo will open the application on the first occurence of given value in default diagram displayed (see default-diagram option)",
+                                     "Focus on item",
+                                     "");
+    l_Parser.addOption(l_FocusOption);
+
+    QCommandLineOption l_HeadlessOption("server",
+                                        "MeMoTo will run headless and automatically open a session on given IP:PORT");
+    l_Parser.addOption(l_HeadlessOption);
+
+    QCommandLineOption l_DisplayerOption("displayer",
+                                         "MeMoTo will run headless as for server, but read only and will refresh from the given file at the given period in milliseconds",
+                                         "Activate displayer mode with refresh period, default is " + QString::number(sm_Period),
+                                         "Period");
+    l_Parser.addOption(l_DisplayerOption);
+
+    QCommandLineOption l_ServerInterfaceOption("interface",
+                                               "Mandatory if server is selected, will listen on the given IP address",
+                                               "The IP address to listen to",
+                                               "IPAddress");
+    l_Parser.addOption(l_ServerInterfaceOption);
+
+    QCommandLineOption l_ServerPortOption("port",
+                                          "If server is selected, will listen on the given port",
+                                          "The port to listen to, default is " + QString::number(sm_CollaborativePort),
+                                          QString::number(sm_CollaborativePort));
+    l_Parser.addOption(l_ServerPortOption);
+
+    QCommandLineOption l_ClientOption("client",
+                                      "MeMoTo will open the GUI and automatically connect to the given IP:PORT"
+                                      "Activate client autoconnect");
+    l_Parser.addOption(l_ClientOption);
+
+    l_Parser.process(*this);
+
+    // Retrieve value arguments
+    sm_OutputString = l_Parser.value(l_PngOutputOption);
+    sm_DefaultDiagram = l_Parser.value(l_DefaultDiagram);
+    sm_FocusOn = l_Parser.value(l_FocusOption);
+
+    sm_isServer = l_Parser.isSet(l_HeadlessOption);
+    sm_isInDisplayMode = l_Parser.isSet(l_DisplayerOption);
+    sm_isAutoconnect = l_Parser.isSet(l_ClientOption);
+
+    // Optionnal values
+    sm_ServerIP = l_Parser.value(l_ServerInterfaceOption);
+    sm_ServerPort = l_Parser.value(l_ServerPortOption).toInt();
+
+    // Retrieve positionnal arguments
+    QStringList l_PositionalArguments = l_Parser.positionalArguments();
+    if( l_PositionalArguments.count() >= 1 )
+    {
+        sm_FileName = l_PositionalArguments[0];
+    }
+
+    // Check if optionnal values have been given depending on context
+    if( sm_isServer || sm_isInDisplayMode || sm_isAutoconnect )
+    {
+        if( "" == sm_ServerIP )
+        {
+            qCritical("\nWhen activating server or client option, an interface IP address is needed");
+            l_Parser.showHelp();
+            exit(-1);
+        }
+    }
+
+    if( sm_isInDisplayMode )
+    {
+        bool l_isPeriodOK = false;
+        sm_Period = l_Parser.value(l_DisplayerOption).toUInt(&l_isPeriodOK);
+        if(!l_isPeriodOK)
+        {
+            qCritical("Bad period given");
+            l_Parser.showHelp();
+            exit(-1);
+        }
+    }
+}
+
+void MeMoToApplication::loadFileIfNeeded()
+{
+    if( "" != sm_FileName )
+    {
+        loadDiagrams();
+    }
+}
+
+void MeMoToApplication::focusItemIfAsked()
+{
+    if( "" == sm_FocusOn )
+    {
+        return;
+    }
+
+    Q_ASSERT(sm_MW);
+    sm_MW->getCurrentDiagram();
+
+    I_DiagramContainer* currentDiagram = sm_MW->getCurrentDiagram();
+    Q_ASSERT(nullptr != currentDiagram);
+
+    currentDiagram->focusOnItem("", "", sm_FocusOn, 0U, false, true);
+}
+
+void MeMoToApplication::autoConnectIfAsked()
+{
+    if(!sm_isAutoconnect)
+    {
+        return;
+    }
+
+    SharingManager::getInstance().sharingHostSelected(sm_ServerIP, sm_ServerPort);
+}
+
+void MeMoToApplication::runAsServerIfAsked()
+{
+    if( !isServer() )
+    {
+        return;
+    }
+
+    // Run the server mode
+    QString l_debugString("Will start server at " + QString(sm_ServerIP) + " on server port " + QString::number(sm_ServerPort));
+    qDebug() << l_debugString;
+    SharingManager::getInstance().start(sm_ServerIP, sm_ServerPort);
+
+    if( sm_isInDisplayMode )
+    {
+        Q_ASSERT(nullptr != sm_Timer);
+        sm_Timer->start(sm_Period);
+    }
+
+    exit(QApplication::exec());
+}
+
+void MeMoToApplication::runAsGUI()
+{
+    initWindow();
+
+    Q_ASSERT(nullptr != sm_MW);
+    sm_MW->switchToContext(getDefaultDiagramID(), true);
+
+    focusItemIfAsked();
+
+    autoConnectIfAsked();
+
+    // Regular run
+    sm_MW->show();
+
+    exit(QApplication::exec());
+}
+
+void MeMoToApplication::runPNGDumpIfAsked()
+{
+    if( "" == MeMoToApplication::getPNGToCreate() )
+    {
+        return;
+    }
+
+    // Need to generate PNG file
+    exit(sm_Diagrams.at(getDefaultDiagramID())->printPressed(MeMoToApplication::getPNGToCreate()));
+}
+
+void MeMoToApplication::createDiagrams()
+{
+    // Creates the diagrams
+    sm_Diagrams.append(new ClassDiagramScene());
+    sm_Diagrams.append(new SMDiagramScene());
+}
+
+void MeMoToApplication::initWindow()
+{
+    Q_ASSERT(nullptr == sm_MW);
+
+    // Initialize the main window
+    sm_MW = new MainWindow();
+    for(unsigned short i_diagrams = 0U; i_diagrams < sm_Diagrams.count(); i_diagrams++)
+    {
+        sm_MW->addDiagram(sm_Diagrams[i_diagrams]);
+    }
 }

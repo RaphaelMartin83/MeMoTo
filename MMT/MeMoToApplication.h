@@ -22,9 +22,10 @@ public:
     static QString FileExtension();
     static QString SharedFileExtension();
 
-    static bool isHeadless();
+    static bool isServer();
     static bool isReadOnly();
-    static const QString& getDefaultDiagarm();
+    static const QString &getDefaultDiagram();
+    static unsigned short getDefaultDiagramID();
     static const QString& getPNGToCreate();
     static const QString& getServerIP();
     static const quint16& getServerPort();
@@ -50,6 +51,16 @@ public:
     void displayModeFileUpdateTick();
 
 private:
+    void createAndHandleArguments();
+    static void loadFileIfNeeded();
+    static void focusItemIfAsked();
+    static void autoConnectIfAsked();
+    static void runAsServerIfAsked();
+    static void runAsGUI();
+    static void runPNGDumpIfAsked();
+    static void createDiagrams();
+    static void initWindow();
+
     static QString sm_OutputString;
     static QString sm_DefaultDiagram;
     static QString sm_FocusOn;
@@ -65,13 +76,16 @@ private:
 
     static bool sm_hasChangesUnsaved;
 
-    static bool sm_isHeadless;
+    static bool sm_isServer;
+    static bool sm_isInDisplayMode;
 
     static bool sm_isReadOnly;
 
+    static bool sm_isAutoconnect;
+
     static QString sm_FileName;
 
-    QTimer m_timer;
+    static QTimer* sm_Timer;
 };
 
 #endif // MEMOTOAPPLICATION_H
