@@ -29,6 +29,9 @@ public:
     bool isCurved() const;
     void setCurved(bool p_isCurved);
 
+    void setEndReduction(int endReduction);
+    void setStartReduction(int startReduction);
+
     // I_Selectable
     void select();
     void select(QPoint p_Pos);
@@ -65,6 +68,8 @@ private:
     int m_SelectedHandleID;
     bool m_isFullySelected;
     bool m_isCurved;
+    int m_endReduction;
+    int m_startReduction;
 };
 
 #endif // GRAPHICCONNECTOR_H

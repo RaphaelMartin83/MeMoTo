@@ -13,6 +13,7 @@
 const char* AggregationGraphicsItem::SERIALIZABLE_NAME = "Aggregations";
 
 static AggregationConfiguration* s_ConfigurationContext;
+static int aggregationStartReduction = 20;
 
 AggregationGraphicsItem::AggregationGraphicsItem(
             const I_Connectable* p_ConnectFrom,
@@ -34,6 +35,7 @@ AggregationGraphicsItem::AggregationGraphicsItem(
         ls_isConfigInited = true;
         s_ConfigurationContext = new AggregationConfiguration();
     }
+    this->setStartReduction(aggregationStartReduction);
     AggregationGraphicsItem::refreshDisplay();
 }
 
@@ -58,6 +60,7 @@ AggregationGraphicsItem::AggregationGraphicsItem(
         ls_isConfigInited = true;
         s_ConfigurationContext = new AggregationConfiguration();
     }
+    this->setStartReduction(aggregationStartReduction);
     AggregationGraphicsItem::refreshDisplay();
 }
 
@@ -86,6 +89,7 @@ AggregationGraphicsItem::AggregationGraphicsItem(const QJsonObject& p_JsonObject
         m_AttributeNames.append(l_ArrayItem->toString());
     }
 
+    this->setStartReduction(aggregationStartReduction);
     AggregationGraphicsItem::refreshDisplay();
 }
 

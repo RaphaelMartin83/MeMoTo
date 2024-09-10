@@ -12,6 +12,7 @@
 const char* CompositionGraphicsItem::SERIALIZABLE_NAME = "Compositions";
 
 static CompositionConfiguration* s_ConfigurationContext;
+static int compositionStartReduction = 20;
 
 CompositionGraphicsItem::CompositionGraphicsItem(
             const I_Connectable* p_ConnectFrom,
@@ -33,6 +34,7 @@ CompositionGraphicsItem::CompositionGraphicsItem(
         ls_isConfigInited = true;
         s_ConfigurationContext = new CompositionConfiguration();
     }
+    this->setStartReduction(compositionStartReduction);
     CompositionGraphicsItem::refreshDisplay();
 }
 
@@ -57,6 +59,7 @@ CompositionGraphicsItem::CompositionGraphicsItem(
         ls_isConfigInited = true;
         s_ConfigurationContext = new CompositionConfiguration();
     }
+    this->setStartReduction(compositionStartReduction);
     CompositionGraphicsItem::refreshDisplay();
 }
 
@@ -85,6 +88,7 @@ CompositionGraphicsItem::CompositionGraphicsItem(const QJsonObject& p_JsonObject
         m_AttributeNames.append(l_ArrayItem->toString());
     }
 
+    this->setStartReduction(compositionStartReduction);
     CompositionGraphicsItem::refreshDisplay();
 }
 
