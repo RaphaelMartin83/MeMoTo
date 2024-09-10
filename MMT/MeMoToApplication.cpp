@@ -381,6 +381,9 @@ void MeMoToApplication::runAsServerIfAsked()
 
 void MeMoToApplication::runAsGUI()
 {
+    // Fusion style is system style sensitive (dark or light)
+    QApplication::setStyle("Fusion");
+
     initWindow();
 
     Q_ASSERT(nullptr != sm_MW);
