@@ -10,6 +10,8 @@ const char* ImplementationGraphicsItem::SERIALIZABLE_NAME="Implementations";
 
 static ImplementationConfiguration* s_ConfigurationContext = nullptr;
 
+static int implementationStartReduction = 2;
+
 ImplementationGraphicsItem::ImplementationGraphicsItem(
         const I_Connectable *p_ConnectFrom,
         const I_Connectable *p_ConnectTo,
@@ -26,6 +28,7 @@ ImplementationGraphicsItem::ImplementationGraphicsItem(
         ls_isConfigInited = true;
         s_ConfigurationContext = new ImplementationConfiguration();
     }
+    this->setStartReduction(implementationStartReduction);
     ImplementationGraphicsItem::refreshDisplay();
 }
 
@@ -46,6 +49,7 @@ ImplementationGraphicsItem::ImplementationGraphicsItem(
         ls_isConfigInited = true;
         s_ConfigurationContext = new ImplementationConfiguration();
     }
+    this->setStartReduction(implementationStartReduction);
     ImplementationGraphicsItem::refreshDisplay();
 }
 
@@ -61,6 +65,7 @@ ImplementationGraphicsItem::ImplementationGraphicsItem(const QJsonObject& p_Json
         ls_isConfigInited = true;
         s_ConfigurationContext = new ImplementationConfiguration();
     }
+    this->setStartReduction(implementationStartReduction);
     ImplementationGraphicsItem::refreshDisplay();
 }
 

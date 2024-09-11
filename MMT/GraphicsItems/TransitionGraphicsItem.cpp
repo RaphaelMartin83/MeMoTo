@@ -20,6 +20,8 @@ const char* TransitionGraphicsItem::SERIALIZABLE_NAME = "Transitions";
 
 static TransitionConfiguration* s_ConfigurationContext = nullptr;
 
+static int transitionStartReduction = 2;
+
 TransitionGraphicsItem::TransitionGraphicsItem(
             const I_Connectable* p_ConnectFrom,
             const I_Connectable* p_ConnectTo,
@@ -41,6 +43,7 @@ TransitionGraphicsItem::TransitionGraphicsItem(
         this->setCurved(true);
     }
 
+    this->setStartReduction(transitionStartReduction);
     TransitionGraphicsItem::refreshDisplay();
 }
 TransitionGraphicsItem::TransitionGraphicsItem(
@@ -65,6 +68,7 @@ TransitionGraphicsItem::TransitionGraphicsItem(
         this->setCurved(true);
     }
 
+    this->setStartReduction(transitionStartReduction);
     TransitionGraphicsItem::refreshDisplay();
 }
 TransitionGraphicsItem::TransitionGraphicsItem(const QJsonObject& p_JsonObject,
@@ -82,6 +86,7 @@ TransitionGraphicsItem::TransitionGraphicsItem(const QJsonObject& p_JsonObject,
         this->setCurved(true);
     }
 
+    this->setStartReduction(transitionStartReduction);
     TransitionGraphicsItem::refreshDisplay();
 }
 
