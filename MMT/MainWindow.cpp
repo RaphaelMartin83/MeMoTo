@@ -215,8 +215,6 @@ void MainWindow::initGUI()
     m_DiagramView->setMinimumHeight(700);
     m_DiagramView->setMouseTracking(true);
 
-    ConfigWidget::getInstance().setFixedWidth(200);
-
     m_mainLayout->addWidget(m_ToolBoxView, 0, 0, 1, 2, Qt::Alignment());
     m_mainLayout->addWidget(m_PrevDiagButton, 1, 0, 1, 1, Qt::Alignment());
     m_mainLayout->addWidget(m_NextDiagButton, 1, 1, 1, 1, Qt::Alignment());

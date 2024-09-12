@@ -23,7 +23,9 @@ QWidget& ConfigWidget::getInstance()
     if(false == m_isInit)
     {
         m_Layout = new QGridLayout();
+        Q_ASSERT(nullptr != m_Layout);
         m_Me = new QWidget();
+        Q_ASSERT(nullptr != m_Me);
         m_Me->setLayout(m_Layout);
         m_Me->setVisible(false);
 
@@ -64,7 +66,8 @@ void ConfigWidget::open(I_ConfigurationContent* p_Widget)
             m_Layout->removeWidget(m_ContentsStack->last());
         }
 
-        ConfigWidget::getInstance().setFixedWidth(p_Widget->getWidth());
+        ConfigWidget::getInstance().resize(p_Widget->getWidth(),
+                                           ConfigWidget::getInstance().height());
         m_ContentsStack->append(p_Widget);
         m_Me->setVisible(true);
 
