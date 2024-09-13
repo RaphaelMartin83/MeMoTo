@@ -24,7 +24,7 @@ public:
 
     static bool isServer();
     static bool isReadOnly();
-    static const QString &getDefaultDiagram();
+    static const QString& getDefaultDiagram();
     static unsigned short getDefaultDiagramID();
     static const QString& getPNGToCreate();
     static const QString& getServerIP();

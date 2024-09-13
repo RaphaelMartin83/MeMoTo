@@ -26,6 +26,8 @@ GraphicConnector::GraphicConnector(
   , m_SelectedHandleID(-1)
   , m_isFullySelected(false)
   , m_isCurved(false)
+  , m_endReduction(3)
+  , m_startReduction(0)
 {
     // All Connectors are on the highest plan possible
     this->setPlan(0U);
@@ -46,6 +48,8 @@ GraphicConnector::GraphicConnector(
   , m_SelectedHandleID(-1)
   , m_isFullySelected(false)
   , m_isCurved(false)
+  , m_endReduction(3)
+  , m_startReduction(0)
 {
     this->setPlan(0U);
     GraphicConnector::refreshDisplay();
@@ -60,6 +64,8 @@ GraphicConnector::GraphicConnector(const QJsonObject& p_JsonObject,
   , m_SelectedHandleID(-1)
   , m_isFullySelected(false)
   , m_isCurved(false)
+  , m_endReduction(3)
+  , m_startReduction(0)
 {
     this->setPlan(0U);
     GraphicConnector::refreshDisplay();
@@ -150,7 +156,18 @@ void GraphicConnector::setupLines()
             QLineF l_LineToAdd(this->getPath()[i_points], this->getPath()[i_points + 1U]);
             if( i_points == (this->getPath().count() - 2U) )
             {
-                l_LineToAdd.setLength(l_LineToAdd.length() - 3);
+                l_LineToAdd.setLength(l_LineToAdd.length() - m_endReduction);
+            }
+            if( i_points == 0U && 0 != m_startReduction)
+            {
+                // Reverse the line to reduce its length from the start
+                QPointF p1 = l_LineToAdd.p1();
+                QPointF p2 = l_LineToAdd.p2();
+                l_LineToAdd.setPoints(p2, p1);
+                l_LineToAdd.setLength(l_LineToAdd.length() - m_startReduction);
+                p1 = l_LineToAdd.p1();
+                p2 = l_LineToAdd.p2();
+                l_LineToAdd.setPoints(p2, p1);
             }
             m_Lines.append(new QGraphicsLineItem(l_LineToAdd));
             m_Lines.last()->setPen(QPen(GRAPHIC_CONNECTOR_COLOR, GRAPHIC_CONNECTOR_THICKNESS));
@@ -265,6 +282,15 @@ void GraphicConnector::setLinesPen(QPen p_Pen)
 unsigned short GraphicConnector::getThickness() const
 {
     return GRAPHIC_CONNECTOR_THICKNESS;
+}
+
+void GraphicConnector::setEndReduction(int endReduction)
+{
+    m_endReduction = endReduction;
+}
+void GraphicConnector::setStartReduction(int startReduction)
+{
+    m_startReduction = startReduction;
 }
 
 void GraphicConnector::select()

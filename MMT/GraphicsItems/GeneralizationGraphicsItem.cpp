@@ -9,6 +9,8 @@ const char* GeneralizationGraphicsItem::SERIALIZABLE_NAME="Generalizations";
 
 static GeneralizationConfiguration* s_ConfigurationContext = nullptr;
 
+static int generalizationStartReduction = 2;
+
 GeneralizationGraphicsItem::GeneralizationGraphicsItem(
         const I_Connectable *p_ConnectFrom,
         const I_Connectable *p_ConnectTo,
@@ -25,6 +27,7 @@ GeneralizationGraphicsItem::GeneralizationGraphicsItem(
         ls_isConfigInited = true;
         s_ConfigurationContext = new GeneralizationConfiguration();
     }
+    this->setStartReduction(generalizationStartReduction);
     GeneralizationGraphicsItem::refreshDisplay();
 }
 
@@ -45,6 +48,7 @@ GeneralizationGraphicsItem::GeneralizationGraphicsItem(
         ls_isConfigInited = true;
         s_ConfigurationContext = new GeneralizationConfiguration();
     }
+    this->setStartReduction(generalizationStartReduction);
     GeneralizationGraphicsItem::refreshDisplay();
 }
 
@@ -60,6 +64,7 @@ GeneralizationGraphicsItem::GeneralizationGraphicsItem(const QJsonObject& p_Json
         ls_isConfigInited = true;
         s_ConfigurationContext = new GeneralizationConfiguration();
     }
+    this->setStartReduction(generalizationStartReduction);
     GeneralizationGraphicsItem::refreshDisplay();
 }
 

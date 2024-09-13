@@ -7,6 +7,7 @@
 #include <QGridLayout>
 #include <QPushButton>
 #include <QMenuBar>
+#include <QSplitter>
 
 #include <Engine/I_DiagramContainer.h>
 #include <Engine/DiagramGraphicsView.h>
@@ -79,6 +80,7 @@ private:
     QMenu* m_EditMenu;
 
     QGridLayout* m_mainLayout;
+    QSplitter* m_splitter;
     QWidget* m_centralWidget;
 
     QPushButton* m_PrevDiagButton;

@@ -197,28 +197,36 @@ void MainWindow::initGUI()
     this->setWindowIcon(MeMoToApplication::getLogo());
 
     m_mainLayout = new QGridLayout();
+    Q_ASSERT(nullptr != m_mainLayout);
 
     m_PrevDiagButton = new QPushButton("<-");
+    Q_ASSERT(nullptr != m_PrevDiagButton);
     m_PrevDiagButton->setFixedWidth(47);
     m_NextDiagButton = new QPushButton("->");
+    Q_ASSERT(nullptr != m_NextDiagButton);
     m_NextDiagButton->setFixedWidth(47);
 
     m_ToolBoxView = new QGraphicsView();
+    Q_ASSERT(nullptr != m_ToolBoxView);
     m_ToolBoxView->setFixedWidth(100);
     m_DiagramView = new DiagramGraphicsView();
+    Q_ASSERT(nullptr != m_DiagramView);
     m_DiagramView->setMinimumWidth(700);
     m_DiagramView->setMinimumHeight(700);
     m_DiagramView->setMouseTracking(true);
 
-    ConfigWidget::getInstance().setFixedWidth(200);
-
     m_mainLayout->addWidget(m_ToolBoxView, 0, 0, 1, 2, Qt::Alignment());
     m_mainLayout->addWidget(m_PrevDiagButton, 1, 0, 1, 1, Qt::Alignment());
     m_mainLayout->addWidget(m_NextDiagButton, 1, 1, 1, 1, Qt::Alignment());
-    m_mainLayout->addWidget(m_DiagramView, 0, 2, -1, 1, Qt::Alignment());
-    m_mainLayout->addWidget(&ConfigWidget::getInstance(), 0, 3, -1, 1, Qt::Alignment());
+
+    m_splitter = new QSplitter();
+    Q_ASSERT(nullptr != m_splitter);
+    m_splitter->addWidget(m_DiagramView);
+    m_splitter->addWidget(&ConfigWidget::getInstance());
+    m_mainLayout->addWidget(m_splitter, 0, 2, -1, 1, Qt::Alignment());
 
     m_centralWidget = new QWidget();
+    Q_ASSERT(nullptr != m_centralWidget);
     m_centralWidget->setLayout(m_mainLayout);
 
     this->setCentralWidget(m_centralWidget);
@@ -227,6 +235,7 @@ void MainWindow::initGUI()
 
     m_MenuBar = this->menuBar();
     m_FileMenu = new QMenu("File");
+    Q_ASSERT(nullptr != m_FileMenu);
     QList<QAction*> l_ActionsListFile;
     l_ActionsListFile.append(new QAction("New"));
     l_ActionsListFile.append(new QAction("Open"));
@@ -235,6 +244,7 @@ void MainWindow::initGUI()
     l_ActionsListFile.append(new QAction("Save as"));
     m_FileMenu->addActions(l_ActionsListFile);
     m_EditMenu = new QMenu("Edit");
+    Q_ASSERT(nullptr != m_EditMenu);
     QList<QAction*> l_ActionsListEdit;
     l_ActionsListEdit.append(new QAction("Undo"));
     l_ActionsListEdit.append(new QAction("Redo"));
