@@ -56,7 +56,6 @@ public:
 
     // I_Configurable
     void openConfiguration();
-    void closeConfiguration();
     void applyConfiguration();
 
     // I_Serializable

@@ -1,6 +1,7 @@
 #include "I_ConfigurationContent.h"
-
 #include "I_DiagramContainer.h"
+
+#include <Engine/I_Configurable.h>
 
 I_Configurable* I_ConfigurationContent::getListener() const
 {

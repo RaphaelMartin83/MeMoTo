@@ -11,7 +11,6 @@
 
 const char* CompositionGraphicsItem::SERIALIZABLE_NAME = "Compositions";
 
-static CompositionConfiguration* s_ConfigurationContext;
 static int compositionStartReduction = 20;
 static int compositionEndReduction = 2;
 
@@ -28,13 +27,6 @@ CompositionGraphicsItem::CompositionGraphicsItem(
   , m_LabelWidth()
   , m_Tip(nullptr)
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new CompositionConfiguration();
-    }
     this->setStartReduction(compositionStartReduction);
     this->setEndReduction(compositionEndReduction);
     CompositionGraphicsItem::refreshDisplay();
@@ -54,13 +46,6 @@ CompositionGraphicsItem::CompositionGraphicsItem(
   , m_LabelWidth()
   , m_Tip(nullptr)
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new CompositionConfiguration();
-    }
     this->setStartReduction(compositionStartReduction);
     this->setEndReduction(compositionEndReduction);
     CompositionGraphicsItem::refreshDisplay();
@@ -75,14 +60,6 @@ CompositionGraphicsItem::CompositionGraphicsItem(const QJsonObject& p_JsonObject
   , m_LabelWidth()
   , m_Tip(nullptr)
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new CompositionConfiguration();
-    }
-
     QJsonArray l_AttributesJson = p_JsonObject.find("AttributesNames")->toArray();
     m_AttributeNames.clear();
     for( QJsonArray::Iterator l_ArrayItem = l_AttributesJson.begin();
@@ -169,25 +146,21 @@ QString CompositionGraphicsItem::getDataFromField(const QString& p_FieldName) co
 // I_Configurable
 void CompositionGraphicsItem::openConfiguration()
 {
-    s_ConfigurationContext->registerDiagram(this->getDiagramContainer());
-    s_ConfigurationContext->setListener(this->getSelectableType(), this->getID());
+    this->getConfig<CompositionConfiguration>().registerDiagram(this->getDiagramContainer());
+    this->getConfig<CompositionConfiguration>().setListener(this->getSelectableType(), this->getID());
 
     // initializes module with parameters
-    s_ConfigurationContext->setAttributes(m_AttributeNames);
+    this->getConfig<CompositionConfiguration>().setAttributes(m_AttributeNames);
 
-    s_ConfigurationContext->setAutoRoute(!this->getPathIsForced());
+    this->getConfig<CompositionConfiguration>().setAutoRoute(!this->getPathIsForced());
 
     // Let's rock
-    ConfigWidget::open(s_ConfigurationContext);
-}
-void CompositionGraphicsItem::closeConfiguration()
-{
-    ConfigWidget::close();
+    ConfigWidget::open(&this->getConfig<CompositionConfiguration>());
 }
 void CompositionGraphicsItem::applyConfiguration()
 {
-    this->setAttributeNames(s_ConfigurationContext->getAttributes());
-    this->setPathIsForced(!s_ConfigurationContext->getAutoRoute());
+    this->setAttributeNames(this->getConfig<CompositionConfiguration>().getAttributes());
+    this->setPathIsForced(!this->getConfig<CompositionConfiguration>().getAutoRoute());
 
     if( false == this->getPathIsForced() )
     {
@@ -197,7 +170,7 @@ void CompositionGraphicsItem::applyConfiguration()
 
     this->getDiagramContainer()->changed(this);
 
-    ConfigWidget::close();
+    this->closeConfiguration();
 }
 
 // I_Serializable

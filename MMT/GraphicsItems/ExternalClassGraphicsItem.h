@@ -23,7 +23,6 @@ public:
 
     // I_Configurable
     void openConfiguration();
-    void closeConfiguration();
     void applyConfiguration();
 
     // I_Connectable
@@ -38,7 +37,7 @@ public:
     const QString& getPath() const;
     void setRootAndPath(const QString& p_Root,
                         const QString& p_Path);
-    QString getResolvedFullPath() const;
+    QString getResolvedFullPath();
     void refreshDisplay();
 
     void fromExternalJson(QJsonObject p_Json);

@@ -7,8 +7,6 @@
 
 const char* GeneralizationGraphicsItem::SERIALIZABLE_NAME="Generalizations";
 
-static GeneralizationConfiguration* s_ConfigurationContext = nullptr;
-
 static int generalizationStartReduction = 2;
 
 GeneralizationGraphicsItem::GeneralizationGraphicsItem(
@@ -20,13 +18,6 @@ GeneralizationGraphicsItem::GeneralizationGraphicsItem(
     GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container)
   , m_Arrow()
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new GeneralizationConfiguration();
-    }
     this->setStartReduction(generalizationStartReduction);
     GeneralizationGraphicsItem::refreshDisplay();
 }
@@ -41,13 +32,6 @@ GeneralizationGraphicsItem::GeneralizationGraphicsItem(
     GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container, p_ForcedPath)
   , m_Arrow()
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new GeneralizationConfiguration();
-    }
     this->setStartReduction(generalizationStartReduction);
     GeneralizationGraphicsItem::refreshDisplay();
 }
@@ -57,13 +41,6 @@ GeneralizationGraphicsItem::GeneralizationGraphicsItem(const QJsonObject& p_Json
     GraphicConnector(p_JsonObject, p_Container)
   , m_Arrow()
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new GeneralizationConfiguration();
-    }
     this->setStartReduction(generalizationStartReduction);
     GeneralizationGraphicsItem::refreshDisplay();
 }
@@ -133,21 +110,17 @@ QString GeneralizationGraphicsItem::getDataFromField(const QString& p_FieldName)
 // I_Configurable
 void GeneralizationGraphicsItem::openConfiguration()
 {
-    s_ConfigurationContext->registerDiagram(this->getDiagramContainer());
-    s_ConfigurationContext->setListener(this->getSelectableType(), this->getID());
+    this->getConfig<GeneralizationConfiguration>().registerDiagram(this->getDiagramContainer());
+    this->getConfig<GeneralizationConfiguration>().setListener(this->getSelectableType(), this->getID());
 
-    s_ConfigurationContext->setAutoRoute(!this->getPathIsForced());
+    this->getConfig<GeneralizationConfiguration>().setAutoRoute(!this->getPathIsForced());
 
     // Let's rock
-    ConfigWidget::open(s_ConfigurationContext);
-}
-void GeneralizationGraphicsItem::closeConfiguration()
-{
-    ConfigWidget::close();
+    ConfigWidget::open(&this->getConfig<GeneralizationConfiguration>());
 }
 void GeneralizationGraphicsItem::applyConfiguration()
 {
-    this->setPathIsForced(!s_ConfigurationContext->getAutoRoute());
+    this->setPathIsForced(!this->getConfig<GeneralizationConfiguration>().getAutoRoute());
 
     if( false == this->getPathIsForced() )
     {
