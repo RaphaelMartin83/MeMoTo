@@ -121,6 +121,7 @@ void GeneralizationGraphicsItem::openConfiguration()
 void GeneralizationGraphicsItem::applyConfiguration()
 {
     this->setPathIsForced(!this->getConfig<GeneralizationConfiguration>().getAutoRoute());
+    this->setCurved(this->getConfig<GeneralizationConfiguration>().getCurvedInfo());
 
     if( false == this->getPathIsForced() )
     {
