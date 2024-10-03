@@ -77,31 +77,14 @@ bool GraphicConnector::isCurved() const
 }
 void GraphicConnector::setCurved(bool p_isCurved)
 {
-    if( this->getPath().count() > 4 )
-    {
-        m_isCurved = false;
-    }
-    else
-    {
-        m_isCurved = p_isCurved;
-    }
+    m_isCurved = p_isCurved;
 
     if( m_isCurved )
     {
-        this->setClearanceFromConnectables(CLEARANCE_FROM_CONNECTABLE_CURVE);
         GraphicConnector::reroute();
-
-        if( this->getPath().count() > 4 )
-        {
-            // Special case (very uncommon) where difference in clearance changes route
-            // AND route becomes more complex (more than 4 points)
-            // -> Fall back to a square type path
-            this->setCurved(false);
-        }
     }
     else
     {
-        this->setClearanceFromConnectables(CLEARANCE_FROM_CONNECTABLE_LINES);
         GraphicConnector::reroute();
     }
 }
@@ -117,6 +100,15 @@ void GraphicConnector::route(QPoint p_From, QPoint p_To)
 
 void GraphicConnector::reroute()
 {
+    if( this->isCurved() )
+    {
+        this->setClearanceFromConnectables(CLEARANCE_FROM_CONNECTABLE_CURVE);
+    }
+    else
+    {
+        this->setClearanceFromConnectables(CLEARANCE_FROM_CONNECTABLE_LINES);
+    }
+
     Connector::reroute();
 
     this->unselect();
@@ -216,7 +208,7 @@ void GraphicConnector::refreshDisplay()
 {
     this->clear();
 
-    if( this->isCurved() )
+    if( this->isCurved() && (this->getPath().count() <= 4))
     {
         this->setupCurve();
     }

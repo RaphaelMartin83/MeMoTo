@@ -107,8 +107,6 @@ void ConfigWidget::close()
     if( 0 != m_ContentsStack->count() )
     {
         Q_ASSERT(nullptr != m_ContentsStack->last());
-        m_ContentsStack->last()->setVisible(false);
-
         Q_ASSERT(nullptr != m_Layout);
         m_Layout->removeWidget(m_ContentsStack->last());
         m_ContentsStack->pop_back();
