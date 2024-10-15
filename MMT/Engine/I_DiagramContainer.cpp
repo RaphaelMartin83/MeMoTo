@@ -2,6 +2,7 @@
 #include <QClipboard>
 #include <QGraphicsSceneMouseEvent>
 #include <QFile>
+#include <QtSvg/QSvgGenerator>
 
 #include <MeMoToApplication.h>
 #include <MeMoToThemeDefinition.h>
@@ -152,7 +153,7 @@ void I_DiagramContainer::escapePressed()
 }
 int I_DiagramContainer::printPressed(QString p_OutputFile)
 {
-    QFile l_FileOutput(p_OutputFile + "_" + this->getDiagramString() + ".png");
+    QFile l_FileOutput(p_OutputFile + "_" + this->getDiagramString() + ".svg");
     bool l_isFileWritable = l_FileOutput.open(QIODevice::WriteOnly);
     l_FileOutput.close();
     if( ("" != p_OutputFile) && (!l_isFileWritable) )
@@ -167,19 +168,20 @@ int I_DiagramContainer::printPressed(QString p_OutputFile)
 
     this->clearSelection();
     this->setSceneRect(l_ROI);
-    QImage l_image(this->sceneRect().size().toSize(), QImage::Format_ARGB32);
-    l_image.fill(Qt::white);
 
-    QPainter l_painter(&l_image);
-    this->render(&l_painter);
-    if( "" == p_OutputFile )
-    {
-        l_image.save(this->getDiagramString() + ".png");
-    }
-    else
-    {
-        l_image.save(&l_FileOutput);
-    }
+    QSvgGenerator generator;
+    generator.setFileName(("" != p_OutputFile) ? l_FileOutput.fileName() : (this->getDiagramString() + ".svg"));
+    generator.setSize(this->sceneRect().size().toSize());
+    generator.setViewBox(QRect(0, 0,
+                               this->sceneRect().size().width(),
+                               this->sceneRect().size().height()));
+    generator.setDescription(QObject::tr("MeMoTo diagram exported to SVG"));
+    generator.setTitle(generator.fileName());
+    QPainter painter;
+    painter.begin(&generator);
+    this->render(&painter);
+    painter.end();
+
     this->setSceneRect(QRect(0, 0,
                              this->getDiagramMaxWidth(),
                              this->getDiagramMaxHeight()));
