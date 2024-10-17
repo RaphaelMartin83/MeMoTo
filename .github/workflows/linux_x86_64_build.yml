@@ -1,0 +1,21 @@
+name: Linux x86_64 build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build_memoto_linux_x86_64:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Build
+        uses: addnab/docker-run-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          run: |
+            docker run --rm -v ${{ github.workspace }}:/home/memoto-builder/mmt ghcr.io/raphaelmartin83/qt_compilation

@@ -16,3 +16,7 @@ echo $CR_PAT | docker login ghcr.io -u RaphaelMartin83 --password-stdin
 ## Push!
 
 docker push ghcr.io/raphaelmartin83/qt_compilation:latest
+
+# To run the docker image
+
+docker run -v $MEMOTO_REPO:/home/memoto-builder/mmt -it ghcr.io/raphaelmartin83/qt_compilation
