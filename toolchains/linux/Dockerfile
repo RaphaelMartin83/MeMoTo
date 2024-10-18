@@ -43,18 +43,23 @@ RUN useradd -m -u 1000 --shell /bin/bash memoto-builder
 USER memoto-builder
 WORKDIR /home/memoto-builder
 
+# Qt Version
+ARG QT_MAJOR=6
+ARG QT_MINOR=7
+ARG QT_PATCH=3
+
 # Compile and deploy Qt from source
-RUN wget https://download.qt.io/official_releases/qt/6.7/6.7.3/single/qt-everywhere-src-6.7.3.zip \
-	&& unzip qt-everywhere-src-6.7.3.zip \
-	&& rm qt-everywhere-src-6.7.3.zip \
-	&& sed -i -e 's/\r$//' qt-everywhere-src-6.7.3/configure \
-	&& sed -i -e 's/\r$//' qt-everywhere-src-6.7.3/qtbase/configure \
+RUN wget -q https://download.qt.io/official_releases/qt/$QT_MAJOR.$QT_MINOR/$QT_MAJOR.$QT_MINOR.$QT_PATCH/single/qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH.zip \
+	&& unzip -q qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH.zip \
+	&& rm qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH.zip \
+	&& sed -i -e 's/\r$//' qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH/configure \
+	&& sed -i -e 's/\r$//' qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH/qtbase/configure \
 	&& mkdir -p build \
 	&& cd build \
-	&& ../qt-everywhere-src-6.7.3/configure -release -opensource -confirm-license -nomake examples -nomake tests -skip qt3d -skip qtandroidextras -skip qtcanvas3d -skip qtcharts -skip qtconnectivity -skip qtdatavis3d \
+	&& ../qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH/configure -release -opensource -confirm-license -nomake examples -nomake tests -skip qt3d -skip qtandroidextras -skip qtcanvas3d -skip qtcharts -skip qtconnectivity -skip qtdatavis3d \
 	&& cmake --build . -j6 \
 	&& cmake --install . --prefix $HOME/qt-dev \
-	&& rm -rf ../qt-everywhere-src-6.7.3
+	&& rm -rf ../qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH
 
 # The linuxdeployqt appimage
 RUN wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
@@ -64,6 +69,10 @@ ENV QT_DIR="/home/memoto-builder/qt-dev/" \
 	Qt6_DIR="/home/memoto-builder/qt-dev/"
 
 COPY <<-EOT build.sh
+	set -e
+
+	export PATH=$PATH:$QT_DIR/bin
+
 	cmake -S mmt/MMT/ -B mmt/build
 	cmake --build mmt/build --parallel
 
@@ -85,7 +94,6 @@ COPY <<-EOT build.sh
 	cp mmt/toolchains/linux/MeMoTo.desktop mmt-deploy-root/usr/share/applications/
 	cp mmt/MMT/logo/logo.png mmt-deploy-root/usr/share/icons/hicolor/256x256/apps/MeMoTo.png
 
-	export PATH=$PATH:$QT_DIR/bin
 	squashfs-root/AppRun mmt-deploy-root/usr/share/applications/MeMoTo.desktop -appimage
 
 	# Publishes file to MeMoTo build dir
