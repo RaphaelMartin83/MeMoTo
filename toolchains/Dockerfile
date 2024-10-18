@@ -59,5 +59,6 @@ RUN wget -q https://download.qt.io/official_releases/qt/$QT_MAJOR.$QT_MINOR/$QT_
 	&& ../qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH/configure -release -opensource -confirm-license -nomake examples -nomake tests -skip qt3d -skip qtandroidextras -skip qtcanvas3d -skip qtcharts -skip qtconnectivity -skip qtdatavis3d \
 	&& cmake --build . -j6 \
 	&& cmake --install . --prefix $HOME/qt-dev \
-	&& rm -rf ../qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH
+	&& rm -rf ../qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH \
+	&& cd .. && rm -rf build
 
