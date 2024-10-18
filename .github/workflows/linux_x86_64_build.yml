@@ -17,5 +17,5 @@ jobs:
         run: |
           docker run --rm \
             -v ${{ github.workspace }}:/home/memoto-builder/mmt \
-            ghcr.io/raphaelmartin83/memoto_linux_x86_64
+            ghcr.io/raphaelmartin83/memoto_linux_x86_64:0ee8d25
 
