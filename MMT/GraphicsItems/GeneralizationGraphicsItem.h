@@ -42,7 +42,6 @@ public:
 
     // I_Configurable
     void openConfiguration();
-    void closeConfiguration();
     void applyConfiguration();
 
     static const char* SERIALIZABLE_NAME;

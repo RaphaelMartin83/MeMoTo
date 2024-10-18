@@ -14,8 +14,6 @@ static const char* EXTERNAL_CLASS_CONNECTABLE_NAME = "ExternalClass";
 const char* ExternalClassGraphicsItem::SERIALIZABLE_NAME = "ExternalClass";
 static const QColor DEFAULT_EXTERNAL_CLASS_COLOR = Qt::yellow;
 
-static ExternalClassConfiguration* s_ConfigurationContext;
-
 ExternalClassGraphicsItem::ExternalClassGraphicsItem(
                             const QPoint& p_Pos,
                             unsigned short p_Width,
@@ -24,14 +22,6 @@ ExternalClassGraphicsItem::ExternalClassGraphicsItem(
   , m_Root()
   , m_Path()
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new ExternalClassConfiguration();
-    }
-
     this->setColor(DEFAULT_EXTERNAL_CLASS_COLOR);
 }
 ExternalClassGraphicsItem::ExternalClassGraphicsItem(
@@ -40,14 +30,6 @@ ExternalClassGraphicsItem::ExternalClassGraphicsItem(
   , m_Root(p_Json.find("Root")->toString())
   , m_Path(p_Json.find("Path")->toString())
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new ExternalClassConfiguration();
-    }
-
     ExternalClassGraphicsItem::refreshDisplay();
 }
 
@@ -87,9 +69,10 @@ void ExternalClassGraphicsItem::refreshDisplay()
     I_ClassGraphicsItem::refreshDisplay();
 }
 
-QString ExternalClassGraphicsItem::getResolvedFullPath() const
+QString ExternalClassGraphicsItem::getResolvedFullPath()
 {
-    return s_ConfigurationContext->getResolvedPath(this->getRoot(), this->getPath(), this->getName());
+    return this->getConfig<ExternalClassConfiguration>().getResolvedPath(
+        this->getRoot(), this->getPath(), this->getName());
 }
 
 const QString& ExternalClassGraphicsItem::getRoot() const
@@ -140,36 +123,32 @@ QString ExternalClassGraphicsItem::getSelectableType() const
 
 void ExternalClassGraphicsItem::openConfiguration()
 {
-    s_ConfigurationContext->registerDiagram(this->getDiagramContainer());
-    s_ConfigurationContext->setListener(this->getSelectableType(), this->getID());
+    this->getConfig<ExternalClassConfiguration>().registerDiagram(this->getDiagramContainer());
+    this->getConfig<ExternalClassConfiguration>().setListener(this->getSelectableType(), this->getID());
 
     // initializes module with parameters
-    s_ConfigurationContext->setContentToHide(this->isContentToHide());
-    s_ConfigurationContext->setName(this->getName());
-    s_ConfigurationContext->setRoot(this->getRoot());
-    s_ConfigurationContext->setPath(this->getPath());
-    s_ConfigurationContext->setColor(this->getColorName());
+    this->getConfig<ExternalClassConfiguration>().setContentToHide(this->isContentToHide());
+    this->getConfig<ExternalClassConfiguration>().setName(this->getName());
+    this->getConfig<ExternalClassConfiguration>().setRoot(this->getRoot());
+    this->getConfig<ExternalClassConfiguration>().setPath(this->getPath());
+    this->getConfig<ExternalClassConfiguration>().setColor(this->getColorName());
 
     // Let's rock
-    ConfigWidget::open(s_ConfigurationContext);
-}
-void ExternalClassGraphicsItem::closeConfiguration()
-{
-    ConfigWidget::close();
+    ConfigWidget::open(&this->getConfig<ExternalClassConfiguration>());
 }
 void ExternalClassGraphicsItem::applyConfiguration()
 {
-    this->setContentToHide(s_ConfigurationContext->isContentToHide());
-    this->setName(s_ConfigurationContext->getName());
-    this->setRootAndPath(s_ConfigurationContext->getRoot(),
-                         s_ConfigurationContext->getPath());
-    this->setColor(s_ConfigurationContext->getColor());
+    this->setContentToHide(this->getConfig<ExternalClassConfiguration>().isContentToHide());
+    this->setName(this->getConfig<ExternalClassConfiguration>().getName());
+    this->setRootAndPath(this->getConfig<ExternalClassConfiguration>().getRoot(),
+                         this->getConfig<ExternalClassConfiguration>().getPath());
+    this->setColor(this->getConfig<ExternalClassConfiguration>().getColor());
 
     this->refreshDisplay();
 
     this->getDiagramContainer()->changed(this);
 
-    ConfigWidget::close();
+    this->closeConfiguration();
 }
 
 QString ExternalClassGraphicsItem::getConnectableType() const

@@ -20,6 +20,9 @@ public:
     bool getAutoRoute() const;
     void setAutoRoute(bool p_isAutoRoute);
 
+    void setCurvedInfo(bool p_Curved);
+    bool getCurvedInfo() const;
+
     // I_Selectable overloads
     void select(QPoint p_Pos);
     void unselect();
@@ -36,6 +39,10 @@ private:
 
     QLabel* m_AutoRouteLabel;
     QCheckBox* m_AutoRouteCheckBox;
+
+    // Curved?
+    QLabel* m_CurvedLabel;
+    QCheckBox* m_CurvedCheckBox;
 
     QPushButton* m_OKButton;
     QPushButton* m_CancelButton;

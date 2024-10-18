@@ -5,6 +5,7 @@
 
 #include <CommonGraphics/GraphicConnector.h>
 #include <Engine/I_Configurable.h>
+#include <ConfigurationContexts/AggregationConfiguration.h>
 
 class AggregationGraphicsItem:
         public GraphicConnector,
@@ -42,7 +43,6 @@ public:
 
     // I_Configurable
     void openConfiguration();
-    void closeConfiguration();
     void applyConfiguration();
 
     // I_Serializable

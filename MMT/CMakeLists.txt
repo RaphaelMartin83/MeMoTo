@@ -11,8 +11,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools)
-find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools Network WebSockets)
+find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools Svg)
+find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools Network WebSockets Svg)
 
 set(TS_FILES MMT_en_US.ts)
 
@@ -32,17 +32,17 @@ file(GLOB SHARING_HEADERS "Sharing/*.h")
 file(GLOB SHARING_SOURCES "Sharing/*.cpp")
 
 set(PROJECT_SOURCES
-        main.cpp
-        MeMoToApplication.h MeMoToApplication.cpp MeMoToThemeDefinition.h
-        MainWindow.h MainWindow.cpp
-        ${COMMON_GRAPHICS_HEADERS} ${COMMON_GRAPHICS_SOURCES}
-        ${DIAGRAM_SCENES_HEADERS} ${DIAGRAM_SCENES_SOURCES}
-        ${GRAPHICS_ITEMS_HEADERS} ${GRAPHICS_ITEMS_SOURCES}
-        ${TOOLBOX_SCENES_HEADERS} ${TOOLBOX_SCENES_SOURCES}
-        ${CONFIGURATION_CONTEXTS_HEADERS} ${CONFIGURATION_CONTEXTS_SOURCES}
-        ${ENGINE_HEADERS} ${ENGINE_SOURCES}
-        ${SHARING_HEADERS} ${SHARING_SOURCES}
-        ${TS_FILES}
+    main.cpp
+    MeMoToApplication.h MeMoToApplication.cpp MeMoToThemeDefinition.h
+    MainWindow.h MainWindow.cpp
+    ${COMMON_GRAPHICS_HEADERS} ${COMMON_GRAPHICS_SOURCES}
+    ${DIAGRAM_SCENES_HEADERS} ${DIAGRAM_SCENES_SOURCES}
+    ${GRAPHICS_ITEMS_HEADERS} ${GRAPHICS_ITEMS_SOURCES}
+    ${TOOLBOX_SCENES_HEADERS} ${TOOLBOX_SCENES_SOURCES}
+    ${CONFIGURATION_CONTEXTS_HEADERS} ${CONFIGURATION_CONTEXTS_SOURCES}
+    ${ENGINE_HEADERS} ${ENGINE_SOURCES}
+    ${SHARING_HEADERS} ${SHARING_SOURCES}
+    ${TS_FILES}
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)
@@ -75,9 +75,11 @@ endif()
 
 target_link_libraries(MMT
     PRIVATE
-    Qt${QT_VERSION_MAJOR}::Widgets
-    Qt${QT_VERSION_MAJOR}::Network
-    Qt${QT_VERSION_MAJOR}::WebSockets)
+        Qt${QT_VERSION_MAJOR}::Widgets
+	Qt${QT_VERSION_MAJOR}::Network
+	Qt${QT_VERSION_MAJOR}::WebSockets
+	Qt${QT_VERSION_MAJOR}::Svg
+)
 
 set_target_properties(MMT PROPERTIES
     MACOSX_BUNDLE_GUI_IDENTIFIER my.example.com

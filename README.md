@@ -34,13 +34,13 @@ Let's assume you are developing a critical/complex system and need code to be ge
 - share with ctrl+space
 - open new diagram with ctrl+n
 - find into diagram with ctrl+f
-- print to png with ctrl+p
+- print to svg with ctrl+p
 
 ### MeMoTo can also be run with commands
 
 - --help
 - --version
-- --output-png (headless print png from diagram and close)
+- --output-svg (headless print svg from diagram and close)
 - --default-diagram (since a class can have multiple diagram types, opens MeMoTo on the desired diagram)
 - --focus-on (searchs for the first occurence of the given value and opens MeMoTo to quickly find something)
 
@@ -64,5 +64,5 @@ Note: The sharing feature works like when hosting a videogame. The person with d
 
 # What is planed
 
-- Usability: png generation path asking
+- Usability: svg generation path asking
 

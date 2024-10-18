@@ -1,3 +1,5 @@
+#include <Engine/I_Configurable.h>
+
 #include "StateConfiguration.h"
 
 StateConfiguration::StateConfiguration()

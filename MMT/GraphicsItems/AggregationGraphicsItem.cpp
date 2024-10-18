@@ -6,13 +6,10 @@
 
 #include <CommonGraphics/ConfigWidget.h>
 
-#include <ConfigurationContexts/AggregationConfiguration.h>
-
 #include "AggregationGraphicsItem.h"
 
 const char* AggregationGraphicsItem::SERIALIZABLE_NAME = "Aggregations";
 
-static AggregationConfiguration* s_ConfigurationContext;
 static int aggregationStartReduction = 20;
 static int aggregationEndReduction = 2;
 
@@ -29,15 +26,9 @@ AggregationGraphicsItem::AggregationGraphicsItem(
   , m_LabelWidth()
   , m_Tip(nullptr)
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new AggregationConfiguration();
-    }
     this->setStartReduction(aggregationStartReduction);
     this->setEndReduction(aggregationEndReduction);
+
     AggregationGraphicsItem::refreshDisplay();
 }
 
@@ -55,15 +46,9 @@ AggregationGraphicsItem::AggregationGraphicsItem(
   , m_LabelWidth()
   , m_Tip(nullptr)
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new AggregationConfiguration();
-    }
     this->setStartReduction(aggregationStartReduction);
     this->setEndReduction(aggregationEndReduction);
+
     AggregationGraphicsItem::refreshDisplay();
 }
 
@@ -76,14 +61,6 @@ AggregationGraphicsItem::AggregationGraphicsItem(const QJsonObject& p_JsonObject
   , m_LabelWidth()
   , m_Tip(nullptr)
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new AggregationConfiguration();
-    }
-
     QJsonArray l_AttributesJson = p_JsonObject.find("AttributesNames")->toArray();
     m_AttributeNames.clear();
     for( QJsonArray::Iterator l_ArrayItem = l_AttributesJson.begin();
@@ -170,25 +147,25 @@ QString AggregationGraphicsItem::getDataFromField(const QString& p_FieldName) co
 // I_Configurable
 void AggregationGraphicsItem::openConfiguration()
 {
-    s_ConfigurationContext->registerDiagram(this->getDiagramContainer());
-    s_ConfigurationContext->setListener(this->getSelectableType(), this->getID());
+    this->getConfig<AggregationConfiguration>().registerDiagram(
+        this->getDiagramContainer());
+    this->getConfig<AggregationConfiguration>().setListener(
+        this->getSelectableType(), this->getID());
 
     // initializes module with parameters
-    s_ConfigurationContext->setAttributes(m_AttributeNames);
+    this->getConfig<AggregationConfiguration>().setAttributes(
+        m_AttributeNames);
 
-    s_ConfigurationContext->setAutoRoute(!this->getPathIsForced());
+    this->getConfig<AggregationConfiguration>().setAutoRoute(
+        !this->getPathIsForced());
 
     // Let's rock
-    ConfigWidget::open(s_ConfigurationContext);
-}
-void AggregationGraphicsItem::closeConfiguration()
-{
-    ConfigWidget::close();
+    ConfigWidget::open(&this->getConfig<AggregationConfiguration>());
 }
 void AggregationGraphicsItem::applyConfiguration()
 {
-    this->setAttributeNames(s_ConfigurationContext->getAttributes());
-    this->setPathIsForced(!s_ConfigurationContext->getAutoRoute());
+    this->setAttributeNames(this->getConfig<AggregationConfiguration>().getAttributes());
+    this->setPathIsForced(!this->getConfig<AggregationConfiguration>().getAutoRoute());
 
     if( false == this->getPathIsForced() )
     {
@@ -198,7 +175,7 @@ void AggregationGraphicsItem::applyConfiguration()
 
     this->getDiagramContainer()->changed(this);
 
-    ConfigWidget::close();
+    this->closeConfiguration();
 }
 
 // I_Serializable

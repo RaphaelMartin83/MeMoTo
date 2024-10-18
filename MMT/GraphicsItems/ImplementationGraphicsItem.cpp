@@ -8,8 +8,6 @@
 
 const char* ImplementationGraphicsItem::SERIALIZABLE_NAME="Implementations";
 
-static ImplementationConfiguration* s_ConfigurationContext = nullptr;
-
 static int implementationStartReduction = 2;
 
 ImplementationGraphicsItem::ImplementationGraphicsItem(
@@ -21,13 +19,6 @@ ImplementationGraphicsItem::ImplementationGraphicsItem(
     GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container)
   , m_Arrow()
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new ImplementationConfiguration();
-    }
     this->setStartReduction(implementationStartReduction);
     ImplementationGraphicsItem::refreshDisplay();
 }
@@ -42,13 +33,6 @@ ImplementationGraphicsItem::ImplementationGraphicsItem(
     GraphicConnector(p_ConnectFrom, p_ConnectTo, p_fromPoint, p_toPoint, p_Container, p_ForcedPath)
   , m_Arrow()
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new ImplementationConfiguration();
-    }
     this->setStartReduction(implementationStartReduction);
     ImplementationGraphicsItem::refreshDisplay();
 }
@@ -58,13 +42,6 @@ ImplementationGraphicsItem::ImplementationGraphicsItem(const QJsonObject& p_Json
     GraphicConnector(p_JsonObject, p_Container)
   , m_Arrow()
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new ImplementationConfiguration();
-    }
     this->setStartReduction(implementationStartReduction);
     ImplementationGraphicsItem::refreshDisplay();
 }
@@ -134,13 +111,13 @@ QString ImplementationGraphicsItem::getDataFromField(const QString& p_FieldName)
 // I_Configurable
 void ImplementationGraphicsItem::openConfiguration()
 {
-    s_ConfigurationContext->registerDiagram(this->getDiagramContainer());
-    s_ConfigurationContext->setListener(this->getSelectableType(), this->getID());
+    this->getConfig<ImplementationConfiguration>().registerDiagram(this->getDiagramContainer());
+    this->getConfig<ImplementationConfiguration>().setListener(this->getSelectableType(), this->getID());
 
-    s_ConfigurationContext->setAutoRoute(!this->getPathIsForced());
+    this->getConfig<ImplementationConfiguration>().setAutoRoute(!this->getPathIsForced());
 
     // Let's rock
-    ConfigWidget::open(s_ConfigurationContext);
+    ConfigWidget::open(&this->getConfig<ImplementationConfiguration>());
 }
 void ImplementationGraphicsItem::closeConfiguration()
 {
@@ -148,7 +125,7 @@ void ImplementationGraphicsItem::closeConfiguration()
 }
 void ImplementationGraphicsItem::applyConfiguration()
 {
-    this->setPathIsForced(!s_ConfigurationContext->getAutoRoute());
+    this->setPathIsForced(!this->getConfig<ImplementationConfiguration>().getAutoRoute());
 
     if( false == this->getPathIsForced() )
     {
@@ -158,7 +135,7 @@ void ImplementationGraphicsItem::applyConfiguration()
 
     this->getDiagramContainer()->changed(this);
 
-    ConfigWidget::close();
+    this->closeConfiguration();
 }
 
 void ImplementationGraphicsItem::setupArrow()

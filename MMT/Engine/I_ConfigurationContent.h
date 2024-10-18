@@ -5,9 +5,8 @@
 #include <QKeyEvent>
 #include <QUuid>
 
-#include "I_Configurable.h"
-
 class I_DiagramContainer;
+class I_Configurable;
 
 class I_ConfigurationContent: public QWidget
 {
