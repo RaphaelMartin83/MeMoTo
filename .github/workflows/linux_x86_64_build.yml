@@ -23,6 +23,6 @@ jobs:
       - name: Build
         run: |
           docker run --rm \
-            -v ${{ github.workspace }}:/home/memoto-builder/mmt \
+            -v ${{ github.workspace }}:/home/memoto-builder/mmt:rw \
             ghcr.io/raphaelmartin83/memoto_linux_x86_64:87e54b1
 
