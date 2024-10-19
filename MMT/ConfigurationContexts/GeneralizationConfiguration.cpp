@@ -5,6 +5,10 @@ GeneralizationConfiguration::GeneralizationConfiguration()
     // Init widgets
     m_AutoRouteLabel = new QLabel("Auto route:");
     m_AutoRouteCheckBox = new QCheckBox();
+
+    m_CurvedLabel = new QLabel("Curved");
+    m_CurvedCheckBox = new QCheckBox();
+
     m_OKButton = new QPushButton("OK");
     m_CancelButton = new QPushButton("Cancel");
 
@@ -17,6 +21,9 @@ GeneralizationConfiguration::GeneralizationConfiguration()
 
     m_Layout->addWidget(m_AutoRouteLabel, l_row, 0, 1, 1, Qt::Alignment());
     m_Layout->addWidget(m_AutoRouteCheckBox, l_row++, 1, 1, 1, Qt::Alignment());
+
+    m_Layout->addWidget(m_CurvedLabel, l_row, 0, 1, 1, Qt::Alignment());
+    m_Layout->addWidget(m_CurvedCheckBox, l_row++, 1, 1, 1, Qt::Alignment());
 
     m_Layout->addWidget(m_CancelButton, l_row, 0, 1, 1, Qt::Alignment());
     m_Layout->addWidget(m_OKButton, l_row++, 1, 1, 1, Qt::Alignment());
@@ -41,6 +48,15 @@ bool GeneralizationConfiguration::getAutoRoute() const
 void GeneralizationConfiguration::setAutoRoute(bool p_isAutoRoute)
 {
     m_AutoRouteCheckBox->setChecked(p_isAutoRoute);
+}
+
+void GeneralizationConfiguration::setCurvedInfo(bool p_Curved)
+{
+    m_CurvedCheckBox->setChecked(p_Curved);
+}
+bool GeneralizationConfiguration::getCurvedInfo() const
+{
+    return m_CurvedCheckBox->isChecked();
 }
 
 // I_ConfigurationContent

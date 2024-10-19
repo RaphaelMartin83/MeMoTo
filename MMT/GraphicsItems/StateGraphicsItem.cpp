@@ -10,8 +10,6 @@ static const char* STATE_CONNECTABLE_NAME = "State";
 static const unsigned short STATE_TEXT_LABELS_HEIGHT = 15U;
 const char* StateGraphicsItem::SERIALIZABLE_NAME = "States";
 
-static StateConfiguration* s_ConfigurationContext = nullptr;
-
 StateGraphicsItem::StateGraphicsItem(const QPoint& p_Pos,
                                      unsigned short p_Width,
                                      unsigned short p_Height):
@@ -20,14 +18,6 @@ StateGraphicsItem::StateGraphicsItem(const QPoint& p_Pos,
   , m_ExitAction("")
   , m_Stereotype("")
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new StateConfiguration();
-    }
-
     m_EntryActionGraphicsItem = new QGraphicsTextItem(m_EntryAction);
     this->addToGroup(m_EntryActionGraphicsItem);
 
@@ -43,14 +33,6 @@ StateGraphicsItem::StateGraphicsItem(const QPoint& p_Pos,
 StateGraphicsItem::StateGraphicsItem(const QJsonObject& p_JSonObject):
     I_SquarishGraphicsItem(p_JSonObject)
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new StateConfiguration();
-    }
-
     m_EntryActionGraphicsItem = new QGraphicsTextItem(m_EntryAction);
     this->addToGroup(m_EntryActionGraphicsItem);
 
@@ -213,34 +195,30 @@ QString StateGraphicsItem::getDataFromField(const QString& p_FieldName) const
 
 void StateGraphicsItem::openConfiguration()
 {
-    s_ConfigurationContext->registerDiagram(this->getDiagramContainer());
-    s_ConfigurationContext->setListener(this->getSelectableType(), this->getID());
+    this->getConfig<StateConfiguration>().registerDiagram(this->getDiagramContainer());
+    this->getConfig<StateConfiguration>().setListener(this->getSelectableType(), this->getID());
 
     // initializes module with parameters
-    s_ConfigurationContext->setName(this->getName());
-    s_ConfigurationContext->setEntryAction(m_EntryAction);
-    s_ConfigurationContext->setExitAction(m_ExitAction);
-    s_ConfigurationContext->setStereotype(m_Stereotype);
-    s_ConfigurationContext->setColor(this->getColorName());
+    this->getConfig<StateConfiguration>().setName(this->getName());
+    this->getConfig<StateConfiguration>().setEntryAction(m_EntryAction);
+    this->getConfig<StateConfiguration>().setExitAction(m_ExitAction);
+    this->getConfig<StateConfiguration>().setStereotype(m_Stereotype);
+    this->getConfig<StateConfiguration>().setColor(this->getColorName());
 
     // Let's rock
-    ConfigWidget::open(s_ConfigurationContext);
-}
-void StateGraphicsItem::closeConfiguration()
-{
-    ConfigWidget::close();
+    ConfigWidget::open(&this->getConfig<StateConfiguration>());
 }
 void StateGraphicsItem::applyConfiguration()
 {
-    this->setName(s_ConfigurationContext->getName());
-    this->setEntryAction(s_ConfigurationContext->getEntryAction());
-    this->setExitAction(s_ConfigurationContext->getExitAction());
-    this->setStereotype(s_ConfigurationContext->getStereotype());
-    this->setColor(s_ConfigurationContext->getColor());
+    this->setName(this->getConfig<StateConfiguration>().getName());
+    this->setEntryAction(this->getConfig<StateConfiguration>().getEntryAction());
+    this->setExitAction(this->getConfig<StateConfiguration>().getExitAction());
+    this->setStereotype(this->getConfig<StateConfiguration>().getStereotype());
+    this->setColor(this->getConfig<StateConfiguration>().getColor());
 
     this->getDiagramContainer()->changed(this);
 
-    ConfigWidget::close();
+    this->closeConfiguration();
 }
 
 QJsonObject StateGraphicsItem::toJson() const

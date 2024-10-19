@@ -20,8 +20,6 @@ static const unsigned short SELECTION_FIELD_DIVISOR = 5U;
 static const char* CHOICE_CONNECTABLE_TYPE = "Choice";
 const char* ChoiceGraphicsItem::SERIALIZABLE_NAME = "Choices";
 
-static ChoiceConfiguration* s_ConfigurationContext;
-
 ChoiceGraphicsItem::ChoiceGraphicsItem(const QPoint& p_Pos):
     I_Connectable(p_Pos)
   , m_isFullySelected(false)
@@ -32,14 +30,6 @@ ChoiceGraphicsItem::ChoiceGraphicsItem(const QPoint& p_Pos):
   , m_SelectedHandleForConnectionTo(nullptr)
   , m_Name(QString("C"))
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new ChoiceConfiguration();
-    }
-
     m_Width = DEFAULT_CHOICE_WIDTH;
     m_Height = DEFALUT_CHOICE_HEIGHT;
 
@@ -63,14 +53,6 @@ ChoiceGraphicsItem::ChoiceGraphicsItem(const QJsonObject& p_JsonObject):
   , m_SelectedHandleForConnectionTo(nullptr)
   , m_Name(QString("C"))
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new ChoiceConfiguration();
-    }
-
     m_Name = p_JsonObject.find("Name")->toString();
 
     m_Width = p_JsonObject.find("Width")->toInt();
@@ -497,26 +479,22 @@ QString ChoiceGraphicsItem::getDataFromField(const QString& p_FieldName) const
 
 void ChoiceGraphicsItem::openConfiguration()
 {
-    s_ConfigurationContext->registerDiagram(this->getDiagramContainer());
-    s_ConfigurationContext->setListener(this->getSelectableType(), this->getID());
+    this->getConfig<ChoiceConfiguration>().registerDiagram(this->getDiagramContainer());
+    this->getConfig<ChoiceConfiguration>().setListener(this->getSelectableType(), this->getID());
 
     // initializes module with parameters
-    s_ConfigurationContext->setName(m_Name);
+    this->getConfig<ChoiceConfiguration>().setName(m_Name);
 
     // Let's rock
-    ConfigWidget::open(s_ConfigurationContext);
-}
-void ChoiceGraphicsItem::closeConfiguration()
-{
-    ConfigWidget::close();
+    ConfigWidget::open(&this->getConfig<ChoiceConfiguration>());
 }
 void ChoiceGraphicsItem::applyConfiguration()
 {
-    this->setName(s_ConfigurationContext->getName());
+    this->setName(this->getConfig<ChoiceConfiguration>().getName());
 
     this->getDiagramContainer()->changed(this);
 
-    ConfigWidget::close();
+    this->closeConfiguration();
 }
 
 QJsonObject ChoiceGraphicsItem::toJson() const

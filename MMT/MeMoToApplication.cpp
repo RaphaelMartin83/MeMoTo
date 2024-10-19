@@ -233,11 +233,11 @@ void MeMoToApplication::createAndHandleArguments()
     l_Parser.addPositionalArgument("file", "File to open");
 
     // The options
-    QCommandLineOption l_PngOutputOption("output-png",
-                                        "MeMoTo will output a png file from the given memoto file, use default-diagram option to output needed diagram",
-                                        "Output png file",
+    QCommandLineOption l_SvgOutputOption("output-svg",
+                                        "MeMoTo will output a svg file from the given memoto file, use default-diagram option to output needed diagram",
+                                        "Output svg file",
                                         "");
-    l_Parser.addOption(l_PngOutputOption);
+    l_Parser.addOption(l_SvgOutputOption);
 
     QCommandLineOption l_DefaultDiagram("default-diagram",
                                         "MeMoTo will open on the given diagram, can be ClassDiagram or StateMachine",
@@ -281,7 +281,7 @@ void MeMoToApplication::createAndHandleArguments()
     l_Parser.process(*this);
 
     // Retrieve value arguments
-    sm_OutputString = l_Parser.value(l_PngOutputOption);
+    sm_OutputString = l_Parser.value(l_SvgOutputOption);
     sm_DefaultDiagram = l_Parser.value(l_DefaultDiagram);
     sm_FocusOn = l_Parser.value(l_FocusOption);
 

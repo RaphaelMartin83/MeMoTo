@@ -18,8 +18,6 @@ static const float TRANSITION_LABEL_STRING_SIZE_FACTOR = 2.0F;
 
 const char* TransitionGraphicsItem::SERIALIZABLE_NAME = "Transitions";
 
-static TransitionConfiguration* s_ConfigurationContext = nullptr;
-
 static int transitionStartReduction = 2;
 
 TransitionGraphicsItem::TransitionGraphicsItem(
@@ -324,42 +322,32 @@ void TransitionGraphicsItem::setupArrow()
 
 void TransitionGraphicsItem::openConfiguration()
 {
-    // Instanciate configuration layout if needed
-    if( nullptr == s_ConfigurationContext )
-    {
-        s_ConfigurationContext = new TransitionConfiguration();
-    }
-
-    s_ConfigurationContext->registerDiagram(this->getDiagramContainer());
-    s_ConfigurationContext->setListener(this->getSelectableType(), this->getID());
+    this->getConfig<TransitionConfiguration>().registerDiagram(this->getDiagramContainer());
+    this->getConfig<TransitionConfiguration>().setListener(this->getSelectableType(), this->getID());
 
     // initializes module with parameters
-    s_ConfigurationContext->setEvent(m_Event);
-    s_ConfigurationContext->setAction(m_Action);
-    s_ConfigurationContext->setGuard(m_Guard);
-    s_ConfigurationContext->setStereotype(m_Stereotype);
-    s_ConfigurationContext->setFromInfo(this->getConnectFrom()->getConnectableType(),
+    this->getConfig<TransitionConfiguration>().setEvent(m_Event);
+    this->getConfig<TransitionConfiguration>().setAction(m_Action);
+    this->getConfig<TransitionConfiguration>().setGuard(m_Guard);
+    this->getConfig<TransitionConfiguration>().setStereotype(m_Stereotype);
+    this->getConfig<TransitionConfiguration>().setFromInfo(this->getConnectFrom()->getConnectableType(),
                                         this->getConnectFrom()->getConnectableName());
-    s_ConfigurationContext->setToInfo(this->getConnectTo()->getConnectableType(),
+    this->getConfig<TransitionConfiguration>().setToInfo(this->getConnectTo()->getConnectableType(),
                                         this->getConnectTo()->getConnectableName());
-    s_ConfigurationContext->setAutoRoute(!this->getPathIsForced());
-    s_ConfigurationContext->setCurvedInfo(this->isCurved());
+    this->getConfig<TransitionConfiguration>().setAutoRoute(!this->getPathIsForced());
+    this->getConfig<TransitionConfiguration>().setCurvedInfo(this->isCurved());
 
     // Let's rock
-    ConfigWidget::open(s_ConfigurationContext);
-}
-void TransitionGraphicsItem::closeConfiguration()
-{
-    ConfigWidget::close();
+    ConfigWidget::open(&this->getConfig<TransitionConfiguration>());
 }
 void TransitionGraphicsItem::applyConfiguration()
 {
-    this->setEvent(s_ConfigurationContext->getEvent());
-    this->setAction(s_ConfigurationContext->getAction());
-    this->setGuard(s_ConfigurationContext->getGuard());
-    this->setStereotype(s_ConfigurationContext->getStereotype());
-    this->setPathIsForced(!s_ConfigurationContext->getAutoRoute());
-    this->setCurved(s_ConfigurationContext->getCurvedInfo());
+    this->setEvent(this->getConfig<TransitionConfiguration>().getEvent());
+    this->setAction(this->getConfig<TransitionConfiguration>().getAction());
+    this->setGuard(this->getConfig<TransitionConfiguration>().getGuard());
+    this->setStereotype(this->getConfig<TransitionConfiguration>().getStereotype());
+    this->setPathIsForced(!this->getConfig<TransitionConfiguration>().getAutoRoute());
+    this->setCurved(this->getConfig<TransitionConfiguration>().getCurvedInfo());
 
     if( false == this->getPathIsForced() )
     {
@@ -369,7 +357,7 @@ void TransitionGraphicsItem::applyConfiguration()
 
     this->getDiagramContainer()->changed(this);
 
-    ConfigWidget::close();
+    this->closeConfiguration();
 }
 
 QJsonObject TransitionGraphicsItem::toJson() const

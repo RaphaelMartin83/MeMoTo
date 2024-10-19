@@ -10,34 +10,16 @@
 static const char* CLASS_CONNECTABLE_NAME = "Class";
 const char* ClassGraphicsItem::SERIALIZABLE_NAME = "Classes";
 
-static ClassConfiguration* s_ConfigurationContext;
-
 ClassGraphicsItem::ClassGraphicsItem(const QPoint& p_Pos,
                             unsigned short p_Width,
                             unsigned short p_Height):
     I_ClassGraphicsItem(p_Pos, QString("Class"), p_Width, p_Height)
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new ClassConfiguration();
-    }
-
     ClassGraphicsItem::refreshDisplay();
 }
 ClassGraphicsItem::ClassGraphicsItem(const QJsonObject& p_JSon):
     I_ClassGraphicsItem(p_JSon)
 {
-    // Instanciate configuration layout if needed
-    static bool ls_isConfigInited = false;
-    if( false == ls_isConfigInited )
-    {
-        ls_isConfigInited = true;
-        s_ConfigurationContext = new ClassConfiguration();
-    }
-
     ClassGraphicsItem::refreshDisplay();
 }
 
@@ -79,34 +61,30 @@ QString ClassGraphicsItem::getSelectableType() const
 
 void ClassGraphicsItem::openConfiguration()
 {
-    s_ConfigurationContext->registerDiagram(this->getDiagramContainer());
-    s_ConfigurationContext->setListener(this->getSelectableType(), this->getID());
+    this->getConfig<ClassConfiguration>().registerDiagram(this->getDiagramContainer());
+    this->getConfig<ClassConfiguration>().setListener(this->getSelectableType(), this->getID());
 
     // initializes module with parameters
-    s_ConfigurationContext->setName(this->getName());
-    s_ConfigurationContext->setMethods(this->getMethodsList());
-    s_ConfigurationContext->setAttributes(this->getAttributesList());
-    s_ConfigurationContext->setColor(this->getColorName());
-    s_ConfigurationContext->setContentToHide(this->isContentToHide());
+    this->getConfig<ClassConfiguration>().setName(this->getName());
+    this->getConfig<ClassConfiguration>().setMethods(this->getMethodsList());
+    this->getConfig<ClassConfiguration>().setAttributes(this->getAttributesList());
+    this->getConfig<ClassConfiguration>().setColor(this->getColorName());
+    this->getConfig<ClassConfiguration>().setContentToHide(this->isContentToHide());
 
     // Let's rock
-    ConfigWidget::open(s_ConfigurationContext);
-}
-void ClassGraphicsItem::closeConfiguration()
-{
-    ConfigWidget::close();
+    ConfigWidget::open(&this->getConfig<ClassConfiguration>());
 }
 void ClassGraphicsItem::applyConfiguration()
 {
-    this->setContentToHide(s_ConfigurationContext->isContentToHide());
-    this->setName(s_ConfigurationContext->getName());
-    this->setMethodsList(s_ConfigurationContext->getMethods());
-    this->setAttributesList(s_ConfigurationContext->getAttributes());
-    this->setColor(s_ConfigurationContext->getColor());
+    this->setContentToHide(this->getConfig<ClassConfiguration>().isContentToHide());
+    this->setName(this->getConfig<ClassConfiguration>().getName());
+    this->setMethodsList(this->getConfig<ClassConfiguration>().getMethods());
+    this->setAttributesList(this->getConfig<ClassConfiguration>().getAttributes());
+    this->setColor(this->getConfig<ClassConfiguration>().getColor());
 
     this->getDiagramContainer()->changed(this);
 
-    ConfigWidget::close();
+    this->closeConfiguration();
 }
 
 QString ClassGraphicsItem::getConnectableType() const
