@@ -23,6 +23,7 @@ jobs:
       - name: Build
         run: |
           docker run --rm \
-            -v ${{ github.workspace }}:/home/memoto-builder/mmt:rw \
-            ghcr.io/raphaelmartin83/memoto_linux_x86_64:87e54b1
+            -e OUTPUT_DIR=/var/mmt/build \
+            -v ${{ github.workspace }}:/var/mmt:rw \
+            ghcr.io/raphaelmartin83/memoto_linux_x86_64:454ea80
 
