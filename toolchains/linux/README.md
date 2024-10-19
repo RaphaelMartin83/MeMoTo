@@ -2,7 +2,7 @@
 
 ## Build the image locally
 
-docker build -t ghcr.io/raphaelmartin83/qt_compilation - < Dockerfile
+docker build -t ghcr.io/raphaelmartin83/memoto_linux_<arch> - < Dockerfile
 
 ## Create your token on github
 
@@ -15,8 +15,8 @@ echo $CR_PAT | docker login ghcr.io -u RaphaelMartin83 --password-stdin
 
 ## Push!
 
-docker push ghcr.io/raphaelmartin83/qt_compilation:latest
+docker push ghcr.io/raphaelmartin83/memoto_linux_<arch>
 
 # To run the docker image
 
-docker run -v $MEMOTO_REPO:/home/memoto-builder/mmt -it ghcr.io/raphaelmartin83/qt_compilation
+docker run -e OUTPUT_DIR=$APPIMAGE_WRITE_DIR -v $MEMOTO_REPO:/var/mmt -it ghcr.io/raphaelmartin83/memoto_linux_<arch>

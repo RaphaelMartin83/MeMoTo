@@ -38,11 +38,6 @@ RUN apt update \
 
 RUN python3 -m pip install cmake==3.30.4
 
-RUN useradd -m -u 1000 --shell /bin/bash memoto-builder
-
-USER memoto-builder
-WORKDIR /home/memoto-builder
-
 # Qt Version
 ARG QT_MAJOR=6
 ARG QT_MINOR=7
@@ -58,7 +53,10 @@ RUN wget -q https://download.qt.io/official_releases/qt/$QT_MAJOR.$QT_MINOR/$QT_
 	&& cd build \
 	&& ../qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH/configure -release -opensource -confirm-license -nomake examples -nomake tests -skip qt3d -skip qtandroidextras -skip qtcanvas3d -skip qtcharts -skip qtconnectivity -skip qtdatavis3d \
 	&& cmake --build . -j6 \
-	&& cmake --install . --prefix $HOME/qt-dev \
+	&& cmake --install . --prefix /usr/lib/qt-dev \
 	&& rm -rf ../qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH \
 	&& cd .. && rm -rf build
+
+ENV QT_DIR="/usr/lib/qt-dev/" \
+	Qt6_DIR="/usr/lib/qt-dev/"
 

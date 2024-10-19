@@ -6,16 +6,21 @@ FROM ghcr.io/raphaelmartin83/qt_compilation_base
 RUN wget https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage
 RUN chmod u+x linuxdeployqt-continuous-x86_64.AppImage
 
-ENV QT_DIR="/home/memoto-builder/qt-dev/" \
-	Qt6_DIR="/home/memoto-builder/qt-dev/"
+ENV QT_DIR="/usr/lib/qt-dev/" \
+	Qt6_DIR="/usr/lib/qt-dev/" \
+	buildDir="/tmp/buildmmt" \
+	OUTPUT_DIR="/var/mmt"
+
 
 COPY <<-EOT build.sh
 	set -e
 
+	# Repo is expected to be mapped in /var/mmt
+
 	export PATH=$PATH:$QT_DIR/bin
 
-	cmake -S mmt/MMT/ -B mmt/build
-	cmake --build mmt/build --parallel
+	cmake -S /var/mmt/MMT/ -B $buildDir
+	cmake --build $buildDir --parallel
 
 	# Extracts the appimage to avoid using fuse (and priviledges associated to it)
 	./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
@@ -31,14 +36,14 @@ COPY <<-EOT build.sh
 	mkdir -p mmt-deploy-root/usr/share/icons/hicolor/256x256/apps/
 
 	# Copies files
-	cp mmt/build/MMT mmt-deploy-root/usr/bin
-	cp mmt/toolchains/linux/MeMoTo.desktop mmt-deploy-root/usr/share/applications/
-	cp mmt/MMT/logo/logo.png mmt-deploy-root/usr/share/icons/hicolor/256x256/apps/MeMoTo.png
+	cp ${buildDir}/MMT mmt-deploy-root/usr/bin
+	cp /var/mmt/toolchains/linux/MeMoTo.desktop mmt-deploy-root/usr/share/applications/
+	cp /var/mmt/MMT/logo/logo.png mmt-deploy-root/usr/share/icons/hicolor/256x256/apps/MeMoTo.png
 
 	squashfs-root/AppRun mmt-deploy-root/usr/share/applications/MeMoTo.desktop -appimage
 
 	# Publishes file to MeMoTo build dir
-	cp MeMoTo-x86_64.AppImage mmt/build
+	cp MeMoTo-x86_64.AppImage "$(printenv OUTPUT_DIR)"
 EOT
 
 ENTRYPOINT ["/bin/bash", "build.sh"]
