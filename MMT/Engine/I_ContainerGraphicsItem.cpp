@@ -54,7 +54,10 @@ void I_ContainerGraphicsItem::unselectChild()
 
     for(unsigned int i_sel = 0U; i_sel < l_Selectables.count(); i_sel++)
     {
-        l_Selectables[i_sel]->unselect();
+        if( l_Selectables[i_sel]->isSelected() )
+        {
+            l_Selectables[i_sel]->unselect();
+        }
     }
 }
 
