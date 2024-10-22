@@ -38,11 +38,7 @@ public:
             ConfigWidget::close();
 
             m_ConfigContent->close();
-            delete m_ConfigContent;
-            m_ConfigContent = nullptr;
         }
-
-        Q_ASSERT(nullptr == m_ConfigContent);
     }
 
 private:
