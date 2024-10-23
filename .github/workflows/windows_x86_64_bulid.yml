@@ -1,4 +1,4 @@
-name: Linux x86_64 build
+name: Windows x86_64 build
 
 on:
   workflow_dispatch:
@@ -7,7 +7,7 @@ on:
       - main
 
 jobs:
-  build_memoto_linux_x86_64:
+  build_memoto_windows_x86_64:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -23,7 +23,7 @@ jobs:
       - name: Build
         run: |
           docker run --rm \
-            -e OUTPUT_DIR=/var/mmt/build \
+            -e OUTPUT_DIR=/var/mmt/ \
             -v ${{ github.workspace }}:/var/mmt:rw \
             ghcr.io/raphaelmartin83/memoto_windows_x86_64:d9b8ff8
 
