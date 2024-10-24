@@ -25,5 +25,5 @@ jobs:
           docker run --rm \
             -e OUTPUT_DIR=/var/mmt/ \
             -v ${{ github.workspace }}:/var/mmt:rw \
-            ghcr.io/raphaelmartin83/memoto_windows_x86_64:d9b8ff8
+            ghcr.io/raphaelmartin83/memoto_windows_x86_64:8485f18
 
