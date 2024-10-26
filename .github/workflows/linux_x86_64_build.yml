@@ -53,25 +53,14 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: MeMoTo-Linux-x86_64.AppImage
-          path: ./MeMoTo-x86_64.AppImage
+          path: ${{ github.workspace }}/MeMoTo-x86_64.AppImage
 
-      - name: Create release
-        uses: actions/create-release@v1
-        id: create_release
+      - name: Upload binaries to release
+        uses: svenstaro/upload-release-action@v2
         with:
-          draft: false
-          prerelease: false
-          release_name: "MeMoTo_${{ github.ref_name }}"
-          tag_name: ${{ github.ref_name }}
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Upload linux_x86_64 artifact
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./MeMoTo-x86_64.AppImage
-          asset_name: MeMoTo-x86_64.AppImage
-          asset_content_type: application/AppImage
+          repo_token: ${{ secrets.GITHUB_TOKEN }}
+          file: ${{ github.workspace }}/MeMoTo-x86_64.AppImage
+          asset_name: Linux_x86_64_AppImage
+          tag: ${{ github.ref_name }}
+          overwrite: true
+          body: "MeMoTo release ${{ github.ref_name }}"
