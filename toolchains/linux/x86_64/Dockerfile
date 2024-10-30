@@ -9,7 +9,10 @@ RUN chmod u+x linuxdeployqt-continuous-x86_64.AppImage
 ENV QT_DIR="/usr/lib/qt-dev/" \
 	Qt6_DIR="/usr/lib/qt-dev/" \
 	buildDir="/tmp/buildmmt" \
-	OUTPUT_DIR="/var/mmt"
+	OUTPUT_DIR="/var/mmt" \
+	MMT_VERSION_MAJOR="0" \
+	MMT_VERSION_MINOR="0" \
+	MMT_VERSION_PATCH="0"
 
 
 COPY <<-EOT build.sh
@@ -19,7 +22,7 @@ COPY <<-EOT build.sh
 
 	export PATH=$PATH:$QT_DIR/bin
 
-	cmake -S /var/mmt/MMT/ -B $buildDir
+	cmake -DMEMOTO_VERSION_MAJOR="$(printenv MMT_VERSION_MAJOR)" -DMEMOTO_VERSION_MINOR="$(printenv MMT_VERSION_MINOR)" -DMEMOTO_VERSION_PATCH="$(printenv MMT_VERSION_PATCH)" -DMEMOTO_VERSION_FULL="$(printenv MMT_VERSION_MAJOR).$(printenv MMT_VERSION_MINOR).$(printenv MMT_VERSION_PATCH)" -DCMAKE_BUILD_TYPE=Release -S /var/mmt/MMT/ -B $buildDir
 	cmake --build $buildDir --parallel
 
 	# Extracts the appimage to avoid using fuse (and priviledges associated to it)
@@ -44,6 +47,9 @@ COPY <<-EOT build.sh
 
 	# Publishes file to MeMoTo build dir
 	cp MeMoTo-x86_64.AppImage "$(printenv OUTPUT_DIR)"
+
+	echo ""
+	echo "Output: $(printenv OUTPUT_DIR)/MeMoTo-x86_64.AppImage"
 EOT
 
 ENTRYPOINT ["/bin/bash", "build.sh"]

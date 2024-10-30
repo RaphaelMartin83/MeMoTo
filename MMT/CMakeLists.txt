@@ -1,6 +1,16 @@
 cmake_minimum_required(VERSION 3.5)
 
-project(MMT VERSION 0.1 LANGUAGES CXX)
+set(MEMOTO_VERSION_MAJOR "0" CACHE STRING "MeMoTo version major")
+set(MEMOTO_VERSION_MINOR "0" CACHE STRING "MeMoTo version minor")
+set(MEMOTO_VERSION_PATCH "0" CACHE STRING "MeMoTo version patch")
+
+option(SET_VERSION_MAJOR "${MEMOTO_VERSION_MAJOR}" "Set MeMoTo version major")
+option(SET_VERSION_MINOR "${MEMOTO_VERSION_MINOR}" "Set MeMoTo version minor")
+option(SET_VERSION_PATCH "${MEMOTO_VERSION_PATCH}" "Set MeMoTo version patch")
+
+set(MEMOTO_VERSION_FULL "${MEMOTO_VERSION_MAJOR}.${MEMOTO_VERSION_MINOR}.${MEMOTO_VERSION_PATCH}" CACHE STRING "MeMoTo full version")
+
+project(MMT VERSION ${MEMOTO_VERSION_MAJOR}.${MEMOTO_VERSION_MINOR} LANGUAGES CXX)
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 
@@ -72,6 +82,8 @@ else()
 
     qt5_create_translation(QM_FILES ${CMAKE_SOURCE_DIR} ${TS_FILES})
 endif()
+
+target_compile_definitions(MMT PRIVATE MEMOTO_VERSION_FULL="${MEMOTO_VERSION_FULL}")
 
 target_link_libraries(MMT
     PRIVATE

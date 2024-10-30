@@ -5,13 +5,17 @@ on:
   pull_request:
     branches:
       - main
+  push:
+    tags:
+      - 'v*'
 
 jobs:
+
   build_memoto_linux_x86_64:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
 
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
@@ -23,7 +27,40 @@ jobs:
       - name: Build
         run: |
           docker run --rm \
-            -e OUTPUT_DIR=/var/mmt/build \
+            -e OUTPUT_DIR=/var/mmt/ \
+            -e MMT_VERSION_MAJOR=1 \
+            -e MMT_VERSION_MINOR=2 \
+            -e MMT_VERSION_PATCH=3 \
             -v ${{ github.workspace }}:/var/mmt:rw \
-            ghcr.io/raphaelmartin83/memoto_linux_x86_64:454ea80
+            ghcr.io/raphaelmartin83/memoto_linux_x86_64:8485f18
 
+      - name: Persist artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: MeMoTo-Linux-x86_64.AppImage
+          path: ${{ github.workspace }}/MeMoTo-x86_64.AppImage
+
+  deploy_memoto_linux_x86_64:
+    needs: [build_memoto_linux_x86_64]
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    permissions: write-all
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Retrieve artifacts to release
+        uses: actions/download-artifact@v4
+        with:
+          name: MeMoTo-Linux-x86_64.AppImage
+          path: ${{ github.workspace }}
+
+      - name: Create release and upload artifacts
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+            sudo apt update
+            sudo apt install fuse
+            wget -q https://github.com/TheAssassin/pyuploadtool/releases/download/continuous/pyuploadtool-x86_64.AppImage
+            chmod +x pyuploadtool-x86_64.AppImage
+            ./pyuploadtool-x86_64.AppImage ${{ github.workspace }}/MeMoTo-x86_64.AppImage

@@ -31,7 +31,7 @@ MeMoToApplication::MeMoToApplication(int& argc, char** argv):
     QApplication(argc, argv)
 {
     QCoreApplication::setApplicationName("MeMoTo");
-    QCoreApplication::setApplicationVersion("0.2.0");
+    QCoreApplication::setApplicationVersion(MEMOTO_VERSION_FULL);
 
     this->createAndHandleArguments();
 
@@ -225,7 +225,8 @@ void MeMoToApplication::displayModeFileUpdateTick()
 void MeMoToApplication::createAndHandleArguments()
 {
     QCommandLineParser l_Parser;
-    l_Parser.setApplicationDescription("MErgeable MOdeling TOol: A DevOps oriented modeling tool");
+    l_Parser.setApplicationDescription("MErgeable MOdeling TOol: A DevOps oriented modeling tool (v" +
+                                       QCoreApplication::applicationVersion() + ")");
     l_Parser.addHelpOption();
     l_Parser.addVersionOption();
 
