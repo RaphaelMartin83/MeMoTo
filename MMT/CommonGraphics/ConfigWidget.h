@@ -19,7 +19,8 @@ public:
 private:
     ConfigWidget();
 
-    static void openAgain(I_ConfigurationContent* p_Widget);
+    static void displayTopWidget();
+    static void hideTopWidget();
 
     static QWidget* m_Me;
     static QGridLayout* m_Layout;
