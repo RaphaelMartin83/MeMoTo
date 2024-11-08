@@ -52,30 +52,13 @@ void ConfigWidget::deleteInstance()
 void ConfigWidget::open(I_ConfigurationContent* p_Widget)
 {
     Q_ASSERT(nullptr != p_Widget);
-
-    // Check if configuration is already open
-    bool l_isAlreadyOpened = false;
-
     Q_ASSERT(nullptr != m_ContentsStack);
-    for( unsigned short i_contents = 0U;
-         (i_contents < m_ContentsStack->count()) && (false == l_isAlreadyOpened);
-         i_contents++ )
-    {
-        if( p_Widget == m_ContentsStack->at(i_contents) )
-        {
-            l_isAlreadyOpened = true;
-        }
-    }
 
-    if( false == l_isAlreadyOpened )
+    if( m_Layout->widget() != p_Widget )
     {
         if( 0 != m_ContentsStack->count() )
         {
-            Q_ASSERT(nullptr != m_ContentsStack->last());
-            m_ContentsStack->last()->setVisible(false);
-
-            Q_ASSERT(nullptr != m_Layout);
-            m_Layout->removeWidget(m_ContentsStack->last());
+            ConfigWidget::hideTopWidget();
         }
 
         ConfigWidget::getInstance().resize(p_Widget->getWidth(),
@@ -83,22 +66,36 @@ void ConfigWidget::open(I_ConfigurationContent* p_Widget)
         Q_ASSERT(nullptr != m_ContentsStack);
         m_ContentsStack->append(p_Widget);
 
-        Q_ASSERT(nullptr != m_Me);
-        m_Me->setVisible(true);
-
-        ConfigWidget::openAgain(p_Widget);
+        ConfigWidget::displayTopWidget();
     }
 }
 
-void ConfigWidget::openAgain(I_ConfigurationContent* p_Widget)
+void ConfigWidget::displayTopWidget()
 {
     Q_ASSERT(nullptr != m_Layout);
-    m_Layout->addWidget(p_Widget);
-
+    Q_ASSERT(0 == m_Layout->count());
     Q_ASSERT(nullptr != m_ContentsStack);
     Q_ASSERT(nullptr != m_ContentsStack->last());
+    Q_ASSERT(0 < m_ContentsStack->count());
+
+    m_Layout->addWidget(m_ContentsStack->last());
+
     m_ContentsStack->last()->setVisible(true);
     m_ContentsStack->last()->setFocusOnFirstZone();
+
+    Q_ASSERT(nullptr != m_Me);
+    m_Me->setVisible(true);
+}
+
+void ConfigWidget::hideTopWidget()
+{
+    Q_ASSERT(nullptr != m_ContentsStack->last());
+    Q_ASSERT(nullptr != m_Layout);
+    Q_ASSERT(0 != m_Layout->count());
+    Q_ASSERT(0 < m_ContentsStack->count());
+
+	m_ContentsStack->last()->setVisible(false);
+	m_Layout->removeWidget(m_ContentsStack->last());
 }
 
 void ConfigWidget::close()
@@ -106,15 +103,15 @@ void ConfigWidget::close()
     Q_ASSERT(nullptr != m_ContentsStack);
     if( 0 != m_ContentsStack->count() )
     {
+        ConfigWidget::hideTopWidget();
+
         Q_ASSERT(nullptr != m_ContentsStack->last());
-        Q_ASSERT(nullptr != m_Layout);
-        m_Layout->removeWidget(m_ContentsStack->last());
         m_ContentsStack->pop_back();
     }
 
     if( 0 != m_ContentsStack->count() )
     {
-        ConfigWidget::openAgain(m_ContentsStack->last());
+        ConfigWidget::displayTopWidget();
     }
     else
     {
