@@ -45,7 +45,7 @@ COPY <<-EOT build.sh
 
 	squashfs-root/AppRun mmt-deploy-root/usr/share/applications/MeMoTo.desktop -appimage
 
-	# Publishes file to MeMoTo build dir
+	# Publishes file to MeMoTo output dir
 	cp MeMoTo-x86_64.AppImage "$(printenv OUTPUT_DIR)"
 
 	echo ""
