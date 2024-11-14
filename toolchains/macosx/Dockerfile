@@ -19,15 +19,19 @@ COPY <<-EOT build.sh
 
 	qt-cmake -S /var/mmt/MMT/ -B /tmp/mmt_build_macos -G Ninja
 	cmake --build /tmp/mmt_build_macos/
-	sudo mkdir -p /usr/local/Qt-6.7.0/plugins
-	sudo cp -r /opt/Qt/6.7.0/macos/plugins/* /usr/local/Qt-6.7.0/plugins
-	/tmp/macdeployqt-build/bin/macdeployqt /tmp/mmt_build_macos/*.app -dmg -no-strip
+
+	# This commented code would be used to create a .dmg file with macdeployqt
+	# It is deactivated because .dmg files cannot be used without signature and notarization on MacOSX machines anyway
+	# We are still compiling to make sure MacOSX target compilation is not broken
+	#sudo mkdir -p /usr/local/Qt-6.7.0/plugins
+	#sudo cp -r /opt/Qt/6.7.0/macos/plugins/* /usr/local/Qt-6.7.0/plugins
+	#/tmp/macdeployqt-build/bin/macdeployqt /tmp/mmt_build_macos/*.app -dmg -no-strip
 
 	# Publishes file to MeMoTo output dir
-	cp /tmp/mmt_build_macos/MMT.dmg "$(printenv OUTPUT_DIR)/MeMoTo-MacOSX.dmg"
+	#cp /tmp/mmt_build_macos/MMT.dmg "$(printenv OUTPUT_DIR)/MeMoTo-MacOSX.dmg"
 
-	echo ""
-	echo "Output: $(printenv OUTPUT_DIR)/MeMoTo-MacOSX.dmg"
+	#echo ""
+	#echo "Output: $(printenv OUTPUT_DIR)/MeMoTo-MacOSX.dmg"
 EOT
 
 ENTRYPOINT ["/bin/bash", "build.sh"]
