@@ -41,7 +41,7 @@ void I_DiagramContainer::undo()
 }
 void I_DiagramContainer::redo()
 {
-    I_Undoable::undo();
+    I_Undoable::redo();
     SharingManager::getInstance().pushModifications();
 }
 
