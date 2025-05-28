@@ -28,7 +28,7 @@ jobs:
           docker run --rm \
             -e OUTPUT_DIR=/var/mmt/ \
             -v ${{ github.workspace }}:/var/mmt:rw \
-            ghcr.io/raphaelmartin83/memoto_windows_x86_64:8485f18
+            ghcr.io/raphaelmartin83/memoto_windows_x86_64:bbe68ee
 
       - name: Persist artifacts
         uses: actions/upload-artifact@v4
