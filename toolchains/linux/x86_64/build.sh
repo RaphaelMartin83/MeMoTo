@@ -14,7 +14,14 @@ MMT_VERSION_PATCH=$(getVersionPatchFromTag $MMT_TAG)
 
 export PATH=$PATH:$QT_DIR/bin
 
-cmake -DMEMOTO_VERSION_MAJOR="${MMT_VERSION_MAJOR}" -DMEMOTO_VERSION_MINOR="${MMT_VERSION_MINOR}" -DMEMOTO_VERSION_PATCH="${MMT_VERSION_PATCH}" -DMEMOTO_VERSION_FULL="${MMT_VERSION_FULL}" -DCMAKE_BUILD_TYPE=Release -S /var/mmt/MMT/ -B $buildDir
+cmake \
+  -DMEMOTO_VERSION_MAJOR="${MMT_VERSION_MAJOR}" \
+  -DMEMOTO_VERSION_MINOR="${MMT_VERSION_MINOR}" \
+  -DMEMOTO_VERSION_PATCH="${MMT_VERSION_PATCH}" \
+  -DMEMOTO_VERSION_FULL="${MMT_VERSION_FULL}" \
+  -DCMAKE_BUILD_TYPE=Release \
+  -S /var/mmt/MMT/ \
+  -B $buildDir
 cmake --build $buildDir --parallel
 
 # Extracts the appimage to avoid using fuse (and priviledges associated to it)

@@ -62,19 +62,4 @@ RUN cd /var \
 	&& cd mxe \
 	&& make qt6 MXE_TARGETS="x86_64-w64-mingw32.static"
 
-ENV MMT_VERSION_MAJOR="0" \
-	MMT_VERSION_MINOR="0" \
-	MMT_VERSION_PATCH="0"
-
-COPY <<-EOT build.sh
-	set -e
-
-	# Repo is expected to be mapped in /var/mmt
-	export PATH=${MXE_USR_DIR}/bin:$PATH
-
-	mkdir -p $(printenv OUTPUT_DIR)/build_winx86_64
-	${MXE_USR_DIR}/bin/x86_64-w64-mingw32.static-cmake -DMEMOTO_VERSION_MAJOR="$(printenv MMT_VERSION_MAJOR)" -DMEMOTO_VERSION_MINOR="$(printenv MMT_VERSION_MINOR)" -DMEMOTO_VERSION_PATCH="$(printenv MMT_VERSION_PATCH)" -DMEMOTO_VERSION_FULL="$(printenv MMT_VERSION_MAJOR).$(printenv MMT_VERSION_MINOR).$(printenv MMT_VERSION_PATCH)" -DCMAKE_BUILD_TYPE=Release -DCMAKE_PREFIX_PATH=${MXE_USR_DIR}/x86_64-w64-mingw32.static -S /var/mmt/MMT/ -B $(printenv OUTPUT_DIR)/build_winx86_64
-	${MXE_USR_DIR}/bin/x86_64-w64-mingw32.static-cmake --build $(printenv OUTPUT_DIR)/build_winx86_64 --parallel
-EOT
-
-ENTRYPOINT ["/bin/bash", "build.sh"]
+ENTRYPOINT ["/bin/bash", "/var/mmt/toolchains/windows/x86_64/build.sh"]
