@@ -8,15 +8,33 @@ getVersionFromTag()
 
 getVersionMajorFromTag()
 {
-    echo $(printenv MMT_TAG) | awk -F v '{print $2}' | awk -F . '{print $1}'
+    local version_major=$($(printenv MMT_TAG) | awk -F v '{print $2}' | awk -F . '{print $1}')
+    if [[ "" == ${version_major} ]];
+    then
+        echo "0"
+    else
+        echo ${version_major}
+    fi
 }
 
 getVersionMinorFromTag()
 {
-    echo $(printenv MMT_TAG) | awk -F v '{print $2}' | awk -F . '{print $2}'
+    local version_minor=$($(printenv MMT_TAG) | awk -F v '{print $2}' | awk -F . '{print $2}')
+    if [[ "" == ${version_minor} ]];
+    then
+        echo "0"
+    else
+        echo ${version_minor}
+    fi
 }
 
 getVersionPatchFromTag()
 {
-    echo $(printenv MMT_TAG) | awk -F v '{print $2}' | awk -F . '{print $3}'
+    local version_patch=$($(printenv MMT_TAG) | awk -F v '{print $2}' | awk -F . '{print $3}')
+    if [[ "" == ${version_patch} ]];
+    then
+        echo "0"
+    else
+        echo ${version_patch}
+    fi
 }
