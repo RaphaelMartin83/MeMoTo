@@ -8,13 +8,12 @@
 #include <QPoint>
 
 #include <Engine/I_ContainerGraphicsItem.h>
+#include <Engine/ConnectionDefinitions.h>
+#include <Engine/GridReferential.h>
 
 #include <CommonGraphics/GraphicsRoundedRectItem.h>
-#include <GraphicsItems/HandleGraphicsItem.h>
-#include <GraphicsItems/DoubleArrowGraphicsItem.h>
-
-#include "ConnectionDefinitions.h"
-#include "GridReferential.h"
+#include <CommonGraphics/HandleGraphicsItem.h>
+#include <CommonGraphics/DoubleArrowGraphicsItem.h>
 
 static const unsigned short DEFAULT_SQUARE_WIDTH =
         static_cast<unsigned short>(GridReferential::getGridDistance(140U));

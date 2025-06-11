@@ -7,6 +7,8 @@
 
 class ConfigWidget
 {
+    friend class TestConfigWidget;
+
 public:
     static QWidget& getInstance();
     static void deleteInstance();

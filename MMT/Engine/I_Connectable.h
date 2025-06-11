@@ -9,7 +9,7 @@
 #include "I_Selectable.h"
 
 #include "ConnectionDefinitions.h"
-#include <GraphicsItems/HandleGraphicsItem.h>
+#include <CommonGraphics/HandleGraphicsItem.h>
 
 static const unsigned short CONNECTION_MAGNETIC_SELECTION_MIN_DIST = 50U;
 

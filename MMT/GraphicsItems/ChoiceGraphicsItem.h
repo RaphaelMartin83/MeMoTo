@@ -7,7 +7,7 @@
 #include <Engine/I_Connectable.h>
 #include <Engine/I_Configurable.h>
 
-#include <GraphicsItems/HandleGraphicsItem.h>
+#include <CommonGraphics/HandleGraphicsItem.h>
 
 class ChoiceGraphicsItem:
         public I_Connectable,

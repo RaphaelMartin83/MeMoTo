@@ -3,10 +3,11 @@
 
 #include <QPoint>
 
-#include <Engine/I_SquarishGraphicsItem.h>
 #include <Engine/I_Configurable.h>
 #include <Engine/I_Serializable.h>
 #include <Engine/I_ToolListener.h>
+
+#include <CommonGraphics/I_SquarishGraphicsItem.h>
 
 #include <ConfigurationContexts/StateConfiguration.h>
 

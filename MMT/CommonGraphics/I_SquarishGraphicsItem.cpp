@@ -2,10 +2,11 @@
 #include <QTextDocument>
 #include <QTextOption>
 
+#include <Engine/HumanReadableColor.h>
+#include <MeMoToThemeDefinition.h>
+
 #include "I_SquarishGraphicsItem.h"
 
-#include "MeMoToThemeDefinition.h"
-#include "HumanReadableColor.h"
 
 static const unsigned short DEFAULT_HANDLES_DIAMETER = 8U;
 static const unsigned short MIN_DIST_BETWEEN_HANDLES = 5U;

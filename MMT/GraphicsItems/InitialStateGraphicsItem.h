@@ -7,7 +7,7 @@
 #include <Engine/I_Selectable.h>
 #include <Engine/I_Connectable.h>
 
-#include <GraphicsItems/HandleGraphicsItem.h>
+#include <CommonGraphics/HandleGraphicsItem.h>
 
 class InitialStateGraphicsItem:
         public I_Connectable
