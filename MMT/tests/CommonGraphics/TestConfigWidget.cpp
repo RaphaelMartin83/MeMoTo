@@ -4,9 +4,15 @@
 
 QTEST_MAIN(TestConfigWidget)
 
+
 void TestConfigWidget::open()
 {
-    QVERIFY(true);
-
     ConfigWidget::getInstance();
+
+    m_isFocusOnFirstZoneCalled = false;
+    ConfigWidget::open(this);
+
+    QVERIFY(m_isFocusOnFirstZoneCalled);
+
+    ConfigWidget::deleteInstance();
 }

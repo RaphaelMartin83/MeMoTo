@@ -51,6 +51,7 @@ void ConfigWidget::deleteInstance()
 
 void ConfigWidget::open(I_ConfigurationContent* p_Widget)
 {
+    Q_ASSERT(nullptr != m_Layout);
     Q_ASSERT(nullptr != p_Widget);
     Q_ASSERT(nullptr != m_ContentsStack);
 
