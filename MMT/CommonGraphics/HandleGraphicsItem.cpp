@@ -3,7 +3,7 @@
 #include <Engine/I_Connectable.h>
 #include <Engine/ConnectionDefinitions.h>
 
-#include <GraphicsItems/HandleGraphicsItem.h>
+#include <CommonGraphics/HandleGraphicsItem.h>
 
 static const unsigned short DEFAULT_HANDLES_DIAMETER = 10U;
 static const float SELECTION_GROWING_FACTOR = 1.5F;

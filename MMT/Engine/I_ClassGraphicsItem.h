@@ -4,7 +4,7 @@
 #include <QPointF>
 #include <QJsonObject>
 
-#include <Engine/I_SquarishGraphicsItem.h>
+#include <CommonGraphics/I_SquarishGraphicsItem.h>
 
 static const unsigned short DEFAULT_CLASS_WIDTH = 250U;
 static const unsigned short DEFAULT_CLASS_HEIGHT = 300U;

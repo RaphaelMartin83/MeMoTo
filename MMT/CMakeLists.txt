@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
+enable_testing()
+
 set(MEMOTO_VERSION_MAJOR "0" CACHE STRING "MeMoTo version major")
 set(MEMOTO_VERSION_MINOR "0" CACHE STRING "MeMoTo version minor")
 set(MEMOTO_VERSION_PATCH "0" CACHE STRING "MeMoTo version patch")
@@ -104,3 +106,5 @@ set_target_properties(MMT PROPERTIES
 if(QT_VERSION_MAJOR EQUAL 6)
     qt_finalize_executable(MMT)
 endif()
+
+add_subdirectory(tests)

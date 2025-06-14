@@ -2,7 +2,7 @@
 #define GRAPHICCONNECTOR_H
 
 #include <Engine/Connector.h>
-#include <GraphicsItems/HandleGraphicsItem.h>
+#include <CommonGraphics/HandleGraphicsItem.h>
 #include <GraphicsItems/TransitionGraphicsLabel.h>
 #include <CommonGraphics/GraphicsBezierCurve.h>
 
