@@ -24,8 +24,8 @@ cmake \
   -B $buildDir
 cmake --build $buildDir --parallel
 
-# Runs tests
-make -C $buildDir test
+# Runs tests (disable Qt display to run the tests)
+QT_QPA_PLATFORM="vnc" make -C $buildDir test
 
 # Extracts the appimage to avoid using fuse (and priviledges associated to it)
 ./linuxdeployqt-continuous-x86_64.AppImage --appimage-extract
