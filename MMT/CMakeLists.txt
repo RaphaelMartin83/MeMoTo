@@ -1,5 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 
+enable_testing()
+
 set(MEMOTO_VERSION_MAJOR "0" CACHE STRING "MeMoTo version major")
 set(MEMOTO_VERSION_MINOR "0" CACHE STRING "MeMoTo version minor")
 set(MEMOTO_VERSION_PATCH "0" CACHE STRING "MeMoTo version patch")
