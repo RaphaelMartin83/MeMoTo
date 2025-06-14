@@ -16,6 +16,10 @@ private:
         Q_ASSERT(nullptr != m_ConfigContent);
     }
 public:
+    ~I_Configurable()
+    {
+        ConfigWidget::close();
+    }
     template <typename SPECIALIZED_CONFIGURATION> SPECIALIZED_CONFIGURATION& getConfig()
     {
         if( nullptr == m_ConfigContent)
