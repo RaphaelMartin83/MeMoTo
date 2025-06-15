@@ -19,8 +19,8 @@ foreach(header ${headers})
     # -> If, for instance one wants to test file.cpp, then the test header shall be named Testfile.cpp
     string(REGEX REPLACE "^Test" "" source_under_test ${executable_name}.cpp)
 
-    if(EXISTS ${CMAKE_SOURCE_DIR}/CommonGraphics/${source_under_test})
-        set(absolute_source_under_test ${CMAKE_SOURCE_DIR}/CommonGraphics/${source_under_test})
+    if(EXISTS ${CMAKE_SOURCE_DIR}/Engine/${source_under_test})
+        set(absolute_source_under_test ${CMAKE_SOURCE_DIR}/Engine/${source_under_test})
     else()
         set(absolute_source_under_test "")
     endif()
