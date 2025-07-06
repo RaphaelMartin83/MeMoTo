@@ -9,11 +9,14 @@
 #include <QMenuBar>
 #include <QSplitter>
 
+#include <I_MainWindowListener.h>
+
 #include <Engine/I_DiagramContainer.h>
 #include <Engine/DiagramGraphicsView.h>
 #include <Engine/I_SaveFileConfigurationListener.h>
 #include <Engine/I_LoadFileConfigurationListener.h>
 #include <Engine/I_CloseWithoutSavingConfigurationListener.h>
+#include <Engine/I_FileManager.h>
 
 class MainWindow : public QMainWindow,
         public I_SaveFileConfigurationListener,
@@ -34,6 +37,10 @@ public:
     void addDiagram(I_DiagramContainer* p_Diagram);
 
     void switchToContext(unsigned short p_ContextID, bool p_Force = false);
+    void registerFileManager(I_FileManager* fileManager);
+    void registerDiagramListener(I_DiagramListener* diagramListener);
+    void registerListener(I_MainWindowListener* listener);
+    void initGUI(const QIcon& logo);
 
     // I_SaveFileConfigurationListener
     virtual void fileSelectedForSaving(QString p_File);
@@ -69,8 +76,6 @@ public slots:
     void closeEvent(QCloseEvent* p_event);
 
 private:
-    void initGUI();
-
     void keyPressEvent(QKeyEvent* p_Event);
     void savePressed(bool p_alwaysOpen=false);
     void loadPressed(bool p_alwaysOpen=false);
@@ -91,5 +96,8 @@ private:
 
     QList<I_DiagramContainer*> m_Diagrams;
     unsigned short m_CurrentDiagramID;
+
+    I_FileManager* m_FileManager;
+    I_MainWindowListener* m_Listener;
 };
 #endif // MAINWINDOW_H

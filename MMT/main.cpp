@@ -20,5 +20,5 @@ int main(int argc, char** argv)
         }
     }
 
-    return MeMoToApplication::exec();
+    return l_Application.exec();
 }

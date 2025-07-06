@@ -46,7 +46,7 @@ file(GLOB SHARING_SOURCES "Sharing/*.cpp")
 set(PROJECT_SOURCES
     main.cpp
     MeMoToApplication.h MeMoToApplication.cpp MeMoToThemeDefinition.h
-    MainWindow.h MainWindow.cpp
+    MainWindow.h MainWindow.cpp I_MainWindowListener.h
     ${COMMON_GRAPHICS_HEADERS} ${COMMON_GRAPHICS_SOURCES}
     ${DIAGRAM_SCENES_HEADERS} ${DIAGRAM_SCENES_SOURCES}
     ${GRAPHICS_ITEMS_HEADERS} ${GRAPHICS_ITEMS_SOURCES}
