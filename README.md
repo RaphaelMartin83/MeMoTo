@@ -63,10 +63,12 @@ Note: The sharing feature works like when hosting a videogame. The person with d
   - If you don't have access to the docker image, you can build ghcr.io/raphaelmartin83/qt_compilation_base from toolchain/Docker
   - And then, build ghcr.io/raphaelmartin83/memoto_linux_x86_64 from toolchains/linux/x86_64/Dockerfile
 
-# How to deploy
+# How to install
 
-- To deploy for windows, I only make a zip yet but plan to create a msi.
-- To deploy for linux based distributions, I use [LinuxDeployQt project](https://github.com/probonopd/linuxdeployqt). I run the deploy appimage giving -appimage argument and the binary file. Note: Qt lib and plugin directories must be into the build directory.
+- On windows, MeMoTo is static so you just download and run the executable file.
+- On linux based distributions:
+  - MeMoTo is an appimage so you just download and run the appimage.
+  - You can also use [appman](https://github.com/ivan-hc/AppMan) and install memoto with command: appman -i memoto
 
 # What is planed
 

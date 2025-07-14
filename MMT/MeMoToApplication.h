@@ -8,16 +8,21 @@
 #include <QTimer>
 
 #include <Engine/I_DiagramContainer.h>
+#include <Engine/I_DiagramListener.h>
 
+#include <I_MainWindowListener.h>
 #include <MainWindow.h>
 
-class MeMoToApplication: public QApplication
+class MeMoToApplication: public QApplication,
+                          public I_FileManager,
+                          public I_MainWindowListener,
+                          public I_DiagramListener
 {
 public:
     MeMoToApplication(int& argc, char** argv);
 
     // QApplication override
-    static int exec();
+    int exec();
 
     static QString FileExtension();
     static QString SharedFileExtension();
@@ -33,33 +38,34 @@ public:
 
     static QIcon getLogo();
 
-    static void startSharing();
-
     static void getApplicationData(QJsonObject& p_rData);
     static void setApplicationData(const QJsonObject& p_Data);
 
-    static void diagramChanged();
+    void diagramChanged();
 
-    static bool hasChangesUnsaved();
+    bool hasChangesUnsaved() const;
 
-    static void saveDiagrams();
-    static void loadDiagrams();
+    void saveDiagrams();
+    void loadDiagrams();
 
-    static void setFileName(const QString& p_FileName);
-    static const QString& getFileName();
+    void setFileName(const QString& p_FileName);
+    const QString& getFileName() const;
 
     void displayModeFileUpdateTick();
 
+    // I_MainWindowListener
+    void closeAsked();
+
 private:
     void createAndHandleArguments();
-    static void loadFileIfNeeded();
+    void loadFileIfNeeded();
     static void focusItemIfAsked();
     static void autoConnectIfAsked();
     static void runAsServerIfAsked();
-    static void runAsGUI();
+    void runAsGUI();
     static void runPNGDumpIfAsked();
-    static void createDiagrams();
-    static void initWindow();
+    void createDiagrams();
+    void initWindow();
 
     static QString sm_OutputString;
     static QString sm_DefaultDiagram;
@@ -74,7 +80,7 @@ private:
 
     static QList<I_DiagramContainer*> sm_Diagrams;
 
-    static bool sm_hasChangesUnsaved;
+    bool m_hasChangesUnsaved;
 
     static bool sm_isServer;
     static bool sm_isInDisplayMode;
@@ -83,7 +89,7 @@ private:
 
     static bool sm_isAutoconnect;
 
-    static QString sm_FileName;
+    QString m_FileName;
 
     static QTimer* sm_Timer;
 };

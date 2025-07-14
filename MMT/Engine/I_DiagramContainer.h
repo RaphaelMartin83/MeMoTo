@@ -7,6 +7,7 @@
 #include <ConfigurationContexts/FindConfiguration.h>
 #include <CommonGraphics/ConfigWidget.h>
 #include <Engine/DiagramGraphicsView.h>
+#include <Engine/I_DiagramListener.h>
 
 #include "I_ToolBox.h"
 #include "I_ToolSwitcherListener.h"
@@ -28,6 +29,8 @@ public:
     virtual unsigned int getDiagramMaxHeight() const = 0;
     virtual QPoint getStartPosition() const = 0;
     QPoint getCurrentCursorPosition() const;
+
+    void registerDiagramListener(I_DiagramListener* listener);
 
     // I_Undoable
     virtual void undo();
@@ -113,6 +116,8 @@ private:
     QPointF m_CurrentPosition;
     bool m_isFirstDisplay;
     QPointF m_CurrentCursorPosition;
+
+    I_DiagramListener* m_Listener;
 };
 
 #endif // I_DIAGRAMCONTAINER_H

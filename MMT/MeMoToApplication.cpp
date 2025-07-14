@@ -17,21 +17,22 @@ QString MeMoToApplication::sm_ServerIP("");
 quint16 MeMoToApplication::sm_ServerPort = 0U; // Given port in headless mode
 quint16 MeMoToApplication::sm_CollaborativePort(11310); // Default port on GUI
 QList<I_DiagramContainer*> MeMoToApplication::sm_Diagrams;
-bool MeMoToApplication::sm_hasChangesUnsaved = false;
 bool MeMoToApplication::sm_isServer = false;
 bool MeMoToApplication::sm_isInDisplayMode = false;
 bool MeMoToApplication::sm_isReadOnly = false;
 bool MeMoToApplication::sm_isAutoconnect = false;
-QString MeMoToApplication::sm_FileName("");
 QTimer* MeMoToApplication::sm_Timer = nullptr;
 
 MainWindow* MeMoToApplication::sm_MW = nullptr;
 
 MeMoToApplication::MeMoToApplication(int& argc, char** argv):
     QApplication(argc, argv)
+    , m_hasChangesUnsaved(false)
 {
     QCoreApplication::setApplicationName("MeMoTo");
     QCoreApplication::setApplicationVersion(MEMOTO_VERSION_FULL);
+
+    m_FileName = "";
 
     this->createAndHandleArguments();
 
@@ -163,18 +164,13 @@ void MeMoToApplication::setApplicationData(const QJsonObject& p_Data)
 
 void MeMoToApplication::diagramChanged()
 {
-    sm_hasChangesUnsaved = true;
+    m_hasChangesUnsaved = true;
     sm_MW->updateTitle();
 }
 
-bool MeMoToApplication::hasChangesUnsaved()
+bool MeMoToApplication::hasChangesUnsaved() const
 {
-    return sm_hasChangesUnsaved;
-}
-
-void MeMoToApplication::startSharing()
-{
-    SharingManager::getInstance().start();
+    return m_hasChangesUnsaved;
 }
 
 void MeMoToApplication::saveDiagrams()
@@ -182,17 +178,17 @@ void MeMoToApplication::saveDiagrams()
     QJsonObject l_JSonGlobal;
     MeMoToApplication::getApplicationData(l_JSonGlobal);
 
-    QFile l_File(sm_FileName);
+    QFile l_File(m_FileName);
     MeMoToLoader::saveToFile(l_File, l_JSonGlobal);
 
-    sm_hasChangesUnsaved = false;
+    m_hasChangesUnsaved = false;
 
     sm_MW->updateTitle();
 }
 
 void MeMoToApplication::loadDiagrams()
 {
-    QFile l_File(sm_FileName);
+    QFile l_File(m_FileName);
 
     QJsonObject l_JsonObject = MeMoToLoader::loadFromFile(l_File);
 
@@ -210,16 +206,21 @@ void MeMoToApplication::loadDiagrams()
 
 void MeMoToApplication::setFileName(const QString& p_FileName)
 {
-    sm_FileName = p_FileName;
+    m_FileName = p_FileName;
 }
-const QString& MeMoToApplication::getFileName()
+const QString& MeMoToApplication::getFileName() const
 {
-    return sm_FileName;
+    return m_FileName;
 }
 
 void MeMoToApplication::displayModeFileUpdateTick()
 {
     MeMoToApplication::loadDiagrams();
+}
+
+void MeMoToApplication::closeAsked()
+{
+    exit(0);
 }
 
 void MeMoToApplication::createAndHandleArguments()
@@ -298,7 +299,7 @@ void MeMoToApplication::createAndHandleArguments()
     QStringList l_PositionalArguments = l_Parser.positionalArguments();
     if( l_PositionalArguments.count() >= 1 )
     {
-        sm_FileName = l_PositionalArguments[0];
+        m_FileName = l_PositionalArguments[0];
     }
 
     // Check if optionnal values have been given depending on context
@@ -327,7 +328,7 @@ void MeMoToApplication::createAndHandleArguments()
 
 void MeMoToApplication::loadFileIfNeeded()
 {
-    if( "" != sm_FileName )
+    if( "" != m_FileName )
     {
         loadDiagrams();
     }
@@ -415,7 +416,9 @@ void MeMoToApplication::createDiagrams()
 {
     // Creates the diagrams
     sm_Diagrams.append(new ClassDiagramScene());
+    sm_Diagrams.last()->registerDiagramListener(this);
     sm_Diagrams.append(new SMDiagramScene());
+    sm_Diagrams.last()->registerDiagramListener(this);
 }
 
 void MeMoToApplication::initWindow()
@@ -424,6 +427,9 @@ void MeMoToApplication::initWindow()
 
     // Initialize the main window
     sm_MW = new MainWindow();
+    sm_MW->initGUI(MeMoToApplication::getLogo());
+    sm_MW->registerFileManager(this);
+    sm_MW->registerListener(this);
     for(unsigned short i_diagrams = 0U; i_diagrams < sm_Diagrams.count(); i_diagrams++)
     {
         sm_MW->addDiagram(sm_Diagrams[i_diagrams]);

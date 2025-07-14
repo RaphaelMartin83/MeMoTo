@@ -4,17 +4,18 @@
 #include <QFile>
 #include <QDir>
 #include <QStandardPaths>
-
-#include <MeMoToApplication.h>
+#include <QMimeData>
 
 #include <Engine/DiagramGraphicsView.h>
 #include <Engine/InstanceLauncher.h>
+#include <Engine/I_FileManager.h>
 
 #include <CommonGraphics/ConfigWidget.h>
 
 #include <ConfigurationContexts/SaveFileConfiguration.h>
 #include <ConfigurationContexts/LoadFileConfiguration.h>
 #include <ConfigurationContexts/CloseWithoutSavingConfiguration.h>
+#include <ConfigurationContexts/PrintImageConfiguration.h>
 
 #include <Sharing/SharingManager.h>
 
@@ -28,6 +29,7 @@ static const char* s_ProgramName = "MeMoTo";
 static SaveFileConfiguration* s_SaveFileConfiguration = nullptr;
 static LoadFileConfiguration* s_LoadFileConfiguration = nullptr;
 static CloseWithoutSavingConfiguration* s_CloseConfiguration = nullptr;
+static PrintImageConfiguration* s_PrintImageConfiguration = nullptr;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -37,8 +39,11 @@ MainWindow::MainWindow(QWidget *parent)
     , m_DiagramView(nullptr)
     , m_Diagrams()
     , m_CurrentDiagramID(0U)
+    , m_FileManager(nullptr)
+    , m_Listener(nullptr)
+    , m_isControlBeingPressed(false)
 {
-    this->initGUI();
+    this->setAcceptDrops(true);
 }
 
 MainWindow::MainWindow(const char* argv, QWidget *parent)
@@ -53,6 +58,53 @@ MainWindow::~MainWindow()
     ConfigWidget::deleteInstance();
 }
 
+void MainWindow::dragMoveEnent(QDragMoveEvent* event)
+{
+    static const QRegularExpression regexp = QRegularExpression("*.memoto");
+    if(event->mimeData()->urls().size() != 1 &&
+        !event->mimeData()->urls().first().path().contains(regexp))
+    {
+        return;
+    }
+    event->acceptProposedAction();
+}
+void MainWindow::dragEnterEvent(QDragEnterEvent* event)
+{
+    static const QRegularExpression regexp = QRegularExpression("*.memoto");
+    if(event->mimeData()->urls().size() != 1 &&
+        !event->mimeData()->urls().first().path().contains(regexp))
+    {
+        return;
+    }
+    event->acceptProposedAction();
+    this->displayDropView();
+}
+void MainWindow::dragLeaveEvent(QDragLeaveEvent* event)
+{
+    this->hideDropView();
+}
+void MainWindow::dropEvent(QDropEvent* event)
+{
+    static const QRegularExpression regexp = QRegularExpression("*.memoto");
+    if(event->mimeData()->urls().size() != 1 &&
+        !event->mimeData()->urls().first().path().contains(regexp))
+    {
+        return;
+    }
+
+    this->hideDropView();
+    QString path = event->mimeData()->urls().first().path();
+    if(m_isControlBeingPressed)
+    {
+        this->fileSelectedForLoading(path);
+    }
+    else
+    {
+        InstanceLauncher::getInstance().execute(QStringList(path));
+    }
+    event->acceptProposedAction();
+}
+
 I_DiagramContainer* MainWindow::getCurrentDiagram()
 {
     return m_Diagrams[m_CurrentDiagramID];
@@ -63,14 +115,26 @@ void MainWindow::addDiagram(I_DiagramContainer* p_Diagram)
     m_Diagrams.last()->registerDiagramView(m_DiagramView);
 }
 
+void MainWindow::displayDropView()
+{
+    m_splitter->setVisible(false);
+    m_DropFileLabel->setVisible(true);
+}
+void MainWindow::hideDropView()
+{
+    m_splitter->setVisible(true);
+    m_DropFileLabel->setVisible(false);
+}
+
 // I_SaveFileConfigurationListener
 void MainWindow::fileSelectedForSaving(QString p_File)
 {
-    MeMoToApplication::setFileName(p_File);
+    Q_ASSERT(nullptr != m_FileManager);
+    m_FileManager->setFileName(p_File);
 
     ConfigWidget::close();
 
-    MeMoToApplication::saveDiagrams();
+    m_FileManager->saveDiagrams();
     this->updateTitle();
 }
 void MainWindow::fileSavingCanceled()
@@ -82,11 +146,12 @@ void MainWindow::fileSelectedForLoading(QString p_File)
 {
     if( QFile(p_File).exists() )
     {
-        MeMoToApplication::setFileName(p_File);
+        Q_ASSERT(nullptr != m_FileManager);
+        m_FileManager->setFileName(p_File);
 
         ConfigWidget::close();
 
-        MeMoToApplication::loadDiagrams();
+        m_FileManager->loadDiagrams();
         this->updateTitle();
     }
 }
@@ -103,7 +168,20 @@ void MainWindow::saveBeforeClosing()
 }
 void MainWindow::closeAndDropChanges()
 {
-    MeMoToApplication::exit();
+    Q_ASSERT(nullptr != m_Listener);
+    m_Listener->closeAsked();
+}
+
+void MainWindow::imageSelectedForPrinting(QString p_File)
+{
+    Q_ASSERT(nullptr != m_FileManager);
+    m_Diagrams[m_CurrentDiagramID]->printPressed(p_File);
+
+    ConfigWidget::close();
+}
+void MainWindow::imagePrintingCanceled()
+{
+    ConfigWidget::close();
 }
 
 void MainWindow::NextButtonPressed()
@@ -166,7 +244,7 @@ void MainWindow::pasteMenuClicked()
 }
 void MainWindow::shareMenuClicked()
 {
-    MeMoToApplication::startSharing();
+    SharingManager::getInstance().start();
 }
 void MainWindow::findMenuClicked()
 {
@@ -174,12 +252,30 @@ void MainWindow::findMenuClicked()
 }
 void MainWindow::printMenuClicked()
 {
-    m_Diagrams[m_CurrentDiagramID]->printPressed(MeMoToApplication::getFileName());
+    Q_ASSERT(nullptr != m_FileManager);
+
+    if( ("" != m_FileManager->getFileName()) )
+    {
+        m_FileManager->saveDiagrams();
+    }
+    else
+    {
+        // Open save configuration
+        if( nullptr == s_SaveFileConfiguration )
+        {
+            s_PrintImageConfiguration = new PrintImageConfiguration();
+            s_PrintImageConfiguration->registerConfigListener(this);
+        }
+        s_PrintImageConfiguration->setFileName(
+            m_FileManager->getFileName() + this->getCurrentDiagram()->getDiagramString());
+        ConfigWidget::open(s_PrintImageConfiguration);
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent* p_event)
 {
-    if( MeMoToApplication::hasChangesUnsaved() )
+    Q_ASSERT(nullptr != m_FileManager);
+    if( m_FileManager->hasChangesUnsaved() )
     {
         p_event->ignore();
 
@@ -192,9 +288,9 @@ void MainWindow::closeEvent(QCloseEvent* p_event)
     }
 }
 
-void MainWindow::initGUI()
+void MainWindow::initGUI(const QIcon& logo)
 {
-    this->setWindowIcon(MeMoToApplication::getLogo());
+    this->setWindowIcon(logo);
 
     m_mainLayout = new QGridLayout();
     Q_ASSERT(nullptr != m_mainLayout);
@@ -225,13 +321,17 @@ void MainWindow::initGUI()
     m_splitter->addWidget(&ConfigWidget::getInstance());
     m_mainLayout->addWidget(m_splitter, 0, 2, -1, 1, Qt::Alignment());
 
+    m_DropFileLabel = new QLabel("Drop file here to open in new instance, press Control to load here (unsaved changes will be lost)");
+    Q_ASSERT(nullptr != m_DropFileLabel);
+    m_mainLayout->addWidget(m_DropFileLabel, 0, 3, -1, 1, Qt::Alignment(Qt::AlignCenter));
+    m_DropFileLabel->setVisible(false);
+
     m_centralWidget = new QWidget();
     Q_ASSERT(nullptr != m_centralWidget);
     m_centralWidget->setLayout(m_mainLayout);
 
     this->setCentralWidget(m_centralWidget);
     this->setWindowTitle(s_ProgramName);
-    this->move(300, 150);
 
     m_MenuBar = this->menuBar();
     m_FileMenu = new QMenu("File");
@@ -276,9 +376,11 @@ void MainWindow::initGUI()
 }
 void MainWindow::updateTitle()
 {
+    Q_ASSERT(nullptr != m_FileManager);
+
     static const unsigned short MAX_DISPLAYED_NAME_SIZE = 100;
     QString l_newTitle = s_ProgramName;
-    QString l_FileName = MeMoToApplication::getFileName();
+    QString l_FileName = m_FileManager->getFileName();
     if( "" != l_FileName )
     {
         l_newTitle += " on ";
@@ -293,7 +395,7 @@ void MainWindow::updateTitle()
     }
     l_newTitle += " (" + m_Diagrams[m_CurrentDiagramID]->getDiagramString() + ")";
 
-    if( MeMoToApplication::hasChangesUnsaved() )
+    if( m_FileManager->hasChangesUnsaved() )
     {
         l_newTitle += "*";
     }
@@ -329,6 +431,18 @@ void MainWindow::switchToContext(unsigned short p_ContextID, bool p_Force)
     {
         // Do nothing :)
     }
+}
+
+void MainWindow::registerFileManager(I_FileManager* fileManager)
+{
+    Q_ASSERT(nullptr != fileManager);
+    m_FileManager = fileManager;
+}
+
+void MainWindow::registerListener(I_MainWindowListener* listener)
+{
+    Q_ASSERT(nullptr != listener);
+    m_Listener = listener;
 }
 
 // Mappings for all the application's shorcuts
@@ -428,6 +542,9 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
     case Qt::Key::Key_Escape:
         m_Diagrams[m_CurrentDiagramID]->escapePressed();
         break;
+    case Qt::Key::Key_Control:
+        m_isControlBeingPressed = true;
+        break;
     default:
         break;
     }
@@ -480,15 +597,29 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
     }
     else if( (p_Event->key() == Qt::Key_Space) && (p_Event->modifiers() == Qt::ControlModifier) )
     {
-        MeMoToApplication::startSharing();
+        SharingManager::getInstance().start();
+    }
+}
+
+void MainWindow::keyReleasedEvent(QKeyEvent* p_Event)
+{
+    switch(p_Event->key())
+    {
+    case Qt::Key::Key_Control:
+        m_isControlBeingPressed = false;
+        break;
+    default:
+        break;
     }
 }
 
 void MainWindow::savePressed(bool p_alwaysOpen)
 {
-    if( ("" != MeMoToApplication::getFileName()) && (false == p_alwaysOpen) )
+    Q_ASSERT(nullptr != m_FileManager);
+
+    if( ("" != m_FileManager->getFileName()) && (false == p_alwaysOpen) )
     {
-        MeMoToApplication::saveDiagrams();
+        m_FileManager->saveDiagrams();
     }
     else
     {
@@ -505,9 +636,11 @@ void MainWindow::savePressed(bool p_alwaysOpen)
 
 void MainWindow::loadPressed(bool p_alwaysOpen)
 {
-    if( ("" != MeMoToApplication::getFileName()) && (false == p_alwaysOpen) )
+    Q_ASSERT(nullptr != m_FileManager);
+
+    if( ("" != m_FileManager->getFileName()) && (false == p_alwaysOpen) )
     {
-        MeMoToApplication::loadDiagrams();
+        m_FileManager->loadDiagrams();
     }
     else
     {

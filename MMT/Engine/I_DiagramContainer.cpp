@@ -20,6 +20,7 @@ I_DiagramContainer::I_DiagramContainer():
     , m_isFocused(false)
     , m_CurrentPosition()
     , m_isFirstDisplay(true)
+    , m_Listener(nullptr)
 {
     this->setBackgroundBrush(SCENES_BACKGROUND_COLOR);
 }
@@ -32,6 +33,12 @@ QPoint I_DiagramContainer::getCurrentCursorPosition() const
     l_Ret.setY(static_cast<int>(m_CurrentCursorPosition.y()));
 
     return GridReferential::getPointOnGrid(l_Ret);
+}
+
+void I_DiagramContainer::registerDiagramListener(I_DiagramListener* listener)
+{
+    Q_ASSERT(nullptr != listener);
+    m_Listener = listener;
 }
 
 void I_DiagramContainer::undo()
@@ -48,7 +55,9 @@ void I_DiagramContainer::redo()
 void I_DiagramContainer::changed(I_GraphicsItem* p_WhoChanged)
 {
     this->saveUndoState();
-    MeMoToApplication::diagramChanged();
+
+    Q_ASSERT(nullptr != m_Listener);
+    m_Listener->diagramChanged();
     SharingManager::getInstance().pushModifications();
 }
 
@@ -153,7 +162,7 @@ void I_DiagramContainer::escapePressed()
 }
 int I_DiagramContainer::printPressed(QString p_OutputFile)
 {
-    QFile l_FileOutput(p_OutputFile + "_" + this->getDiagramString() + ".svg");
+    QFile l_FileOutput(p_OutputFile);
     bool l_isFileWritable = l_FileOutput.open(QIODevice::WriteOnly);
     l_FileOutput.close();
     if( ("" != p_OutputFile) && (!l_isFileWritable) )

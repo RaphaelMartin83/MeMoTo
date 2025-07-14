@@ -23,6 +23,8 @@ set(CMAKE_AUTORCC ON)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
+set(CMAKE_COMPILE_WARNING_AS_ERROR ON)
+
 find_package(QT NAMES Qt6 Qt5 REQUIRED COMPONENTS Widgets LinguistTools Svg)
 find_package(Qt${QT_VERSION_MAJOR} REQUIRED COMPONENTS Widgets LinguistTools Network WebSockets Svg)
 
@@ -46,7 +48,7 @@ file(GLOB SHARING_SOURCES "Sharing/*.cpp")
 set(PROJECT_SOURCES
     main.cpp
     MeMoToApplication.h MeMoToApplication.cpp MeMoToThemeDefinition.h
-    MainWindow.h MainWindow.cpp
+    MainWindow.h MainWindow.cpp I_MainWindowListener.h
     ${COMMON_GRAPHICS_HEADERS} ${COMMON_GRAPHICS_SOURCES}
     ${DIAGRAM_SCENES_HEADERS} ${DIAGRAM_SCENES_SOURCES}
     ${GRAPHICS_ITEMS_HEADERS} ${GRAPHICS_ITEMS_SOURCES}

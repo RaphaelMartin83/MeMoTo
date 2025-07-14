@@ -4,13 +4,13 @@
 #include <MeMoToApplication.h>
 
 #include <CommonGraphics/ConfigLineEdit.h>
-#include <ConfigurationContexts/SaveFileConfiguration.h>
+#include <ConfigurationContexts/PrintImageConfiguration.h>
 
-SaveFileConfiguration::SaveFileConfiguration():
+PrintImageConfiguration::PrintImageConfiguration():
     m_Listener(nullptr)
 {
     // Init widgets
-    m_ContextLabel = new QLabel("Enter file saving path:");
+    m_ContextLabel = new QLabel("Enter svg file printing path:");
     m_ContextLabel->setFixedHeight(30);
 
     m_FileNameLabel = new QLabel("Name: (without extension)");
@@ -61,42 +61,42 @@ SaveFileConfiguration::SaveFileConfiguration():
     this->setLayout(m_Layout);
 
     // Setup events
-    connect(m_OKButton, &QPushButton::clicked, this, &SaveFileConfiguration::OKPressed);
-    connect(m_CancelButton, &QPushButton::clicked, this, &SaveFileConfiguration::CancelPressed);
+    connect(m_OKButton, &QPushButton::clicked, this, &PrintImageConfiguration::OKPressed);
+    connect(m_CancelButton, &QPushButton::clicked, this, &PrintImageConfiguration::CancelPressed);
     connect(m_TreeView, &QTreeView::clicked,
-            this, &SaveFileConfiguration::selectedPathChanged);
+            this, &PrintImageConfiguration::selectedPathChanged);
     connect(m_TreeView, &QTreeView::pressed,
-            this, &SaveFileConfiguration::selectedPathChanged);
+            this, &PrintImageConfiguration::selectedPathChanged);
     connect(m_TreeView, &QTreeView::doubleClicked,
-            this, &SaveFileConfiguration::OKPressed);
+            this, &PrintImageConfiguration::OKPressed);
     connect(m_FilePathEdit, &QLineEdit::textEdited,
-            this, &SaveFileConfiguration::writtenPathChanged);
+            this, &PrintImageConfiguration::writtenPathChanged);
 }
 
-QString SaveFileConfiguration::getFilePathAndName()
+QString PrintImageConfiguration::getFilePathAndName()
 {
-    return m_FilePathEdit->text() + QDir::separator() + m_FileNameEdit->text() + MeMoToApplication::FileExtension();
+    return m_FilePathEdit->text() + QDir::separator() + m_FileNameEdit->text() + ".svg";
 }
-void SaveFileConfiguration::setFileName(const QString& p_FileName)
+void PrintImageConfiguration::setFileName(const QString& p_FileName)
 {
     m_FileNameEdit->setText(p_FileName);
 }
-void SaveFileConfiguration::setPath(const QString& p_Path)
+void PrintImageConfiguration::setPath(const QString& p_Path)
 {
     m_FilePathEdit->setText(p_Path);
 }
 
-void SaveFileConfiguration::registerConfigListener(I_SaveFileConfigurationListener* p_Listener)
+void PrintImageConfiguration::registerConfigListener(I_PrintImageConfigurationListener* p_Listener)
 {
     m_Listener = p_Listener;
 }
 
-void SaveFileConfiguration::selectedPathChanged(const QModelIndex& p_Index)
+void PrintImageConfiguration::selectedPathChanged(const QModelIndex& p_Index)
 {
     m_FilePathEdit->setText(m_FileSystemModel->filePath(p_Index));
 }
 
-void SaveFileConfiguration::writtenPathChanged()
+void PrintImageConfiguration::writtenPathChanged()
 {
     QDir l_Dir(m_FilePathEdit->text());
 
@@ -113,33 +113,33 @@ void SaveFileConfiguration::writtenPathChanged()
 }
 
 // I_ConfigurationContent
-void SaveFileConfiguration::setFocusOnFirstZone()
+void PrintImageConfiguration::setFocusOnFirstZone()
 {
     m_FileNameEdit->setFocus();
 }
 
 // I_ConfigLineEditListener
-void SaveFileConfiguration::enterPressed()
+void PrintImageConfiguration::enterPressed()
 {
     this->OKPressed();
 }
-void SaveFileConfiguration::escapePressed()
+void PrintImageConfiguration::escapePressed()
 {
     this->CancelPressed();
 }
 
-void SaveFileConfiguration::OKPressed()
+void PrintImageConfiguration::OKPressed()
 {
     if( (nullptr != m_Listener) &&
             (QDir(m_FilePathEdit->text()).exists()) )
     {
-        m_Listener->fileSelectedForSaving(this->getFilePathAndName());
+        m_Listener->imageSelectedForPrinting(this->getFilePathAndName());
     }
 }
-void SaveFileConfiguration::CancelPressed()
+void PrintImageConfiguration::CancelPressed()
 {
     if( nullptr != m_Listener )
     {
-        m_Listener->fileSavingCanceled();
+        m_Listener->imagePrintingCanceled();
     }
 }

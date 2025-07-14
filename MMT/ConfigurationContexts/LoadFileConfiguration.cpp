@@ -92,7 +92,7 @@ void LoadFileConfiguration::selectedPathChanged(const QModelIndex& p_Index)
 
     if( this->currentFileIsOK() )
     {
-        m_FileNameEdit->setStyleSheet("color: black");
+        m_FileNameEdit->setStyleSheet("");
     }
     else
     {
@@ -122,8 +122,6 @@ bool LoadFileConfiguration::currentFileIsOK() const
 {
     QFile l_File(m_FileNameEdit->text());
     QFileInfo l_FileInfo(m_FileNameEdit->text());
-
-    QString l_suffix = l_FileInfo.suffix();
 
     return  (l_File.exists()) &&
             (l_FileInfo.isFile()) &&
