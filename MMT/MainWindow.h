@@ -16,12 +16,14 @@
 #include <Engine/I_SaveFileConfigurationListener.h>
 #include <Engine/I_LoadFileConfigurationListener.h>
 #include <Engine/I_CloseWithoutSavingConfigurationListener.h>
+#include <Engine/I_PrintImageConfigurationListener.h>
 #include <Engine/I_FileManager.h>
 
 class MainWindow : public QMainWindow,
         public I_SaveFileConfigurationListener,
         public I_LoadFileConfigurationListener,
-        public I_CloseWithoutSavingConfigurationListener
+        public I_CloseWithoutSavingConfigurationListener,
+        public I_PrintImageConfigurationListener
 {
     Q_OBJECT
 
@@ -61,6 +63,10 @@ public:
     // I_CloseWithoutSavingConfigurationListener
     void saveBeforeClosing();
     void closeAndDropChanges();
+
+    // I_PrintImageConfigurationListener
+    void imageSelectedForPrinting(QString p_File);
+    void imagePrintingCanceled();
 
 private slots:
     void NextButtonPressed();

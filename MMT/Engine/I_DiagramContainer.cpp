@@ -162,7 +162,7 @@ void I_DiagramContainer::escapePressed()
 }
 int I_DiagramContainer::printPressed(QString p_OutputFile)
 {
-    QFile l_FileOutput(p_OutputFile + "_" + this->getDiagramString() + ".svg");
+    QFile l_FileOutput(p_OutputFile);
     bool l_isFileWritable = l_FileOutput.open(QIODevice::WriteOnly);
     l_FileOutput.close();
     if( ("" != p_OutputFile) && (!l_isFileWritable) )

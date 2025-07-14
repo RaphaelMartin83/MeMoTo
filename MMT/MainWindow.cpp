@@ -15,6 +15,7 @@
 #include <ConfigurationContexts/SaveFileConfiguration.h>
 #include <ConfigurationContexts/LoadFileConfiguration.h>
 #include <ConfigurationContexts/CloseWithoutSavingConfiguration.h>
+#include <ConfigurationContexts/PrintImageConfiguration.h>
 
 #include <Sharing/SharingManager.h>
 
@@ -28,6 +29,7 @@ static const char* s_ProgramName = "MeMoTo";
 static SaveFileConfiguration* s_SaveFileConfiguration = nullptr;
 static LoadFileConfiguration* s_LoadFileConfiguration = nullptr;
 static CloseWithoutSavingConfiguration* s_CloseConfiguration = nullptr;
+static PrintImageConfiguration* s_PrintImageConfiguration = nullptr;
 
 MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent)
@@ -170,6 +172,18 @@ void MainWindow::closeAndDropChanges()
     m_Listener->closeAsked();
 }
 
+void MainWindow::imageSelectedForPrinting(QString p_File)
+{
+    Q_ASSERT(nullptr != m_FileManager);
+    m_Diagrams[m_CurrentDiagramID]->printPressed(p_File);
+
+    ConfigWidget::close();
+}
+void MainWindow::imagePrintingCanceled()
+{
+    ConfigWidget::close();
+}
+
 void MainWindow::NextButtonPressed()
 {
     unsigned short l_DiagramToDisplay = m_CurrentDiagramID;
@@ -239,7 +253,23 @@ void MainWindow::findMenuClicked()
 void MainWindow::printMenuClicked()
 {
     Q_ASSERT(nullptr != m_FileManager);
-    m_Diagrams[m_CurrentDiagramID]->printPressed(m_FileManager->getFileName());
+
+    if( ("" != m_FileManager->getFileName()) )
+    {
+        m_FileManager->saveDiagrams();
+    }
+    else
+    {
+        // Open save configuration
+        if( nullptr == s_SaveFileConfiguration )
+        {
+            s_PrintImageConfiguration = new PrintImageConfiguration();
+            s_PrintImageConfiguration->registerConfigListener(this);
+        }
+        s_PrintImageConfiguration->setFileName(
+            m_FileManager->getFileName() + this->getCurrentDiagram()->getDiagramString());
+        ConfigWidget::open(s_PrintImageConfiguration);
+    }
 }
 
 void MainWindow::closeEvent(QCloseEvent* p_event)
