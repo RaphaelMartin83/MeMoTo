@@ -102,7 +102,7 @@ void PrintImageConfiguration::writtenPathChanged()
 
     if( true == l_Dir.exists() )
     {
-        m_FilePathEdit->setStyleSheet("color: black");
+        m_FilePathEdit->setStyleSheet("");
         m_TreeView->setCurrentIndex(m_FileSystemModel->index(m_FilePathEdit->text()));
         m_TreeView->expand(m_TreeView->currentIndex());
     }
