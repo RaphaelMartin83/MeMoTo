@@ -4,6 +4,7 @@
 #include <QFile>
 #include <QDir>
 #include <QStandardPaths>
+#include <QMimeData>
 
 #include <Engine/DiagramGraphicsView.h>
 #include <Engine/InstanceLauncher.h>
@@ -38,7 +39,9 @@ MainWindow::MainWindow(QWidget *parent)
     , m_CurrentDiagramID(0U)
     , m_FileManager(nullptr)
     , m_Listener(nullptr)
+    , m_isControlBeingPressed(false)
 {
+    this->setAcceptDrops(true);
 }
 
 MainWindow::MainWindow(const char* argv, QWidget *parent)
@@ -53,6 +56,53 @@ MainWindow::~MainWindow()
     ConfigWidget::deleteInstance();
 }
 
+void MainWindow::dragMoveEnent(QDragMoveEvent* event)
+{
+    static const QRegularExpression regexp = QRegularExpression("*.memoto");
+    if(event->mimeData()->urls().size() != 1 &&
+        !event->mimeData()->urls().first().path().contains(regexp))
+    {
+        return;
+    }
+    event->acceptProposedAction();
+}
+void MainWindow::dragEnterEvent(QDragEnterEvent* event)
+{
+    static const QRegularExpression regexp = QRegularExpression("*.memoto");
+    if(event->mimeData()->urls().size() != 1 &&
+        !event->mimeData()->urls().first().path().contains(regexp))
+    {
+        return;
+    }
+    event->acceptProposedAction();
+    this->displayDropView();
+}
+void MainWindow::dragLeaveEvent(QDragLeaveEvent* event)
+{
+    this->hideDropView();
+}
+void MainWindow::dropEvent(QDropEvent* event)
+{
+    static const QRegularExpression regexp = QRegularExpression("*.memoto");
+    if(event->mimeData()->urls().size() != 1 &&
+        !event->mimeData()->urls().first().path().contains(regexp))
+    {
+        return;
+    }
+
+    this->hideDropView();
+    QString path = event->mimeData()->urls().first().path();
+    if(m_isControlBeingPressed)
+    {
+        this->fileSelectedForLoading(path);
+    }
+    else
+    {
+        InstanceLauncher::getInstance().execute(QStringList(path));
+    }
+    event->acceptProposedAction();
+}
+
 I_DiagramContainer* MainWindow::getCurrentDiagram()
 {
     return m_Diagrams[m_CurrentDiagramID];
@@ -61,6 +111,17 @@ void MainWindow::addDiagram(I_DiagramContainer* p_Diagram)
 {
     m_Diagrams.append(p_Diagram);
     m_Diagrams.last()->registerDiagramView(m_DiagramView);
+}
+
+void MainWindow::displayDropView()
+{
+    m_splitter->setVisible(false);
+    m_DropFileLabel->setVisible(true);
+}
+void MainWindow::hideDropView()
+{
+    m_splitter->setVisible(true);
+    m_DropFileLabel->setVisible(false);
 }
 
 // I_SaveFileConfigurationListener
@@ -230,13 +291,17 @@ void MainWindow::initGUI(const QIcon& logo)
     m_splitter->addWidget(&ConfigWidget::getInstance());
     m_mainLayout->addWidget(m_splitter, 0, 2, -1, 1, Qt::Alignment());
 
+    m_DropFileLabel = new QLabel("Drop file here to open in new instance, press Control to load here (unsaved changes will be lost)");
+    Q_ASSERT(nullptr != m_DropFileLabel);
+    m_mainLayout->addWidget(m_DropFileLabel, 0, 3, -1, 1, Qt::Alignment(Qt::AlignCenter));
+    m_DropFileLabel->setVisible(false);
+
     m_centralWidget = new QWidget();
     Q_ASSERT(nullptr != m_centralWidget);
     m_centralWidget->setLayout(m_mainLayout);
 
     this->setCentralWidget(m_centralWidget);
     this->setWindowTitle(s_ProgramName);
-    this->move(300, 150);
 
     m_MenuBar = this->menuBar();
     m_FileMenu = new QMenu("File");
@@ -447,6 +512,9 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
     case Qt::Key::Key_Escape:
         m_Diagrams[m_CurrentDiagramID]->escapePressed();
         break;
+    case Qt::Key::Key_Control:
+        m_isControlBeingPressed = true;
+        break;
     default:
         break;
     }
@@ -500,6 +568,18 @@ void MainWindow::keyPressEvent(QKeyEvent* p_Event)
     else if( (p_Event->key() == Qt::Key_Space) && (p_Event->modifiers() == Qt::ControlModifier) )
     {
         SharingManager::getInstance().start();
+    }
+}
+
+void MainWindow::keyReleasedEvent(QKeyEvent* p_Event)
+{
+    switch(p_Event->key())
+    {
+    case Qt::Key::Key_Control:
+        m_isControlBeingPressed = false;
+        break;
+    default:
+        break;
     }
 }
 

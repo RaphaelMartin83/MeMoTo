@@ -30,6 +30,11 @@ public:
     MainWindow(const char* argv, QWidget *parent = nullptr);
     ~MainWindow();
 
+    void dragMoveEnent(QDragMoveEvent* event);
+    void dragEnterEvent(QDragEnterEvent* event);
+    void dragLeaveEvent(QDragLeaveEvent* event);
+    void dropEvent(QDropEvent* event);
+
     void show();
     void updateTitle();
 
@@ -41,6 +46,9 @@ public:
     void registerDiagramListener(I_DiagramListener* diagramListener);
     void registerListener(I_MainWindowListener* listener);
     void initGUI(const QIcon& logo);
+
+    void displayDropView();
+    void hideDropView();
 
     // I_SaveFileConfigurationListener
     virtual void fileSelectedForSaving(QString p_File);
@@ -77,8 +85,11 @@ public slots:
 
 private:
     void keyPressEvent(QKeyEvent* p_Event);
+    void keyReleasedEvent(QKeyEvent* p_Event);
     void savePressed(bool p_alwaysOpen=false);
     void loadPressed(bool p_alwaysOpen=false);
+
+    QLabel* m_DropFileLabel;
 
     QMenuBar* m_MenuBar;
     QMenu* m_FileMenu;
@@ -99,5 +110,7 @@ private:
 
     I_FileManager* m_FileManager;
     I_MainWindowListener* m_Listener;
+
+    bool m_isControlBeingPressed;
 };
 #endif // MAINWINDOW_H
