@@ -30,6 +30,7 @@ RUN apt-get update \
 		libfontconfig1-dev \
 		libfreetype-dev \
 		libgl-dev \
+		libkrb5-dev \
 		libsm6 \
 		libx11-dev \
 		libx11-xcb-dev \
