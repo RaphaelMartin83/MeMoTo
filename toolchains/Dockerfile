@@ -1,62 +1,79 @@
 # syntax=docker/dockerfile:1
 
+FROM python:3.10-slim-bullseye AS qt-sdk
+
+ARG TARGETARCH
+ARG QT_VERSION=6.7.3
+
+RUN pip install --no-cache-dir aqtinstall==3.3.0 \
+	&& case "$TARGETARCH" in \
+		amd64) qt_host=linux; qt_arch=linux_gcc_64 ;; \
+		arm64) qt_host=linux_arm64; qt_arch=linux_gcc_arm64 ;; \
+		*) echo "Unsupported target architecture: $TARGETARCH" >&2; exit 1 ;; \
+	esac \
+	&& aqt install-qt "$qt_host" desktop "$QT_VERSION" "$qt_arch" \
+		--modules qtwebsockets \
+		-O /opt/qt
+
 FROM ubuntu:focal
 
-RUN apt update \
-	&& apt install -y libfreetype-dev \
-	&& apt install -y libx11-dev \
-	&& apt install -y libx11-xcb-dev \
-	&& apt install -y libxcb-cursor-dev \
-	&& apt install -y libxcb-glx0-dev \
-	&& apt install -y libxcb-icccm4-dev \
-	&& apt install -y libxcb-image0-dev \
-	&& apt install -y libxcb-keysyms1-dev \
-	&& apt install -y libxcb-randr0-dev \
-	&& apt install -y libxcb-render-util0-dev \
-	&& apt install -y libxcb-shape0-dev \
-	&& apt install -y libxcb-shm0-dev \
-	&& apt install -y libxcb-sync-dev \
-	&& apt install -y libxcb-util-dev \
-	&& apt install -y libxcb-xfixes0-dev \
-	&& apt install -y libxcb-xinerama0-dev \
-	&& apt install -y libxcb-xkb-dev \
-	&& apt install -y libxcb1-dev \
-	&& apt install -y libxext-dev \
-	&& apt install -y libxfixes-dev \
-	&& apt install -y libxi-dev \
-	&& apt install -y libxkbcommon-dev \
-	&& apt install -y libxkbcommon-x11-dev \
-	&& apt install -y libxrender-dev \
-	&& apt install -y --no-install-recommends libfontconfig1-dev \
-	&& apt install -y libdbus-1-dev \
-	&& apt install -y libgl-dev \
-	&& apt install -y wget \
-	&& apt install -y gcc g++ \
-	&& apt install -y unzip \
-	&& apt install -y python3 \
-	&& apt install -y python3-pip
+ARG TARGETARCH
+ARG QT_VERSION=6.7.3
 
-RUN python3 -m pip install cmake==3.30.4
+RUN apt-get update \
+	&& DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+		build-essential \
+		file \
+		libbrotli-dev \
+		libdbus-1-dev \
+		libegl-dev \
+		libfontconfig1-dev \
+		libfreetype-dev \
+		libgl-dev \
+		libkrb5-dev \
+		libsm6 \
+		libx11-dev \
+		libx11-xcb-dev \
+		libxcb-cursor-dev \
+		libxcb-glx0-dev \
+		libxcb-icccm4-dev \
+		libxcb-image0-dev \
+		libxcb-keysyms1-dev \
+		libxcb-randr0-dev \
+		libxcb-render-util0-dev \
+		libxcb-shape0-dev \
+		libxcb-shm0-dev \
+		libxcb-sync-dev \
+		libxcb-util-dev \
+		libxcb-xfixes0-dev \
+		libxcb-xinerama0-dev \
+		libxcb-xkb-dev \
+		libxcb1-dev \
+		libxext-dev \
+		libxfixes-dev \
+		libxi-dev \
+		libxkbcommon-dev \
+		libxkbcommon-x11-dev \
+		libxrender-dev \
+		libwayland-dev \
+		python3-pip \
+		python3-venv \
+		unzip \
+		wget \
+	&& rm -rf /var/lib/apt/lists/*
 
-# Qt Version
-ARG QT_MAJOR=6
-ARG QT_MINOR=7
-ARG QT_PATCH=3
+COPY --from=qt-sdk /opt/qt/ /opt/qt/
 
-# Compile and deploy Qt from source
-RUN wget -q https://download.qt.io/official_releases/qt/$QT_MAJOR.$QT_MINOR/$QT_MAJOR.$QT_MINOR.$QT_PATCH/single/qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH.zip \
-	&& unzip -q qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH.zip \
-	&& rm qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH.zip \
-	&& sed -i -e 's/\r$//' qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH/configure \
-	&& sed -i -e 's/\r$//' qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH/qtbase/configure \
-	&& mkdir -p build \
-	&& cd build \
-	&& ../qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH/configure -release -opensource -confirm-license -nomake examples -nomake tests -skip qt3d -skip qtandroidextras -skip qtcanvas3d -skip qtcharts -skip qtconnectivity -skip qtdatavis3d \
-	&& cmake --build . -j6 \
-	&& cmake --install . --prefix /usr/lib/qt-dev \
-	&& rm -rf ../qt-everywhere-src-$QT_MAJOR.$QT_MINOR.$QT_PATCH \
-	&& cd .. && rm -rf build
+RUN python3 -m venv /opt/venv \
+	&& /opt/venv/bin/pip install --no-cache-dir cmake==3.30.4 \
+	&& case "$TARGETARCH" in \
+		amd64) qt_dir=gcc_64 ;; \
+		arm64) qt_dir=gcc_arm64 ;; \
+		*) echo "Unsupported target architecture: $TARGETARCH" >&2; exit 1 ;; \
+	esac \
+	&& ln -s "/opt/qt/$QT_VERSION/$qt_dir" /usr/lib/qt-dev
 
-ENV QT_DIR="/usr/lib/qt-dev/" \
-	Qt6_DIR="/usr/lib/qt-dev/"
-
+ENV QT_DIR="/usr/lib/qt-dev" \
+	Qt6_DIR="/usr/lib/qt-dev/lib/cmake/Qt6" \
+	CMAKE_PREFIX_PATH="/usr/lib/qt-dev" \
+	PATH="/usr/lib/qt-dev/bin:/opt/venv/bin:${PATH}"

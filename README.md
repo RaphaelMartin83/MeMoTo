@@ -59,9 +59,11 @@ Note: The sharing feature works like when hosting a videogame. The person with d
 
 # How to build
 - On windows, nothing exists yet, you need to install Qt and compile yourself, sorry!
-- On linux, docker run -v my_memoto_repo:/var/mmt ghcr.io/raphaelmartin83/memoto_linux_x86_64
-  - If you don't have access to the docker image, you can build ghcr.io/raphaelmartin83/qt_compilation_base from toolchain/Docker
-  - And then, build ghcr.io/raphaelmartin83/memoto_linux_x86_64 from toolchains/linux/x86_64/Dockerfile
+- On linux, download the x86_64 or ARM64 AppImage from the releases page.
+- To build locally, run the matching native-architecture image:
+  - x86_64: `docker run -v my_memoto_repo:/var/mmt ghcr.io/raphaelmartin83/memoto_linux_x86_64`
+  - ARM64: `docker run -v my_memoto_repo:/var/mmt ghcr.io/raphaelmartin83/memoto_linux_arm64`
+  - If you don't have access to the docker image, build the Qt toolchain from [toolchains/Dockerfile](toolchains/Dockerfile), then build the matching image using `toolchains/linux/<arch>/Dockerfile`.
 
 # How to install
 
@@ -73,4 +75,3 @@ Note: The sharing feature works like when hosting a videogame. The person with d
 # What is planed
 
 - Usability: svg generation path asking
-

@@ -1,4 +1,4 @@
-name: Linux x86_64 build
+name: Linux build
 
 on:
   workflow_dispatch:
@@ -11,47 +11,63 @@ on:
 
 jobs:
 
-  build_memoto_linux_x86_64:
-    runs-on: ubuntu-latest
+  build_memoto_linux:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - architecture: x86_64
+            runner: ubuntu-latest
+            dockerfile: toolchains/linux/x86_64/Dockerfile
+          - architecture: arm64
+            runner: ubuntu-24.04-arm
+            dockerfile: toolchains/linux/arm64/Dockerfile
+    runs-on: ${{ matrix.runner }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Login to GitHub Container Registry
-        uses: docker/login-action@v3
-        with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build Qt toolchain image
+        run: |
+          docker build \
+            -f toolchains/Dockerfile \
+            -t ghcr.io/raphaelmartin83/qt_compilation_base \
+            toolchains/
+
+      - name: Build MeMoTo image
+        run: |
+          docker build \
+            -f ${{ matrix.dockerfile }} \
+            -t memoto_linux_${{ matrix.architecture }} \
+            .
 
       - name: Build
         run: |
           docker run --rm \
             -e OUTPUT_DIR=/var/mmt/ \
-            -e MMT_TAG=${{ github.ref }} \
+            -e MMT_TAG="${{ github.ref }}" \
             -v ${{ github.workspace }}:/var/mmt:rw \
-            ghcr.io/raphaelmartin83/memoto_linux_x86_64:89e09e8
+            memoto_linux_${{ matrix.architecture }}
 
       - name: Persist artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: MeMoTo-Linux-x86_64.AppImage
-          path: ${{ github.workspace }}/MeMoTo-x86_64.AppImage
+          name: MeMoTo-Linux-${{ matrix.architecture }}.AppImage
+          path: ${{ github.workspace }}/MeMoTo-${{ matrix.architecture }}.AppImage
 
-  deploy_memoto_linux_x86_64:
-    needs: [build_memoto_linux_x86_64]
+  deploy_memoto_linux:
+    needs: [build_memoto_linux]
     if: startsWith(github.ref, 'refs/tags/v')
     runs-on: ubuntu-latest
-    permissions: write-all
+    permissions:
+      contents: write
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
       - name: Retrieve artifacts to release
         uses: actions/download-artifact@v4
         with:
-          name: MeMoTo-Linux-x86_64.AppImage
+          pattern: MeMoTo-Linux-*.AppImage
           path: ${{ github.workspace }}
+          merge-multiple: true
 
       - name: Create release and upload artifacts
         env:
@@ -61,4 +77,6 @@ jobs:
             sudo apt install fuse
             wget -q https://github.com/TheAssassin/pyuploadtool/releases/download/continuous/pyuploadtool-x86_64.AppImage
             chmod +x pyuploadtool-x86_64.AppImage
-            ./pyuploadtool-x86_64.AppImage ${{ github.workspace }}/MeMoTo-x86_64.AppImage
+            ./pyuploadtool-x86_64.AppImage \
+              ${{ github.workspace }}/MeMoTo-x86_64.AppImage \
+              ${{ github.workspace }}/MeMoTo-arm64.AppImage
