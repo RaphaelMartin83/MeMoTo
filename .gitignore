@@ -1,6 +1,7 @@
 CMakeLists.txt.user
 *.res
 **/build*
+!/toolchains/linux/build.sh
 compile_commands.json
 .vscode
 .cache
